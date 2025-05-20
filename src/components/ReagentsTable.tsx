@@ -6,16 +6,17 @@ import ReagentData from '../typings/ReagentData';
 type ActionsButtonsProps = {
   ishovered: boolean;
   handleDelete: () => void;
+  beginReagentEdit: () => void;
 };
 
-const ActionsButtons = ({ ishovered, handleDelete }: ActionsButtonsProps) => {
+const ActionsButtons = ({ ishovered, handleDelete, beginReagentEdit }: ActionsButtonsProps) => {
   return (
     <>
       <ActionIcon variant="transparent" opacity={ishovered ? 1 : 0} onClick={handleDelete}>
         <IconTrash />
       </ActionIcon>
 
-      <ActionIcon variant="transparent" opacity={ishovered ? 1 : 0}>
+      <ActionIcon variant="transparent" opacity={ishovered ? 1 : 0} onClick={beginReagentEdit}>
         <IconEdit />
       </ActionIcon>
     </>
@@ -25,9 +26,14 @@ const ActionsButtons = ({ ishovered, handleDelete }: ActionsButtonsProps) => {
 type ReagentsTableRowProps = {
   reagentData: ReagentData;
   handleDelete: () => void;
+  beginReagentEdit: () => void;
 };
 
-const ReagentsTableRow = ({ reagentData, handleDelete }: ReagentsTableRowProps) => {
+const ReagentsTableRow = ({
+  reagentData,
+  handleDelete,
+  beginReagentEdit,
+}: ReagentsTableRowProps) => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -37,7 +43,11 @@ const ReagentsTableRow = ({ reagentData, handleDelete }: ReagentsTableRowProps) 
       <Table.Td>{reagentData.unit}</Table.Td>
 
       <Table.Td>
-        <ActionsButtons ishovered={isHovered} handleDelete={handleDelete} />
+        <ActionsButtons
+          ishovered={isHovered}
+          handleDelete={handleDelete}
+          beginReagentEdit={beginReagentEdit}
+        />
       </Table.Td>
     </Table.Tr>
   );
@@ -47,12 +57,22 @@ type ReagentsTableProps = {
   reagententsData: ReagentData[];
   search: string;
   handleDelete: (key: number) => void;
+  beginReagentEdit: (editedReagent: ReagentData) => void;
 };
+
+function normalizeString(str: string): string {
+  return str
+    .trim()
+    .normalize('NFD') // Normaliza para forma de decomposição canônica
+    .replace(/[\u0300-\u036f]/g, '') // Remove diacríticos (acentos)
+    .toLowerCase(); // Converte para minúsculas
+}
 
 export default function ReagentsTable({
   reagententsData,
   search,
   handleDelete,
+  beginReagentEdit,
 }: ReagentsTableProps) {
   return (
     <Table tabularNums striped highlightOnHover withTableBorder>
@@ -67,12 +87,13 @@ export default function ReagentsTable({
 
       <Table.Tbody>
         {reagententsData
-          .filter((item) => item.name.includes(search.trim()))
+          .filter((item) => normalizeString(item.name).includes(normalizeString(search)))
           .map((reagent, key) => (
             <ReagentsTableRow
               key={key}
               reagentData={reagent}
-              handleDelete={() => handleDelete(reagent.id!)}
+              handleDelete={() => handleDelete(reagent.id!)} // FIXME: Essa garantia é inadequada?
+              beginReagentEdit={() => beginReagentEdit(reagent)}
             />
           ))}
       </Table.Tbody>

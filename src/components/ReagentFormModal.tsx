@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Button, Grid, Group, Modal, NumberInput, Select, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import ReagentData from '../typings/ReagentData';
@@ -10,7 +11,7 @@ const units = [
   },
   {
     group: 'Volume',
-    items: [Unit.LITERS],
+    items: [Unit.MILILITERS, Unit.LITERS],
   },
   {
     group: 'Outros',
@@ -18,22 +19,27 @@ const units = [
   },
 ];
 
-type AddReagentModalProps = {
-  reagententsData: ReagentData[];
+type ReagentFormModalProps = {
+  editedReagent: ReagentData | null;
   setReagentsData: (reagententsData: ReagentData[]) => void;
-  addModalOpened: boolean;
-  closeAddModal: () => void;
+  reagentModalOpened: boolean;
+  closeReagentModal: () => void;
   handleAddReagent: (reagent: ReagentData) => void;
+  handleEditReagent: (editedReagent: ReagentData) => void;
 };
 
-export default function AddReagentModal({
-  addModalOpened,
-  closeAddModal,
+export default function ReagentFormModal({
+  editedReagent,
+  reagentModalOpened,
+  closeReagentModal,
   handleAddReagent,
-}: AddReagentModalProps) {
+  handleEditReagent,
+}: ReagentFormModalProps) {
   const handleSubmit = (reagentData: ReagentData) => {
-    handleAddReagent(reagentData);
-    closeAddModal();
+    if (editedReagent) handleEditReagent(reagentData);
+    else handleAddReagent(reagentData);
+
+    closeReagentModal();
     form.reset();
   };
 
@@ -59,8 +65,14 @@ export default function AddReagentModal({
     },
   });
 
+  // TODO: É possível substituir?
+  useEffect(() => {
+    if (editedReagent) form.setValues(editedReagent);
+    else form.reset();
+  }, [editedReagent]);
+
   return (
-    <Modal title={'Adicionar reagentente'} opened={addModalOpened} onClose={closeAddModal}>
+    <Modal title={'Adicionar reagentente'} opened={reagentModalOpened} onClose={closeReagentModal}>
       <form onSubmit={form.onSubmit(handleSubmit)}>
         <Grid>
           <Grid.Col span={{ base: 12 }}>
@@ -81,9 +93,8 @@ export default function AddReagentModal({
         </Grid>
 
         <Group mt="xl" justify="right">
-          <Button type="submit">Adicionar</Button>
-
-          <Button variant="outline" onClick={closeAddModal}>
+          <Button type="submit">{editedReagent ? 'Editar' : 'Adicionar'}</Button>
+          <Button variant="outline" onClick={closeReagentModal}>
             Cancelar
           </Button>
         </Group>
