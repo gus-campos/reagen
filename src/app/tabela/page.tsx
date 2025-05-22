@@ -1,37 +1,44 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { initializeApp } from 'firebase/app';
+import { collection, getDocs, getFirestore } from 'firebase/firestore';
 import { Button, Drawer, Menu, TextInput } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import ReagentFormModal from '@/src/components/ReagentFormModal';
 import ReagentsTable from '@/src/components/ReagentsTable';
 import ReagentData from '@/src/typings/ReagentData';
-import Unit from '@/src/typings/Unit';
 
-const initialReagentsData: ReagentData[] = [
-  { id: 0, name: 'Sulfeto de Bário', amount: 1.54, unit: Unit.GRAMS },
-  { id: 1, name: 'Cloreto de Sódio', amount: 44.6, unit: Unit.LITERS },
-  { id: 2, name: 'Ácido Acético', amount: 12.3, unit: Unit.KILOGRAMS },
-  { id: 3, name: 'Hidróxido de Sódio', amount: 5.7, unit: Unit.GRAMS },
-  { id: 4, name: 'Nitrato de Prata', amount: 0.85, unit: Unit.GRAMS },
-  { id: 5, name: 'Peróxido de Hidrogênio', amount: 25.0, unit: Unit.LITERS },
-  { id: 6, name: 'Ácido Clorídrico', amount: 8.2, unit: Unit.LITERS },
-  { id: 7, name: 'Carbonato de Cálcio', amount: 3.75, unit: Unit.GRAMS },
-  { id: 8, name: 'Sulfato de Cobre', amount: 1.2, unit: Unit.GRAMS },
-  { id: 9, name: 'Álcool Etílico', amount: 50.0, unit: Unit.LITERS },
-  { id: 10, name: 'Amônia', amount: 2.9, unit: Unit.LITERS },
-  { id: 11, name: 'Ácido Nítrico', amount: 4.5, unit: Unit.LITERS },
-];
+const firebaseConfig = {
+  apiKey: 'AIzaSyCaldii3iEgvnubFwjL93F3YofhPnSERC8',
+  authDomain: 'reagentcontrol.firebaseapp.com',
+  projectId: 'reagentcontrol',
+  storageBucket: 'reagentcontrol.firebasestorage.app',
+  messagingSenderId: '1056614611242',
+  appId: '1:1056614611242:web:09fa4a40ff7bad28838653',
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
 export default function TableView() {
+  // FIXME:Devia ser a id?
   const [editedReagent, setEditedReagent] = useState<ReagentData | null>(null);
   const [reagentModalOpened, { open: openReagentModal, close: closeReagentModal }] =
     useDisclosure(false);
   const [drawerOpened, { open: openDrawer, close: closeDrawer }] = useDisclosure(false);
-  const [reagententsData, setReagentsData] = useState<ReagentData[]>(initialReagentsData);
+  const [reagententsData, setReagentsData] = useState<ReagentData[]>([]);
   const [search, setSearch] = useState('');
 
-  const handleDelete = (id: number) => {
+  // Carregar dados da primeira vez usar set state
+  // Ao fazer post, guardar ID na lista interna, mas não postar!
+
+  const handleAddReagent = (reagent: ReagentData) => {
+    reagent.id = reagententsData.length;
+    setReagentsData([...reagententsData, reagent]);
+  };
+
+  const handleDeleteReagent = (id: number) => {
     setReagentsData(reagententsData.filter((item) => item.id != id));
   };
 
@@ -48,16 +55,32 @@ export default function TableView() {
     openReagentModal();
   };
 
-  // Está carregando o formulário atualizado
-  // Está editando
+  useEffect(() => {
+    async function updateRemote() {
+      const colRef = collection(db, 'reagents');
+      const snapshot = await getDocs(colRef);
 
-  // Fazer abrir modal quando clica
-  // Depois botão de + sempre limpa form
+      const remoteReagentData = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
 
-  const handleAddReagent = (reagent: ReagentData) => {
-    reagent.id = reagententsData.length;
-    setReagentsData([...reagententsData, reagent]);
-  };
+      for (const reagentData of remoteReagentData) {
+      }
+
+      // Se id remota não está mais presente localmente, excluir remoto
+      // Encontrando os remotos que não estão entre os locais
+
+      // Se id null, adicionar doc no remoto e atribuir o id ao local
+      // Encontrando local com id null
+
+      // Se id presente no local e remoto, mas timestamp diferente, substituir/ editar
+      // Encontrar os remotos que estão com timestamp diferentes
+      // Buscar o par remoto correspondente e comparar timestamps
+    }
+
+    updateRemote();
+  }, [reagententsData]);
 
   return (
     <>
@@ -78,7 +101,7 @@ export default function TableView() {
       <ReagentsTable
         reagententsData={reagententsData}
         search={search}
-        handleDelete={handleDelete}
+        handleDeleteReagent={handleDeleteReagent}
         beginReagentEdit={beginReagentEdit}
       />
       <ReagentFormModal
@@ -99,6 +122,7 @@ export default function TableView() {
       >
         +
       </Button>
+
       <Button
         style={{ position: 'fixed', bottom: '20px', left: '20px' }}
         variant="default"

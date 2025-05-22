@@ -1,23 +1,31 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Button, Grid, Group, Modal, NumberInput, Select, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import ReagentData from '../typings/ReagentData';
-import Unit from '../typings/Unit';
+import Unit, { UnitLabels } from '../typings/Unit';
 
 const units = [
   {
     group: 'Massa',
-    items: [Unit.GRAMS, Unit.KILOGRAMS],
+    items: [
+      { value: Unit.GRAMS, label: UnitLabels[Unit.GRAMS] },
+      { value: Unit.KILOGRAMS, label: UnitLabels[Unit.KILOGRAMS] },
+    ],
   },
   {
     group: 'Volume',
-    items: [Unit.MILILITERS, Unit.LITERS],
+    items: [
+      { value: Unit.MILILITERS, label: UnitLabels[Unit.MILILITERS] },
+      { value: Unit.LITERS, label: UnitLabels[Unit.LITERS] },
+    ],
   },
   {
     group: 'Outros',
-    items: [Unit.UNITS],
+    items: [{ value: Unit.UNITS, label: UnitLabels[Unit.UNITS] }],
   },
 ];
+
+// items é de fato o item, e não a label. Como separar?
 
 type ReagentFormModalProps = {
   editedReagent: ReagentData | null;
@@ -62,6 +70,7 @@ export default function ReagentFormModal({
     validate: {
       name: (value) => (value.trim().length > 0 ? null : 'O nome não pode estar vazio'),
       amount: validateAmount,
+      unit: (unit) => (unit != null ? null : 'Inserir unidade de medida'),
     },
   });
 
@@ -88,6 +97,7 @@ export default function ReagentFormModal({
           </Grid.Col>
 
           <Grid.Col span={{ base: 6 }}>
+            {/* TODO: Não permitir descelecionar */}
             <Select label="Unidade" {...form.getInputProps('unit')} data={units}></Select>
           </Grid.Col>
         </Grid>

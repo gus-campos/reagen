@@ -5,14 +5,18 @@ import ReagentData from '../typings/ReagentData';
 
 type ActionsButtonsProps = {
   ishovered: boolean;
-  handleDelete: () => void;
+  handleDeleteReagent: () => void;
   beginReagentEdit: () => void;
 };
 
-const ActionsButtons = ({ ishovered, handleDelete, beginReagentEdit }: ActionsButtonsProps) => {
+const ActionsButtons = ({
+  ishovered,
+  handleDeleteReagent,
+  beginReagentEdit,
+}: ActionsButtonsProps) => {
   return (
     <>
-      <ActionIcon variant="transparent" opacity={ishovered ? 1 : 0} onClick={handleDelete}>
+      <ActionIcon variant="transparent" opacity={ishovered ? 1 : 0} onClick={handleDeleteReagent}>
         <IconTrash />
       </ActionIcon>
 
@@ -25,13 +29,13 @@ const ActionsButtons = ({ ishovered, handleDelete, beginReagentEdit }: ActionsBu
 
 type ReagentsTableRowProps = {
   reagentData: ReagentData;
-  handleDelete: () => void;
+  handleDeleteReagent: () => void;
   beginReagentEdit: () => void;
 };
 
 const ReagentsTableRow = ({
   reagentData,
-  handleDelete,
+  handleDeleteReagent,
   beginReagentEdit,
 }: ReagentsTableRowProps) => {
   const [isHovered, setIsHovered] = useState(false);
@@ -39,13 +43,17 @@ const ReagentsTableRow = ({
   return (
     <Table.Tr onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
       <Table.Td>{reagentData.name}</Table.Td>
+      <Table.Td>{reagentData.amount + ' ' + reagentData.unit}</Table.Td>
+
+      {/* 
       <Table.Td>{reagentData.amount}</Table.Td>
       <Table.Td>{reagentData.unit}</Table.Td>
+      */}
 
       <Table.Td>
         <ActionsButtons
           ishovered={isHovered}
-          handleDelete={handleDelete}
+          handleDeleteReagent={handleDeleteReagent}
           beginReagentEdit={beginReagentEdit}
         />
       </Table.Td>
@@ -56,7 +64,7 @@ const ReagentsTableRow = ({
 type ReagentsTableProps = {
   reagententsData: ReagentData[];
   search: string;
-  handleDelete: (key: number) => void;
+  handleDeleteReagent: (key: number) => void;
   beginReagentEdit: (editedReagent: ReagentData) => void;
 };
 
@@ -71,7 +79,7 @@ function normalizeString(str: string): string {
 export default function ReagentsTable({
   reagententsData,
   search,
-  handleDelete,
+  handleDeleteReagent,
   beginReagentEdit,
 }: ReagentsTableProps) {
   return (
@@ -80,7 +88,7 @@ export default function ReagentsTable({
         <Table.Tr>
           <Table.Th>Reagentente</Table.Th>
           <Table.Th>Quantidade</Table.Th>
-          <Table.Th>Unidade</Table.Th>
+          {/* <Table.Th>Unidade</Table.Th> */}
           <Table.Th>Ações</Table.Th>
         </Table.Tr>
       </Table.Thead>
@@ -92,7 +100,7 @@ export default function ReagentsTable({
             <ReagentsTableRow
               key={key}
               reagentData={reagent}
-              handleDelete={() => handleDelete(reagent.id!)} // FIXME: Essa garantia é inadequada?
+              handleDeleteReagent={() => handleDeleteReagent(reagent.id!)} // FIXME: Essa garantia é inadequada?
               beginReagentEdit={() => beginReagentEdit(reagent)}
             />
           ))}
