@@ -1,10 +1,10 @@
 import Unit from './Unit';
 
-type ReagentData = {
-  id: number | null;
+type Reagent = {
+  id: string | null;
   name: string;
   amount: number;
   unit: Unit;
 };
 
-export default ReagentData;
+export default Reagent;

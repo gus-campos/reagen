@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { Button, Grid, Group, Modal, NumberInput, Select, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import ReagentData from '../typings/ReagentData';
+import ReagentData from '../typings/Reagent';
 import Unit, { UnitLabels } from '../typings/Unit';
 
 const units = [
@@ -29,7 +29,6 @@ const units = [
 
 type ReagentFormModalProps = {
   editedReagent: ReagentData | null;
-  setReagentsData: (reagententsData: ReagentData[]) => void;
   reagentModalOpened: boolean;
   closeReagentModal: () => void;
   handleAddReagent: (reagent: ReagentData) => void;

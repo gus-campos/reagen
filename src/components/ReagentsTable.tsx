@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { IconEdit, IconTrash } from '@tabler/icons-react';
 import { ActionIcon, Table } from '@mantine/core';
-import ReagentData from '../typings/ReagentData';
+import Reagent from '../typings/Reagent';
 
 type ActionsButtonsProps = {
   ishovered: boolean;
@@ -27,14 +27,16 @@ const ActionsButtons = ({
   );
 };
 
+// =================================================================================================
+
 type ReagentsTableRowProps = {
-  reagentData: ReagentData;
+  reagent: Reagent;
   handleDeleteReagent: () => void;
   beginReagentEdit: () => void;
 };
 
 const ReagentsTableRow = ({
-  reagentData,
+  reagent,
   handleDeleteReagent,
   beginReagentEdit,
 }: ReagentsTableRowProps) => {
@@ -42,14 +44,8 @@ const ReagentsTableRow = ({
 
   return (
     <Table.Tr onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
-      <Table.Td>{reagentData.name}</Table.Td>
-      <Table.Td>{reagentData.amount + ' ' + reagentData.unit}</Table.Td>
-
-      {/* 
-      <Table.Td>{reagentData.amount}</Table.Td>
-      <Table.Td>{reagentData.unit}</Table.Td>
-      */}
-
+      <Table.Td>{reagent.name}</Table.Td>
+      <Table.Td>{reagent.amount + ' ' + reagent.unit}</Table.Td>
       <Table.Td>
         <ActionsButtons
           ishovered={isHovered}
@@ -61,23 +57,26 @@ const ReagentsTableRow = ({
   );
 };
 
-type ReagentsTableProps = {
-  reagententsData: ReagentData[];
-  search: string;
-  handleDeleteReagent: (key: number) => void;
-  beginReagentEdit: (editedReagent: ReagentData) => void;
-};
+// =================================================================================================
 
-function normalizeString(str: string): string {
+// Função auxiliar da busca
+const normalizeString = (str: string) => {
   return str
     .trim()
     .normalize('NFD') // Normaliza para forma de decomposição canônica
     .replace(/[\u0300-\u036f]/g, '') // Remove diacríticos (acentos)
     .toLowerCase(); // Converte para minúsculas
-}
+};
+
+type ReagentsTableProps = {
+  reagents: Reagent[];
+  search: string;
+  handleDeleteReagent: (reagent: Reagent) => void;
+  beginReagentEdit: (editedReagent: Reagent) => void;
+};
 
 export default function ReagentsTable({
-  reagententsData,
+  reagents,
   search,
   handleDeleteReagent,
   beginReagentEdit,
@@ -86,21 +85,20 @@ export default function ReagentsTable({
     <Table tabularNums striped highlightOnHover withTableBorder>
       <Table.Thead>
         <Table.Tr>
-          <Table.Th>Reagentente</Table.Th>
+          <Table.Th>Reagente</Table.Th>
           <Table.Th>Quantidade</Table.Th>
-          {/* <Table.Th>Unidade</Table.Th> */}
           <Table.Th>Ações</Table.Th>
         </Table.Tr>
       </Table.Thead>
 
       <Table.Tbody>
-        {reagententsData
+        {reagents
           .filter((item) => normalizeString(item.name).includes(normalizeString(search)))
           .map((reagent, key) => (
             <ReagentsTableRow
               key={key}
-              reagentData={reagent}
-              handleDeleteReagent={() => handleDeleteReagent(reagent.id!)} // FIXME: Essa garantia é inadequada?
+              reagent={reagent}
+              handleDeleteReagent={() => handleDeleteReagent(reagent)}
               beginReagentEdit={() => beginReagentEdit(reagent)}
             />
           ))}
