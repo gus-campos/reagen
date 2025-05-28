@@ -25,8 +25,6 @@ const units = [
   },
 ];
 
-// items é de fato o item, e não a label. Como separar?
-
 type ReagentFormModalProps = {
   editedReagent: ReagentData | null;
   reagentModalOpened: boolean;

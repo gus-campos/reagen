@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { IconEdit, IconTrash } from '@tabler/icons-react';
-import { ActionIcon, Table } from '@mantine/core';
+import { ActionIcon, Box, Table } from '@mantine/core';
 import Reagent from '../typings/Reagent';
 
 type ActionsButtonsProps = {
