@@ -25,23 +25,25 @@ const units = [
   },
 ];
 
-type ReagentFormModalProps = {
-  editedReagent: ReagentData | null;
+type ReagentModalProps = {
+  onShowMode: boolean;
+  selectedReagent: ReagentData | null;
   reagentModalOpened: boolean;
   closeReagentModal: () => void;
   handleAddReagent: (reagent: ReagentData) => void;
-  handleEditReagent: (editedReagent: ReagentData) => void;
+  handleEditReagent: (selectedReagent: ReagentData) => void;
 };
 
-export default function ReagentFormModal({
-  editedReagent,
+export default function ReagentModal({
+  onShowMode,
+  selectedReagent,
   reagentModalOpened,
   closeReagentModal,
   handleAddReagent,
   handleEditReagent,
-}: ReagentFormModalProps) {
+}: ReagentModalProps) {
   const handleSubmit = (reagentData: ReagentData) => {
-    if (editedReagent) handleEditReagent(reagentData);
+    if (selectedReagent) handleEditReagent(reagentData);
     else handleAddReagent(reagentData);
 
     closeReagentModal();
@@ -71,14 +73,16 @@ export default function ReagentFormModal({
     },
   });
 
-  // TODO: É possível substituir?
   useEffect(() => {
-    if (editedReagent) form.setValues(editedReagent);
+    if (selectedReagent) form.setValues(selectedReagent);
     else form.reset();
-  }, [editedReagent]);
+  }, [selectedReagent]);
 
   return (
     <Modal title={'Adicionar reagentente'} opened={reagentModalOpened} onClose={closeReagentModal}>
+      {/* Como reaproveitar melhor esse modal pra visualização */}
+      {onShowMode ? <></> : <></>}
+
       <form onSubmit={form.onSubmit(handleSubmit)}>
         <Grid>
           <Grid.Col span={{ base: 12 }}>
@@ -95,12 +99,17 @@ export default function ReagentFormModal({
 
           <Grid.Col span={{ base: 6 }}>
             {/* TODO: Não permitir descelecionar */}
-            <Select label="Unidade" {...form.getInputProps('unit')} data={units}></Select>
+            <Select
+              allowDeselect={false}
+              label="Unidade"
+              {...form.getInputProps('unit')}
+              data={units}
+            ></Select>
           </Grid.Col>
         </Grid>
 
         <Group mt="xl" justify="right">
-          <Button type="submit">{editedReagent ? 'Editar' : 'Adicionar'}</Button>
+          <Button type="submit">{selectedReagent ? 'Editar' : 'Adicionar'}</Button>
           <Button variant="outline" onClick={closeReagentModal}>
             Cancelar
           </Button>

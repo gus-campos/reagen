@@ -5,9 +5,7 @@ import { collection } from 'firebase/firestore';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 import { Box, Button, TextInput } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import ReagentFormModal from '@/src/components/ReagentFormModal';
-import ReagentsTable from '@/src/components/ReagentsTable';
-import SideDrawer from '@/src/components/SideDrawer';
+import ReagentsTable from '@/src/components/Table/ReagentsTable';
 import {
   handleAddReagent,
   handleDeleteReagent,
@@ -16,31 +14,48 @@ import {
 } from '@/src/services/reagents';
 import Reagent from '@/src/typings/Reagent';
 import { db } from '@/src/utils/firebase';
+import ReagentModal from '../components/ReagentModal';
+
+// selectedReagent --> selectedReagent
 
 export default function TableView() {
-  const [editedReagent, setEditedReagent] = useState<Reagent | null>(null);
   const [reagentModalOpened, { open: openReagentModal, close: closeReagentModal }] =
     useDisclosure(false);
-  const [drawerOpened, { open: openDrawer, close: closeDrawer }] = useDisclosure(false);
+  const [selectedReagent, setSelectedReagent] = useState<Reagent | null>(null);
+  const [onShowMode, { open: activateShowMode, close: deactivateShowMode }] = useDisclosure(false);
   const [search, setSearch] = useState('');
-
   const [reagents, loadingReagents, errorLoadingReagents] = useCollectionData<Reagent>(
     collection(db, 'reagents').withConverter(reagentConverter)
   );
 
   const beginReagentEdit = (reagent: Reagent) => {
-    setEditedReagent(reagent);
+    setSelectedReagent(reagent);
+    deactivateShowMode();
+    openReagentModal();
+  };
+
+  const beginReagentAddition = () => {
+    setSelectedReagent(null);
+    deactivateShowMode();
+    openReagentModal();
+  };
+
+  const handleShowReagent = (reagent: Reagent) => {
+    setSelectedReagent(reagent);
+    activateShowMode();
     openReagentModal();
   };
 
   // TODO: Separar drawer no layout em torno da visualização de tabela
   return (
     <>
-      {/* Layout drawer */}
-      <SideDrawer
-        drawerOpened={drawerOpened}
-        closeDrawer={closeDrawer}
-        openReagentModal={openReagentModal}
+      <ReagentModal
+        onShowMode={onShowMode}
+        selectedReagent={selectedReagent}
+        reagentModalOpened={reagentModalOpened}
+        closeReagentModal={closeReagentModal}
+        handleAddReagent={handleAddReagent}
+        handleEditReagent={handleEditReagent}
       />
 
       <h1>Reagentes</h1>
@@ -51,52 +66,33 @@ export default function TableView() {
           placeholder={'Busque por nome de reagentes...'}
           value={search}
           onChange={(event) => setSearch(event.currentTarget.value)}
+          radius="md"
         />
       </Box>
 
       {/* Table */}
       {errorLoadingReagents ? (
-        <h1>ERRO AO CARREGAR DADOS!</h1>
+        <p>ERRO AO CARREGAR DADOS!</p>
       ) : loadingReagents ? (
-        <h1>CARREGANDO DADOS...</h1>
+        <p>CARREGANDO DADOS...</p>
       ) : !reagents ? (
-        <h1>NENHUM DADO ENCONTRADO</h1>
+        <p>NENHUM DADO ENCONTRADO</p>
       ) : (
         <ReagentsTable
           reagents={reagents}
           search={search}
           handleDeleteReagent={handleDeleteReagent}
           beginReagentEdit={beginReagentEdit}
+          handleShowReagent={handleShowReagent}
         />
       )}
-
-      {/* Modal to add or edit reagents */}
-      <ReagentFormModal
-        editedReagent={editedReagent}
-        reagentModalOpened={reagentModalOpened}
-        closeReagentModal={closeReagentModal}
-        handleAddReagent={handleAddReagent}
-        handleEditReagent={handleEditReagent}
-      />
 
       {/* Add button */}
       <Button
         style={{ position: 'fixed', bottom: '20px', right: '20px' }}
-        onClick={() => {
-          setEditedReagent(null);
-          openReagentModal();
-        }}
+        onClick={beginReagentAddition}
       >
         +
-      </Button>
-
-      {/* Drawer button */}
-      <Button
-        style={{ position: 'fixed', bottom: '20px', left: '20px' }}
-        variant="default"
-        onClick={openDrawer}
-      >
-        Opções
       </Button>
     </>
   );
