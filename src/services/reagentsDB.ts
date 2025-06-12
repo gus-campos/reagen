@@ -10,20 +10,21 @@ import Reagent from '@/src/typings/Reagent';
 import { db } from '@/src/utils/firebase';
 
 export const reagentConverter: FirestoreDataConverter<Reagent> = {
-  toFirestore(reagent: Reagent) {
+  toFirestore(reagent: Reagent): Reagent {
     return {
-      name: reagent.name,
-      amount: reagent.amount,
-      unit: reagent.unit,
+      ...reagent,
+      id: null,
     };
   },
-  fromFirestore(snapshot) {
+  fromFirestore(snapshot): Reagent {
     const data = snapshot.data();
+
     return {
+      ...data,
       id: snapshot.id,
-      name: data.name,
-      amount: data.amount,
-      unit: data.unit,
+      inDate: data.inDate?.toDate() ?? null,
+      outDate: data.outDate?.toDate() ?? null,
+      expireDate: data.expireDate?.toDate() ?? null,
     } as Reagent;
   },
 };

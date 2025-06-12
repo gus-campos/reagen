@@ -1,37 +1,48 @@
 import { useEffect } from 'react';
-import { Button, Grid, Group, Modal, NumberInput, Select, TextInput } from '@mantine/core';
+import {
+  Box,
+  Button,
+  ComboboxItemGroup,
+  Grid,
+  Group,
+  Modal,
+  NumberInput,
+  Select,
+  TextInput,
+} from '@mantine/core';
+import { DatePickerInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
-import ReagentData from '../typings/Reagent';
-import Unit, { UnitLabels } from '../typings/Unit';
+import Reagent from '../typings/Reagent';
+import Unit, { Dimension, UnitDimension } from '../typings/Unit';
+import formattedAmount from '../utils/formattedAmount';
+import formattedDate from '../utils/formattedDate';
 
-const units = [
-  {
-    group: 'Massa',
-    items: [
-      { value: Unit.GRAMS, label: UnitLabels[Unit.GRAMS] },
-      { value: Unit.KILOGRAMS, label: UnitLabels[Unit.KILOGRAMS] },
-    ],
-  },
-  {
-    group: 'Volume',
-    items: [
-      { value: Unit.MILILITERS, label: UnitLabels[Unit.MILILITERS] },
-      { value: Unit.LITERS, label: UnitLabels[Unit.LITERS] },
-    ],
-  },
-  {
-    group: 'Outros',
-    items: [{ value: Unit.UNITS, label: UnitLabels[Unit.UNITS] }],
-  },
-];
+// Criando opções agrupadas de unidades de medida
+const unitSelectOptions: ComboboxItemGroup[] = [];
+
+for (const dimension of Object.values(Dimension)) {
+  const group: ComboboxItemGroup = {
+    group: dimension,
+    items: [],
+  };
+
+  for (const unit of Object.values(Unit)) {
+    if (UnitDimension[unit] == dimension) {
+      group.items.push(unit);
+    }
+  }
+
+  unitSelectOptions.push(group);
+}
 
 type ReagentModalProps = {
   onShowMode: boolean;
-  selectedReagent: ReagentData | null;
+  selectedReagent: Reagent | null;
   reagentModalOpened: boolean;
   closeReagentModal: () => void;
-  handleAddReagent: (reagent: ReagentData) => void;
-  handleEditReagent: (selectedReagent: ReagentData) => void;
+  handleAddReagent: (reagent: Reagent) => void;
+  handleEditReagent: (selectedReagent: Reagent) => void;
+  beginShownReagentEdit: () => void;
 };
 
 export default function ReagentModal({
@@ -41,35 +52,57 @@ export default function ReagentModal({
   closeReagentModal,
   handleAddReagent,
   handleEditReagent,
+  beginShownReagentEdit,
 }: ReagentModalProps) {
-  const handleSubmit = (reagentData: ReagentData) => {
-    if (selectedReagent) handleEditReagent(reagentData);
-    else handleAddReagent(reagentData);
-
+  const handleSubmit = (Reagent: Reagent) => {
     closeReagentModal();
+
+    if (selectedReagent) handleEditReagent(Reagent);
+    else handleAddReagent(Reagent);
     form.reset();
   };
 
-  const validateAmount = (value: number) => {
+  const validateAmount = (value: number): string | null => {
+    const countUnits =
+      unitSelectOptions.find((group) => group.group == Dimension.COUNT)?.items ?? [];
+
     return value > 0
-      ? form.values.unit != Unit.UNITS || value % 1 == 0
+      ? !countUnits.includes(form.values.unit) || value % 1 == 0
         ? null
         : 'Precisa ser inteiro'
       : 'Só é possível adicionar quantidade maior que 0';
   };
 
-  const form = useForm<ReagentData>({
+  const validateDate = (date: Date | null) => {
+    if (!date) return 'Selecione uma data';
+    return !isNaN(new Date(date).getTime()) ? null : 'Formato inválido';
+  };
+
+  const form = useForm<Reagent>({
     initialValues: {
       id: null,
+      inDate: new Date(),
+      outDate: null,
+      expireDate: null,
       name: '',
-      unit: Unit.GRAMS,
       amount: 0,
+      unit: Unit.GRAM,
     },
+
+    transformValues: (values) => ({
+      ...values,
+      inDate: values.inDate ? new Date(values.inDate) : null,
+      outDate: values.outDate ? new Date(values.outDate) : null,
+      expireDate: values.expireDate ? new Date(values.expireDate) : null,
+    }),
 
     validate: {
       name: (value) => (value.trim().length > 0 ? null : 'O nome não pode estar vazio'),
       amount: validateAmount,
       unit: (unit) => (unit != null ? null : 'Inserir unidade de medida'),
+      inDate: validateDate,
+      outDate: validateDate,
+      expireDate: validateDate,
     },
   });
 
@@ -79,42 +112,115 @@ export default function ReagentModal({
   }, [selectedReagent]);
 
   return (
-    <Modal title={'Adicionar reagentente'} opened={reagentModalOpened} onClose={closeReagentModal}>
-      {/* Como reaproveitar melhor esse modal pra visualização */}
-      {onShowMode ? <></> : <></>}
+    <Modal
+      title={
+        <strong>
+          {onShowMode
+            ? 'Ficha reagente'
+            : selectedReagent
+              ? 'Editar reagente'
+              : 'Adicionar reagentente'}
+        </strong>
+      }
+      opened={reagentModalOpened}
+      onClose={closeReagentModal}
+    >
+      {onShowMode && selectedReagent ? (
+        <Box
+          style={{
+            padding: '10px',
+          }}
+        >
+          <Grid>
+            <Grid.Col span={{ base: 12 }}>
+              <strong>Nome:</strong> {selectedReagent.name}
+            </Grid.Col>
 
-      <form onSubmit={form.onSubmit(handleSubmit)}>
-        <Grid>
-          <Grid.Col span={{ base: 12 }}>
-            <TextInput label="Nome" {...form.getInputProps('name')}></TextInput>
-          </Grid.Col>
+            <Grid.Col span={{ base: 12 }}>
+              <strong>Quantidade:</strong> {formattedAmount(selectedReagent)}
+            </Grid.Col>
 
-          <Grid.Col span={{ base: 6 }}>
-            <NumberInput
-              label="Quantidade"
-              hideControls
-              {...form.getInputProps('amount')}
-            ></NumberInput>
-          </Grid.Col>
+            <Grid.Col span={{ base: 12 }}>
+              <strong>Entrada:</strong> {formattedDate(selectedReagent.inDate)}
+            </Grid.Col>
 
-          <Grid.Col span={{ base: 6 }}>
-            {/* TODO: Não permitir descelecionar */}
-            <Select
-              allowDeselect={false}
-              label="Unidade"
-              {...form.getInputProps('unit')}
-              data={units}
-            ></Select>
-          </Grid.Col>
-        </Grid>
+            <Grid.Col span={{ base: 12 }}>
+              <strong>Saída:</strong> {formattedDate(selectedReagent.outDate)}
+            </Grid.Col>
 
-        <Group mt="xl" justify="right">
-          <Button type="submit">{selectedReagent ? 'Editar' : 'Adicionar'}</Button>
-          <Button variant="outline" onClick={closeReagentModal}>
-            Cancelar
+            <Grid.Col span={{ base: 12 }}>
+              <strong>Vencimento:</strong> {formattedDate(selectedReagent.expireDate)}
+            </Grid.Col>
+          </Grid>
+        </Box>
+      ) : (
+        <form onSubmit={form.onSubmit(handleSubmit)}>
+          <Grid>
+            <Grid.Col span={{ base: 12 }}>
+              <TextInput label="Nome" {...form.getInputProps('name')}></TextInput>
+            </Grid.Col>
+
+            <Grid.Col span={{ base: 6 }}>
+              <NumberInput
+                label="Quantidade"
+                hideControls
+                {...form.getInputProps('amount')}
+              ></NumberInput>
+            </Grid.Col>
+
+            <Grid.Col span={{ base: 6 }}>
+              <Select
+                allowDeselect={false}
+                label="Unidade"
+                {...form.getInputProps('unit')}
+                data={unitSelectOptions}
+              ></Select>
+            </Grid.Col>
+
+            <Grid.Col span={{ base: 4 }}>
+              <DatePickerInput
+                clearable
+                valueFormat="DD/MM/YYYY"
+                label="Entrada"
+                placeholder="Selecione data"
+                {...form.getInputProps('inDate')}
+              ></DatePickerInput>
+            </Grid.Col>
+
+            <Grid.Col span={{ base: 4 }}>
+              <DatePickerInput
+                clearable
+                valueFormat="DD/MM/YYYY"
+                label="Saída"
+                placeholder="Selecione data"
+                {...form.getInputProps('outDate')}
+              ></DatePickerInput>
+            </Grid.Col>
+
+            <Grid.Col span={{ base: 4 }}>
+              <DatePickerInput
+                clearable
+                valueFormat="DD/MM/YYYY"
+                label="Vencimento"
+                placeholder="Selecione data"
+                {...form.getInputProps('expireDate')}
+              ></DatePickerInput>
+            </Grid.Col>
+          </Grid>
+        </form>
+      )}
+      <Group mt="xl" justify="right">
+        {onShowMode ? (
+          <Button onClick={beginShownReagentEdit}>Editar</Button>
+        ) : (
+          <Button onClick={() => form.onSubmit(handleSubmit)()}>
+            {selectedReagent ? 'Salvar' : 'Adicionar'}
           </Button>
-        </Group>
-      </form>
+        )}
+        <Button variant="outline" onClick={closeReagentModal}>
+          Cancelar
+        </Button>
+      </Group>
     </Modal>
   );
 }

@@ -37,6 +37,9 @@ export default function ReagentsTable({
           <Table.Tr>
             <Table.Th>Reagente</Table.Th>
             <Table.Th>Quantidade</Table.Th>
+            <Table.Th>Entrada</Table.Th>
+            <Table.Th>Saída</Table.Th>
+            <Table.Th>Vencimento</Table.Th>
             <Table.Th>Ações</Table.Th>
           </Table.Tr>
         </Table.Thead>

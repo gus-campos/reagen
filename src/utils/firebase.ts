@@ -2,7 +2,7 @@ import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyCaldii3iEgvnubFwjL93F3YofhPnSERC8',
+  apiKey: process.env.FIREBASE_API_KEY,
   authDomain: 'reagentcontrol.firebaseapp.com',
   projectId: 'reagentcontrol',
   storageBucket: 'reagentcontrol.firebasestorage.app',
