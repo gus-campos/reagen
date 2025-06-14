@@ -54,11 +54,11 @@ export default function ReagentModal({
   handleEditReagent,
   beginShownReagentEdit,
 }: ReagentModalProps) {
-  const handleSubmit = (Reagent: Reagent) => {
+  const handleSubmit = (reagent: Reagent) => {
     closeReagentModal();
 
-    if (selectedReagent) handleEditReagent(Reagent);
-    else handleAddReagent(Reagent);
+    if (selectedReagent) handleEditReagent(reagent);
+    else handleAddReagent(reagent);
     form.reset();
   };
 
@@ -73,15 +73,21 @@ export default function ReagentModal({
       : 'Só é possível adicionar quantidade maior que 0';
   };
 
-  const validateDate = (date: Date | null) => {
-    if (!date) return 'Selecione uma data';
+  const validateDate = (date: Date | null, optional: boolean = false) => {
+    if (!date) {
+      if (optional) return null;
+      else return 'Selecione uma data';
+    }
+
     return !isNaN(new Date(date).getTime()) ? null : 'Formato inválido';
   };
+
+  // Só armazenar datas inteiras sem horas
 
   const form = useForm<Reagent>({
     initialValues: {
       id: null,
-      inDate: new Date(),
+      inDate: null,
       outDate: null,
       expireDate: null,
       name: '',
@@ -100,9 +106,9 @@ export default function ReagentModal({
       name: (value) => (value.trim().length > 0 ? null : 'O nome não pode estar vazio'),
       amount: validateAmount,
       unit: (unit) => (unit != null ? null : 'Inserir unidade de medida'),
-      inDate: validateDate,
-      outDate: validateDate,
-      expireDate: validateDate,
+      inDate: (date: Date | null) => validateDate(date),
+      outDate: (date: Date | null) => validateDate(date, true),
+      expireDate: (date: Date | null) => validateDate(date, true),
     },
   });
 
@@ -154,7 +160,7 @@ export default function ReagentModal({
           </Grid>
         </Box>
       ) : (
-        <form onSubmit={form.onSubmit(handleSubmit)}>
+        <form>
           <Grid>
             <Grid.Col span={{ base: 12 }}>
               <TextInput label="Nome" {...form.getInputProps('name')}></TextInput>

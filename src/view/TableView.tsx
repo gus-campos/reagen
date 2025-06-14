@@ -21,11 +21,12 @@ import ReagentsFilter from '../typings/ReagentsFilter';
 
 const initialFilter: ReagentsFilter = {
   expired: null,
-  dateFieldFiltered: null,
+  dateField: null,
   minDate: null,
   maxDate: null,
   dimension: null,
-  amount: null,
+  minAmount: null,
+  maxAmount: null,
 };
 
 export default function TableView() {
@@ -38,6 +39,10 @@ export default function TableView() {
     collection(db, 'reagents').withConverter(reagentConverter)
   );
   const [filter, setFilter] = useState<ReagentsFilter>(initialFilter);
+
+  const handleChangeFilter = (filter: ReagentsFilter) => {
+    setFilter(filter);
+  };
 
   const beginReagentEdit = (reagent: Reagent) => {
     setSelectedReagent(reagent);
@@ -74,7 +79,7 @@ export default function TableView() {
 
       <Flex>
         {/* Coluna dos filtros */}
-        <FilterOptions></FilterOptions>
+        <FilterOptions filter={filter} handleChangeFilter={handleChangeFilter} />
 
         {/* Coluna dos reagentes */}
         <Box w={'100%'}>
@@ -92,6 +97,7 @@ export default function TableView() {
             <ReagentsTable
               reagents={reagents}
               search={search}
+              filter={filter}
               handleDeleteReagent={handleDeleteReagent}
               beginReagentEdit={beginReagentEdit}
               handleShowReagent={handleShowReagent}

@@ -13,15 +13,22 @@
 
 import { Dimension } from './Unit';
 
-type DateField = 'inDate' | 'outDate' | 'expireDate';
+export enum DateField {
+  IN_DATE = 'Entrada',
+  OUT_DATE = 'Saída',
+  EXPIRE_DATE = 'Vencimento',
+}
 
 export interface ReagentsFilter {
-  expired: boolean | null;
-  dateFieldFiltered: DateField | null; // TODO: Se não for null, mostrar só quem tem tal data definida
+  expired: boolean | null; // TODO
+
+  dateField: DateField | null;
   minDate: Date | null;
   maxDate: Date | null;
+
   dimension: Dimension | null;
-  amount: number | null;
+  minAmount: number | null;
+  maxAmount: number | null;
 }
 
 export default ReagentsFilter;

@@ -2,11 +2,13 @@ function formattedDate(date: Date | null) {
   if (!date) return 'Não informado';
   if (isNaN(date.getTime())) return 'Data inválida';
 
-  const dia = date.getDate().toString().padStart(2, '0');
-  const mes = (date.getMonth() + 1).toString().padStart(2, '0');
-  const ano = date.getFullYear();
+  const options: Intl.DateTimeFormatOptions = {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  };
 
-  return `${dia}/${mes}/${ano}`;
+  return new Intl.DateTimeFormat('pt-BR', options).format(date);
 }
 
 export default formattedDate;

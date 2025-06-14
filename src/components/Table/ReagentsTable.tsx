@@ -1,4 +1,6 @@
 import { Paper, Table } from '@mantine/core';
+import ReagentsFilter from '@/src/typings/ReagentsFilter';
+import filteredReagent from '@/src/utils/filteredReagent';
 import Reagent from '../../typings/Reagent';
 import ReagentsTableRow from './ReagentsTableRow';
 
@@ -18,6 +20,7 @@ const searchMatch = (serched: string, searchTerm: string) => {
 type ReagentsTableProps = {
   reagents: Reagent[];
   search: string;
+  filter: ReagentsFilter;
   handleDeleteReagent: (reagent: Reagent) => void;
   beginReagentEdit: (reagent: Reagent) => void;
   handleShowReagent: (reagent: Reagent) => void;
@@ -26,6 +29,7 @@ type ReagentsTableProps = {
 export default function ReagentsTable({
   reagents,
   search,
+  filter,
   handleDeleteReagent,
   beginReagentEdit,
   handleShowReagent,
@@ -46,7 +50,8 @@ export default function ReagentsTable({
 
         <Table.Tbody>
           {reagents
-            .filter((item) => searchMatch(item.name, search))
+            .filter((reagent) => searchMatch(reagent.name, search))
+            .filter((reagent) => filteredReagent(reagent, filter))
             .map((reagent, key) => (
               <ReagentsTableRow
                 key={key}
