@@ -7,6 +7,7 @@ import Reagent from '../../typings/Reagent';
 import ActionsCollumnButtons from './ActionsCollumnButtons';
 import ActionsRowButtons from './ActionsRowButtons';
 import ReagentsTableRow from './ReagentsTableRow';
+import ReagentsTableThead from './ReagentsTableThead';
 
 // Função auxiliar da busca
 const normalizeString = (str: string) => {
@@ -44,7 +45,6 @@ export default function ReagentsTable({
   handleShowReagent,
 }: ReagentsTableProps) {
   const [collumnsShown, setCollumnsShown] = useState<Record<string, boolean>>(collumnsShownDefault);
-  const [collumnsHovered, setCollumnsHovered] = useState(collumnsNames.map(() => false));
 
   const setCollumnsVisibility = (collumnName: string, visible: boolean) => {
     if (!collumnsNames.includes(collumnName)) throw new Error('Coluna inválida');
@@ -57,33 +57,12 @@ export default function ReagentsTable({
   return (
     <Paper radius="md" withBorder style={{ overflow: 'hidden' }}>
       <Table tabularNums striped highlightOnHover>
-        <Table.Thead>
-          <Table.Tr>
-            {/* Depois, adicionar forma de reexibir colunas ocultas */}
-            {Object.keys(collumnsShown)
-              .filter((collumnsName) => collumnsShown[collumnsName])
-              .map((collumnName, index) => (
-                // TODO: Transformar em componente
-                <Table.Th
-                  key={index}
-                  onMouseEnter={() =>
-                    setCollumnsHovered(
-                      collumnsHovered.map((_, indexHovered) => indexHovered == index)
-                    )
-                  }
-                  onMouseLeave={() => setCollumnsHovered(collumnsHovered.map(() => false))}
-                >
-                  {collumnName}
-                  {!fixedCollumns.includes(collumnName) && (
-                    <ActionsCollumnButtons
-                      ishovered={collumnsHovered[index]}
-                      handleHideCollumn={() => hideCollumn(collumnName)}
-                    />
-                  )}
-                </Table.Th>
-              ))}
-          </Table.Tr>
-        </Table.Thead>
+        <ReagentsTableThead
+          collumnsNames={collumnsNames}
+          fixedCollumns={fixedCollumns}
+          collumnsShown={collumnsShown}
+          hideCollumn={hideCollumn}
+        />
 
         <Table.Tbody>
           {reagents
