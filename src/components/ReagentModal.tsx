@@ -14,6 +14,7 @@ import { DatePickerInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
 import Reagent from '../typings/Reagent';
 import Unit, { Dimension, UnitDimension } from '../typings/Unit';
+import { toNullableLocalDate, validateDate } from '../utils/date';
 import formattedAmount from '../utils/formattedAmount';
 import formattedDate from '../utils/formattedDate';
 
@@ -73,15 +74,6 @@ export default function ReagentModal({
       : 'Só é possível adicionar quantidade maior que 0';
   };
 
-  const validateDate = (date: Date | null, optional: boolean = false) => {
-    if (!date) {
-      if (optional) return null;
-      else return 'Selecione uma data';
-    }
-
-    return !isNaN(new Date(date).getTime()) ? null : 'Formato inválido';
-  };
-
   // Só armazenar datas inteiras sem horas
 
   const form = useForm<Reagent>({
@@ -97,9 +89,9 @@ export default function ReagentModal({
 
     transformValues: (values) => ({
       ...values,
-      inDate: values.inDate ? new Date(values.inDate) : null,
-      outDate: values.outDate ? new Date(values.outDate) : null,
-      expireDate: values.expireDate ? new Date(values.expireDate) : null,
+      inDate: toNullableLocalDate(values.inDate),
+      outDate: toNullableLocalDate(values.outDate),
+      expireDate: toNullableLocalDate(values.expireDate),
     }),
 
     validate: {

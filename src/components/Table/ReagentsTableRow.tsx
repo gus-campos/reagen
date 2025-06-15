@@ -19,7 +19,6 @@ export default function ReagentsTableRow({
   handleShowReagent,
 }: ReagentsTableRowProps) {
   const [isHovered, setIsHovered] = useState(false);
-
   return (
     <Table.Tr onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
       <Table.Td>{reagent.name}</Table.Td>

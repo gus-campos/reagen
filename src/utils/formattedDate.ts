@@ -1,6 +1,6 @@
 function formattedDate(date: Date | null) {
-  if (!date) return 'Não informado';
-  if (isNaN(date.getTime())) return 'Data inválida';
+  if (!date) return '';
+  if (isNaN(date.getTime())) throw new Error('Data inválida');
 
   const options: Intl.DateTimeFormatOptions = {
     day: '2-digit',

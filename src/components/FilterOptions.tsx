@@ -1,22 +1,32 @@
 import { useEffect } from 'react';
-import { Box, Grid, Paper, Select } from '@mantine/core';
+import { Box, Divider, Grid, NumberInput, Paper, Select } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
 import ReagentsFilter, { DateField } from '../typings/ReagentsFilter';
+import { Dimension, DimensionDefaultUnit } from '../typings/Unit';
+import { toNullableLocalDate } from '../utils/date';
+import SearchBar from './Table/SearchBar';
 
 type FilterOptionsProps = {
+  search: string;
+  handleChangeSearch: (search: string) => void;
   filter: ReagentsFilter;
   handleChangeFilter: (filter: ReagentsFilter) => void;
 };
 
-export default function FilterOptions({ filter, handleChangeFilter }: FilterOptionsProps) {
+export default function FilterOptions({
+  search,
+  handleChangeSearch,
+  filter,
+  handleChangeFilter,
+}: FilterOptionsProps) {
   const form = useForm<ReagentsFilter>({
     initialValues: filter,
 
     transformValues: (values) => ({
       ...values,
-      minDate: values.minDate ? new Date(values.minDate) : null,
-      maxDate: values.maxDate ? new Date(values.maxDate) : null,
+      minDate: toNullableLocalDate(values.minDate),
+      maxDate: toNullableLocalDate(values.maxDate),
     }),
   });
 
@@ -32,31 +42,27 @@ export default function FilterOptions({ filter, handleChangeFilter }: FilterOpti
     return () => clearTimeout(timer);
   }, [form.values]);
 
+  const defaultUnit = form.values.dimension ? DimensionDefaultUnit[form.values.dimension] : null;
+
+  const parenthesizedUnit = defaultUnit ? `(${defaultUnit})` : '';
+  const suffixUnit = defaultUnit ? ' ' + defaultUnit : '';
+
   return (
     <Box style={{ padding: '0 10px 0 0' }}>
       <Paper radius="md" withBorder style={{ padding: '10px' }}>
-        {/*  */}
+        <h3>Busca</h3>
+
+        <SearchBar search={search} setSearch={handleChangeSearch} />
+
+        <Divider my="md" />
+
         <h3>Filtros</h3>
 
         {/* TODO: usar checkbox e radio select do mantine!!  */}
         <form>
-          <Grid>
-            {/* <Grid.Col span={{ base: 12 }}>
-            <strong>Nome:</strong> {selectedReagent.name}
-            </Grid.Col>
-            
-            <Grid.Col span={{ base: 12 }}>
-            <strong>Quantidade:</strong> {formattedAmount(selectedReagent)}
-            </Grid.Col>
-            
-            <Grid.Col span={{ base: 12 }}>
-            <strong>Entrada:</strong> {formattedDate(selectedReagent.inDate)}
-            </Grid.Col>
-            
-            <Grid.Col span={{ base: 12 }}>
-            <strong>Saída:</strong> {formattedDate(selectedReagent.outDate)}
-            </Grid.Col> */}
+          <Divider my="md" label="Data" />
 
+          <Grid>
             <Grid.Col span={{ base: 12 }}>
               <Select
                 label="Campo de data"
@@ -69,6 +75,7 @@ export default function FilterOptions({ filter, handleChangeFilter }: FilterOpti
             <Grid.Col span={{ base: 6 }}>
               <DatePickerInput
                 clearable
+                disabled={!form.values.dateField}
                 valueFormat="DD/MM/YYYY"
                 label="A partir de"
                 placeholder="Selecione"
@@ -79,11 +86,47 @@ export default function FilterOptions({ filter, handleChangeFilter }: FilterOpti
             <Grid.Col span={{ base: 6 }}>
               <DatePickerInput
                 clearable
+                disabled={!form.values.dateField}
                 valueFormat="DD/MM/YYYY"
                 label="Até"
                 placeholder="Selecione"
                 {...form.getInputProps('maxDate')}
               ></DatePickerInput>
+            </Grid.Col>
+          </Grid>
+
+          <Divider my="md" label="Quantidade" />
+
+          <Grid>
+            <Grid.Col span={{ base: 12 }}>
+              <Select
+                label="Dimensão"
+                placeholder="Selecione a dimensão"
+                data={Object.values(Dimension)}
+                {...form.getInputProps('dimension')}
+              ></Select>
+            </Grid.Col>
+
+            <Grid.Col span={{ base: 6 }}>
+              <NumberInput
+                hideControls
+                label="A partir de"
+                disabled={!form.values.dimension}
+                suffix={suffixUnit}
+                placeholder={'Digite a quantidade ' + parenthesizedUnit}
+                {...form.getInputProps('minAmount')}
+              ></NumberInput>
+            </Grid.Col>
+
+            <Grid.Col span={{ base: 6 }}>
+              <NumberInput
+                hideControls
+                label="Até"
+                disabled={!form.values.dimension}
+                suffix={suffixUnit}
+                placeholder={'Digite a quantidade ' + parenthesizedUnit}
+                {...form.getInputProps('maxAmount')}
+              ></NumberInput>
             </Grid.Col>
           </Grid>
         </form>

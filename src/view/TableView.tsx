@@ -34,11 +34,15 @@ export default function TableView() {
     useDisclosure(false);
   const [selectedReagent, setSelectedReagent] = useState<Reagent | null>(null);
   const [onShowMode, { open: activateShowMode, close: deactivateShowMode }] = useDisclosure(false);
-  const [search, setSearch] = useState('');
   const [reagents, loadingReagents, errorLoadingReagents] = useCollectionData<Reagent>(
     collection(db, 'reagents').withConverter(reagentConverter)
   );
+  const [search, setSearch] = useState('');
   const [filter, setFilter] = useState<ReagentsFilter>(initialFilter);
+
+  const handleChangeSearch = (search: string) => {
+    setSearch(search);
+  };
 
   const handleChangeFilter = (filter: ReagentsFilter) => {
     setFilter(filter);
@@ -79,13 +83,15 @@ export default function TableView() {
 
       <Flex>
         {/* Coluna dos filtros */}
-        <FilterOptions filter={filter} handleChangeFilter={handleChangeFilter} />
+        <FilterOptions
+          search={search}
+          handleChangeSearch={handleChangeSearch}
+          filter={filter}
+          handleChangeFilter={handleChangeFilter}
+        />
 
         {/* Coluna dos reagentes */}
         <Box w={'100%'}>
-          {/* Search bar */}
-          <SearchBar search={search} setSearch={setSearch} />
-
           {/* Table */}
           {errorLoadingReagents ? (
             <p>ERRO AO CARREGAR DADOS!</p>

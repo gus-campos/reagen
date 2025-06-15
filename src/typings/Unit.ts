@@ -15,6 +15,13 @@ export enum Dimension {
   MATTER = 'Quantidade de matéria',
 }
 
+export const DimensionDefaultUnit: Record<Dimension, Unit> = {
+  [Dimension.MASS]: Unit.GRAM,
+  [Dimension.VOLUME]: Unit.MILLILITER,
+  [Dimension.COUNT]: Unit.UNITS,
+  [Dimension.MATTER]: Unit.MOL,
+};
+
 export const UnitDimension: Record<Unit, Dimension> = {
   [Unit.KILOGRAM]: Dimension.MASS,
   [Unit.GRAM]: Dimension.MASS,
