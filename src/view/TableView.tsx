@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { collection } from 'firebase/firestore';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
-import { Box, Button, Flex, Paper } from '@mantine/core';
+import { Box, Button, Grid } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import ReagentsTable from '@/src/components/Table/ReagentsTable';
 import {
@@ -16,7 +16,6 @@ import Reagent from '@/src/typings/Reagent';
 import { db } from '@/src/utils/firebase';
 import FilterOptions from '../components/FilterOptions';
 import ReagentModal from '../components/ReagentModal';
-import SearchBar from '../components/Table/SearchBar';
 import ReagentsFilter from '../typings/ReagentsFilter';
 
 const initialFilter: ReagentsFilter = {
@@ -81,36 +80,40 @@ export default function TableView() {
 
       <h1>Reagentes</h1>
 
-      <Flex>
+      <Grid>
         {/* Coluna dos filtros */}
-        <FilterOptions
-          search={search}
-          handleChangeSearch={handleChangeSearch}
-          filter={filter}
-          handleChangeFilter={handleChangeFilter}
-        />
+        <Grid.Col span={{ base: 3 }}>
+          <FilterOptions
+            search={search}
+            handleChangeSearch={handleChangeSearch}
+            filter={filter}
+            handleChangeFilter={handleChangeFilter}
+          />
+        </Grid.Col>
 
         {/* Coluna dos reagentes */}
-        <Box w={'100%'}>
-          {/* Table */}
-          {errorLoadingReagents ? (
-            <p>ERRO AO CARREGAR DADOS!</p>
-          ) : loadingReagents ? (
-            <p>CARREGANDO DADOS...</p>
-          ) : !reagents ? (
-            <p>NENHUM DADO ENCONTRADO</p>
-          ) : (
-            <ReagentsTable
-              reagents={reagents}
-              search={search}
-              filter={filter}
-              handleDeleteReagent={handleDeleteReagent}
-              beginReagentEdit={beginReagentEdit}
-              handleShowReagent={handleShowReagent}
-            />
-          )}
-        </Box>
-      </Flex>
+        <Grid.Col span={{ base: 9 }}>
+          <Box w={'100%'}>
+            {/* Table */}
+            {errorLoadingReagents ? (
+              <p>ERRO AO CARREGAR DADOS!</p>
+            ) : loadingReagents ? (
+              <p>CARREGANDO DADOS...</p>
+            ) : !reagents ? (
+              <p>NENHUM DADO ENCONTRADO</p>
+            ) : (
+              <ReagentsTable
+                reagents={reagents}
+                search={search}
+                filter={filter}
+                handleDeleteReagent={handleDeleteReagent}
+                beginReagentEdit={beginReagentEdit}
+                handleShowReagent={handleShowReagent}
+              />
+            )}
+          </Box>
+        </Grid.Col>
+      </Grid>
 
       {/* Add button */}
       <Button

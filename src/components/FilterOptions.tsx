@@ -5,7 +5,7 @@ import { useForm } from '@mantine/form';
 import ReagentsFilter, { DateField } from '../typings/ReagentsFilter';
 import { Dimension, DimensionDefaultUnit } from '../typings/Unit';
 import { toNullableLocalDate } from '../utils/date';
-import SearchBar from './Table/SearchBar';
+import SearchBar from './SearchBar';
 
 type FilterOptionsProps = {
   search: string;

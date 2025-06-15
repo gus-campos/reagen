@@ -1,6 +1,7 @@
 import Reagent from '../typings/Reagent';
 import ReagentsFilter, { DateField } from '../typings/ReagentsFilter';
-import { DimensionDefaultUnit, UnitDimension, UnitMultiplier } from '../typings/Unit';
+import { UnitDimension } from '../typings/Unit';
+import normalizedAmount from './normalizedAmount';
 
 export function filteredReagent(reagent: Reagent, filter: ReagentsFilter): boolean {
   return filteredDate(reagent, filter) && filteredAmount(reagent, filter);
@@ -28,17 +29,10 @@ function filteredAmount(reagent: Reagent, filter: ReagentsFilter): boolean {
   if (!filter.dimension) return true;
 
   const reagentDimension = UnitDimension[reagent.unit];
-
   if (reagentDimension !== filter.dimension) return false;
 
-  const normalizedAmount =
-    (reagent.amount * UnitMultiplier[reagent.unit]) /
-    UnitMultiplier[DimensionDefaultUnit[filter.dimension]];
-
-  console.log(reagent.amount, normalizedAmount);
-
-  if (filter.minAmount && normalizedAmount < filter.minAmount) return false;
-  if (filter.maxAmount && normalizedAmount > filter.maxAmount) return false;
+  if (filter.minAmount && normalizedAmount(reagent) < filter.minAmount) return false;
+  if (filter.maxAmount && normalizedAmount(reagent) > filter.maxAmount) return false;
 
   return true;
 }

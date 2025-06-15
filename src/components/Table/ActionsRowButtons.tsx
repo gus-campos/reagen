@@ -1,19 +1,19 @@
 import { IconEdit, IconFileText, IconTrash } from '@tabler/icons-react';
 import { ActionIcon } from '@mantine/core';
 
-type ActionsButtonsProps = {
+type ActionsRowButtonsProps = {
   ishovered: boolean;
   handleDeleteReagent: () => void;
   beginReagentEdit: () => void;
   handleShowReagent: () => void;
 };
 
-export default function ActionsButtons({
+export default function ActionsRowButtons({
   ishovered,
   handleDeleteReagent,
   beginReagentEdit,
   handleShowReagent,
-}: ActionsButtonsProps) {
+}: ActionsRowButtonsProps) {
   return (
     <>
       <ActionIcon variant="transparent" opacity={ishovered ? 1 : 0} onClick={handleDeleteReagent}>
