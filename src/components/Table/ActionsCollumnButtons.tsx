@@ -1,19 +1,23 @@
-import { IconEye } from '@tabler/icons-react';
+import { IconEye, IconSortAscending2, IconSortDescending2 } from '@tabler/icons-react';
 import { ActionIcon } from '@mantine/core';
 
 type ActionsCollumnButtonsProps = {
   ishovered: boolean;
-  handleHideCollumn: () => void;
+  onHandleHideCollumn: () => void;
 };
 
-export default function ActionsCollumnButtons({
+export function ActionsCollumnButtons({
   ishovered,
-  handleHideCollumn,
+  onHandleHideCollumn,
 }: ActionsCollumnButtonsProps) {
   return (
     <>
-      <ActionIcon variant="transparent" opacity={ishovered ? 1 : 0} onClick={handleHideCollumn}>
+      <ActionIcon variant="transparent" opacity={ishovered ? 1 : 0} onClick={onHandleHideCollumn}>
         <IconEye />
+      </ActionIcon>
+
+      <ActionIcon variant="transparent" opacity={ishovered ? 1 : 0}>
+        <IconSortDescending2 />
       </ActionIcon>
     </>
   );

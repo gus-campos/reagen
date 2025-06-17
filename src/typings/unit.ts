@@ -15,6 +15,23 @@ export enum Dimension {
   MATTER = 'Quantidade de matéria',
 }
 
+// TODO: Mudar enum pra PascalCase
+// Se for salvar conteúdo, usar SCREAMING_CASE
+// Ver doc oficial do typescript
+
+// Nome de arquivo -> Componente PascalCase,
+// outros camelCase,
+// node geralmente kebab-case (evita problema em SOs diferentes)
+
+// Divisão em features ou modules -> dentro as divisões
+
+// typing -> models
+
+// Diminuir dependência entre coisas específicas do next
+// Fazer pasta page com componente page e exportar em app
+// exemplo: página e rotas
+// usar wrapper e prop pra pequenas diferenças
+
 export const DimensionDefaultUnit: Record<Dimension, Unit> = {
   [Dimension.MASS]: Unit.GRAM,
   [Dimension.VOLUME]: Unit.MILLILITER,

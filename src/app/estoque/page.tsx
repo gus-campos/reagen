@@ -1,14 +1,3 @@
-import { Box } from '@mantine/core';
-import TableView from '@/src/view/TableView';
+import { StockPage } from '@/src/pages/StockPage';
 
-export default function EstoquePage() {
-  return (
-    <Box
-      style={{
-        padding: '10px',
-      }}
-    >
-      <TableView />
-    </Box>
-  );
-}
+export default StockPage;

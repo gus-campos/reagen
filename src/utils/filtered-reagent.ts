@@ -1,7 +1,7 @@
-import Reagent from '../typings/Reagent';
-import ReagentsFilter, { DateField } from '../typings/ReagentsFilter';
-import { UnitDimension } from '../typings/Unit';
-import normalizedAmount from './normalizedAmount';
+import { Reagent } from '../typings/reagent';
+import { DateField, ReagentsFilter } from '../typings/reagents-filter';
+import { UnitDimension } from '../typings/unit';
+import { normalizedAmount } from './normalized-amount';
 
 export function filteredReagent(reagent: Reagent, filter: ReagentsFilter): boolean {
   return filteredDate(reagent, filter) && filteredAmount(reagent, filter);
@@ -36,5 +36,3 @@ function filteredAmount(reagent: Reagent, filter: ReagentsFilter): boolean {
 
   return true;
 }
-
-export default filteredReagent;

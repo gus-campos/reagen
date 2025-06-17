@@ -10,7 +10,7 @@ type ReagentShellProps = {
   children: ReactNode[];
 };
 
-export default function ReagentShell({ children }: ReagentShellProps) {
+export function ReagentShell({ children }: ReagentShellProps) {
   const [opened, { toggle }] = useDisclosure();
   const router = useRouter();
 

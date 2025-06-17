@@ -1,6 +1,6 @@
-import Unit from './Unit';
+import Unit from './unit';
 
-interface Reagent {
+export interface Reagent {
   id: string | null;
   name: string;
   amount: number;
@@ -9,5 +9,3 @@ interface Reagent {
   outDate: Date | null;
   expireDate: Date | null;
 }
-
-export default Reagent;

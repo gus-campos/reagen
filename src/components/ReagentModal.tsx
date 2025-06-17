@@ -12,11 +12,11 @@ import {
 } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
-import Reagent from '../typings/Reagent';
-import Unit, { Dimension, UnitDimension } from '../typings/Unit';
+import { Reagent } from '../typings/reagent';
+import Unit, { Dimension, UnitDimension } from '../typings/unit';
 import { toNullableLocalDate, validateDate } from '../utils/date';
-import formattedAmount from '../utils/formattedAmount';
-import formattedDate from '../utils/formattedDate';
+import { formattedAmount } from '../utils/formatted-amount';
+import { formattedDate } from '../utils/formatted-date';
 
 // Criando opções agrupadas de unidades de medida
 const unitSelectOptions: ComboboxItemGroup[] = [];
@@ -37,29 +37,29 @@ for (const dimension of Object.values(Dimension)) {
 }
 
 type ReagentModalProps = {
-  onShowMode: boolean;
+  showMode: boolean;
   selectedReagent: Reagent | null;
   reagentModalOpened: boolean;
-  closeReagentModal: () => void;
-  handleAddReagent: (reagent: Reagent) => void;
-  handleEditReagent: (selectedReagent: Reagent) => void;
-  beginShownReagentEdit: () => void;
+  onCloseReagentModal: () => void;
+  onAddReagent: (reagent: Reagent) => void;
+  onEditReagent: (selectedReagent: Reagent) => void;
+  onBeginShownReagentEdit: () => void;
 };
 
-export default function ReagentModal({
-  onShowMode,
+export function ReagentModal({
+  showMode,
   selectedReagent,
   reagentModalOpened,
-  closeReagentModal,
-  handleAddReagent,
-  handleEditReagent,
-  beginShownReagentEdit,
+  onCloseReagentModal,
+  onAddReagent,
+  onEditReagent,
+  onBeginShownReagentEdit,
 }: ReagentModalProps) {
   const handleSubmit = (reagent: Reagent) => {
-    closeReagentModal();
+    onCloseReagentModal();
 
-    if (selectedReagent) handleEditReagent(reagent);
-    else handleAddReagent(reagent);
+    if (selectedReagent) onEditReagent(reagent);
+    else onAddReagent(reagent);
     form.reset();
   };
 
@@ -113,7 +113,7 @@ export default function ReagentModal({
     <Modal
       title={
         <strong>
-          {onShowMode
+          {showMode
             ? 'Ficha reagente'
             : selectedReagent
               ? 'Editar reagente'
@@ -121,9 +121,9 @@ export default function ReagentModal({
         </strong>
       }
       opened={reagentModalOpened}
-      onClose={closeReagentModal}
+      onClose={onCloseReagentModal}
     >
-      {onShowMode && selectedReagent ? (
+      {showMode && selectedReagent ? (
         <Box
           style={{
             padding: '10px',
@@ -208,14 +208,14 @@ export default function ReagentModal({
         </form>
       )}
       <Group mt="xl" justify="right">
-        {onShowMode ? (
-          <Button onClick={beginShownReagentEdit}>Editar</Button>
+        {showMode ? (
+          <Button onClick={onBeginShownReagentEdit}>Editar</Button>
         ) : (
           <Button onClick={() => form.onSubmit(handleSubmit)()}>
             {selectedReagent ? 'Salvar' : 'Adicionar'}
           </Button>
         )}
-        <Button variant="outline" onClick={closeReagentModal}>
+        <Button variant="outline" onClick={onCloseReagentModal}>
           Cancelar
         </Button>
       </Group>

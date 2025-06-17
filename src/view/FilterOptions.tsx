@@ -2,23 +2,23 @@ import { useEffect } from 'react';
 import { Box, Divider, Grid, NumberInput, Paper, Select } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
-import ReagentsFilter, { DateField } from '../typings/ReagentsFilter';
-import { Dimension, DimensionDefaultUnit } from '../typings/Unit';
+import { SearchBar } from '../components/SearchBar';
+import { DateField, ReagentsFilter } from '../typings/reagents-filter';
+import { Dimension, DimensionDefaultUnit } from '../typings/unit';
 import { toNullableLocalDate } from '../utils/date';
-import SearchBar from './SearchBar';
 
 type FilterOptionsProps = {
   search: string;
-  handleChangeSearch: (search: string) => void;
   filter: ReagentsFilter;
-  handleChangeFilter: (filter: ReagentsFilter) => void;
+  onSearchChange: (search: string) => void;
+  onFilterChange: (filter: ReagentsFilter) => void;
 };
 
-export default function FilterOptions({
+export function FilterOptions({
   search,
-  handleChangeSearch,
   filter,
-  handleChangeFilter,
+  onSearchChange,
+  onFilterChange,
 }: FilterOptionsProps) {
   const form = useForm<ReagentsFilter>({
     initialValues: filter,
@@ -35,7 +35,7 @@ export default function FilterOptions({
   useEffect(() => {
     const timer = setTimeout(() => {
       if (form.isTouched()) {
-        handleChangeFilter(form.getTransformedValues());
+        onFilterChange(form.getTransformedValues());
       }
     }, 500);
 
@@ -52,7 +52,7 @@ export default function FilterOptions({
       <Paper radius="md" withBorder style={{ padding: '10px' }}>
         <h3>Busca</h3>
 
-        <SearchBar search={search} setSearch={handleChangeSearch} />
+        <SearchBar search={search} setSearch={onSearchChange} />
 
         <Divider my="md" />
 

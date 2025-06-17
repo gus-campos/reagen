@@ -6,7 +6,7 @@ import {
   FirestoreDataConverter,
   updateDoc,
 } from 'firebase/firestore';
-import Reagent from '@/src/typings/Reagent';
+import { Reagent } from '@/src/typings/reagent';
 import { db } from '@/src/utils/firebase';
 
 export const reagentConverter: FirestoreDataConverter<Reagent> = {
@@ -29,7 +29,7 @@ export const reagentConverter: FirestoreDataConverter<Reagent> = {
   },
 };
 
-export async function handleDeleteReagent(reagent: Reagent) {
+export async function uploadDeleteReagent(reagent: Reagent) {
   if (!reagent.id) {
     console.error('ID do documento não encontrado');
     return;
@@ -38,7 +38,7 @@ export async function handleDeleteReagent(reagent: Reagent) {
   await deleteDoc(docRef);
 }
 
-export async function handleAddReagent(reagent: Reagent) {
+export async function uploadAddReagent(reagent: Reagent) {
   try {
     const docRef = await addDoc(collection(db, 'reagents'), reagent);
   } catch (e) {
@@ -46,11 +46,12 @@ export async function handleAddReagent(reagent: Reagent) {
   }
 }
 
-export async function handleEditReagent(reagent: Reagent) {
+export async function uploadEditReagent(reagent: Reagent) {
   if (!reagent.id) {
     console.error('ID do documento não encontrado');
     return;
   }
-  const docRef = doc(db, 'reagents', reagent.id);
-  await updateDoc(docRef, reagent);
+  const { id, ...updateData } = reagent;
+  const docRef = doc(db, 'reagents', id);
+  await updateDoc(docRef, updateData);
 }

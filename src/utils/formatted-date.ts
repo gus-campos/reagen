@@ -1,4 +1,4 @@
-function formattedDate(date: Date | null) {
+export function formattedDate(date: Date | null) {
   if (!date) return '';
   if (isNaN(date.getTime())) throw new Error('Data inválida');
 
@@ -10,5 +10,3 @@ function formattedDate(date: Date | null) {
 
   return new Intl.DateTimeFormat('pt-BR', options).format(date);
 }
-
-export default formattedDate;

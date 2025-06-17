@@ -1,13 +1,10 @@
 import { useState } from 'react';
-import { IconEye } from '@tabler/icons-react';
 import { Paper, Table } from '@mantine/core';
-import ReagentsFilter from '@/src/typings/ReagentsFilter';
-import filteredReagent from '@/src/utils/filteredReagent';
-import Reagent from '../../typings/Reagent';
-import ActionsCollumnButtons from './ActionsCollumnButtons';
-import ActionsRowButtons from './ActionsRowButtons';
-import ReagentsTableRow from './ReagentsTableRow';
-import ReagentsTableThead from './ReagentsTableThead';
+import { ReagentsFilter } from '@/src/typings/reagents-filter';
+import { filteredReagent } from '@/src/utils/filtered-reagent';
+import { Reagent } from '../../typings/reagent';
+import { ReagentsTableRow } from './ReagentsTableRow';
+import { ReagentsTableThead } from './ReagentsTableThead';
 
 // Função auxiliar da busca
 const normalizeString = (str: string) => {
@@ -31,51 +28,52 @@ type ReagentsTableProps = {
   reagents: Reagent[];
   search: string;
   filter: ReagentsFilter;
-  handleDeleteReagent: (reagent: Reagent) => void;
-  beginReagentEdit: (reagent: Reagent) => void;
-  handleShowReagent: (reagent: Reagent) => void;
 };
 
-export default function ReagentsTable({
-  reagents,
-  search,
-  filter,
-  handleDeleteReagent,
-  beginReagentEdit,
-  handleShowReagent,
-}: ReagentsTableProps) {
+export function ReagentsTable({ reagents, search, filter }: ReagentsTableProps) {
   const [collumnsShown, setCollumnsShown] = useState<Record<string, boolean>>(collumnsShownDefault);
+  const [sortedByColumn, setSortedByColumn] = useState<string | null>(fixedCollumns[0]);
+  const [sortedAscending, setSortedAscending] = useState(true);
 
   const setCollumnsVisibility = (collumnName: string, visible: boolean) => {
     if (!collumnsNames.includes(collumnName)) throw new Error('Coluna inválida');
     setCollumnsShown({ ...collumnsShown, [collumnName]: visible });
   };
 
-  const hideCollumn = (collumnName: string) => setCollumnsVisibility(collumnName, false);
-  const showCollumn = (collumnName: string) => setCollumnsVisibility(collumnName, true);
+  const handleHideCollumn = (collumnName: string) => setCollumnsVisibility(collumnName, false);
+  const handleShowCollumn = (collumnName: string) => setCollumnsVisibility(collumnName, true);
+
+  const handleSortingSelection = (sortedByColumn: string | null, ascending: boolean = true) => {
+    setSortedByColumn(sortedByColumn);
+    setSortedAscending(ascending);
+  };
+
+  const sortReagents = (reagentA: Reagent, reagentB: Reagent) => {
+    return 1;
+  };
 
   return (
     <Paper radius="md" withBorder style={{ overflow: 'hidden' }}>
       <Table tabularNums striped highlightOnHover>
         <ReagentsTableThead
-          collumnsNames={collumnsNames}
           fixedCollumns={fixedCollumns}
           collumnsShown={collumnsShown}
-          hideCollumn={hideCollumn}
+          onHideCollumn={handleHideCollumn}
         />
 
         <Table.Tbody>
           {reagents
             .filter((reagent) => searchMatch(reagent.name, search))
             .filter((reagent) => filteredReagent(reagent, filter))
+            .toSorted((reagentA, reagentB) => sortReagents(reagentA, reagentB))
             .map((reagent, key) => (
               <ReagentsTableRow
                 key={key}
                 reagent={reagent}
                 collumnsShown={collumnsShown}
-                handleDeleteReagent={() => handleDeleteReagent(reagent)}
-                beginReagentEdit={() => beginReagentEdit(reagent)}
-                handleShowReagent={() => handleShowReagent(reagent)}
+                sortedByColumn={sortedByColumn}
+                sortedAscending={sortedAscending}
+                onSortingSelection={handleSortingSelection}
               />
             ))}
         </Table.Tbody>

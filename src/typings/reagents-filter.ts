@@ -11,7 +11,7 @@
 // (x)Massa ()Volume ()Mols
 // De 10g até 2Kg
 
-import { Dimension } from './Unit';
+import { Dimension } from './unit';
 
 export enum DateField {
   IN_DATE = 'Entrada',
@@ -32,6 +32,3 @@ export interface ReagentsFilter {
 }
 
 export default ReagentsFilter;
-
-
-

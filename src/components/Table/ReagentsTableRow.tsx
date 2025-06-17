@@ -1,26 +1,19 @@
 import { useState } from 'react';
 import { Table } from '@mantine/core';
-import Reagent from '@/src/typings/Reagent';
-import formattedAmount from '@/src/utils/formattedAmount';
-import formattedDate from '@/src/utils/formattedDate';
-import ActionsRowButtons from './ActionsRowButtons';
-
+import { Reagent } from '@/src/typings/reagent';
+import { formattedAmount } from '@/src/utils/formatted-amount';
+import { formattedDate } from '@/src/utils/formatted-date';
+import { ActionsRowButtons } from './ActionsRowButtons';
 
 type ReagentsTableRowProps = {
   reagent: Reagent;
   collumnsShown: Record<string, boolean>;
-  handleDeleteReagent: () => void;
-  beginReagentEdit: () => void;
-  handleShowReagent: () => void;
+  sortedByColumn: string | null;
+  sortedAscending: boolean;
+  onSortingSelection: (sortedByColumn: string, sortedAscending: boolean) => void;
 };
 
-export default function ReagentsTableRow({
-  reagent,
-  collumnsShown,
-  handleDeleteReagent,
-  beginReagentEdit,
-  handleShowReagent,
-}: ReagentsTableRowProps) {
+export function ReagentsTableRow({ reagent, collumnsShown }: ReagentsTableRowProps) {
   const [isHovered, setIsHovered] = useState(false);
   return (
     <Table.Tr onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
@@ -32,12 +25,7 @@ export default function ReagentsTableRow({
 
       {collumnsShown['Reagente'] && (
         <Table.Td>
-          <ActionsRowButtons
-            ishovered={isHovered}
-            handleDeleteReagent={handleDeleteReagent}
-            beginReagentEdit={beginReagentEdit}
-            handleShowReagent={handleShowReagent}
-          />
+          <ActionsRowButtons ishovered={isHovered} reagent={reagent} />
         </Table.Td>
       )}
     </Table.Tr>

@@ -5,7 +5,7 @@ type SearchBarProps = {
   setSearch: (search: string) => void;
 };
 
-export default function SearchBar({ search, setSearch }: SearchBarProps) {
+export function SearchBar({ search, setSearch }: SearchBarProps) {
   return (
     // TODO: Tirar da table, colocar ícone de busca à direita
     <Box style={{ padding: '0 0 10px 0' }}>

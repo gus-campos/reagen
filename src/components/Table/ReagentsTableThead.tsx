@@ -1,47 +1,44 @@
 import { useState } from 'react';
-import { Table } from '@mantine/core';
-import ActionsCollumnButtons from './ActionsCollumnButtons';
+import { Group, Table, Text } from '@mantine/core';
+import { ActionsCollumnButtons } from './ActionsCollumnButtons';
 
 type ReagentsTableTheadProps = {
-  collumnsNames: string[];
   fixedCollumns: string[];
   collumnsShown: Record<string, boolean>;
-  hideCollumn: (collumnName: string) => void;
+  onHideCollumn: (collumnName: string) => void;
 };
 
 export function ReagentsTableThead({
-  collumnsNames,
   fixedCollumns,
   collumnsShown,
-  hideCollumn,
+  onHideCollumn,
 }: ReagentsTableTheadProps) {
-  const [collumnsHovered, setCollumnsHovered] = useState(collumnsNames.map(() => false));
+  const [collumnHovered, setCollumnHovered] = useState<string | null>(null);
 
   return (
     <Table.Thead>
       <Table.Tr>
+        {/* Para todas as colunas que devem ser exibidas, incluir um nome no cabeçalho, e botões, se for o caso */}
         {Object.keys(collumnsShown)
           .filter((collumnsName) => collumnsShown[collumnsName])
           .map((collumnName, index) => (
             <Table.Th
               key={index}
-              onMouseEnter={() =>
-                setCollumnsHovered(collumnsHovered.map((_, indexHovered) => indexHovered == index))
-              }
-              onMouseLeave={() => setCollumnsHovered(collumnsHovered.map(() => false))}
+              onMouseEnter={() => setCollumnHovered(collumnName)}
+              onMouseLeave={() => setCollumnHovered(null)}
             >
-              {collumnName}
-              {!fixedCollumns.includes(collumnName) && (
-                <ActionsCollumnButtons
-                  ishovered={collumnsHovered[index]}
-                  handleHideCollumn={() => hideCollumn(collumnName)}
-                />
-              )}
+              <Group gap="xs" justify="flex-start">
+                <Text>{collumnName}</Text>
+                {!fixedCollumns.includes(collumnName) && (
+                  <ActionsCollumnButtons
+                    ishovered={collumnName == collumnHovered}
+                    onHandleHideCollumn={() => onHideCollumn(collumnName)}
+                  />
+                )}
+              </Group>
             </Table.Th>
           ))}
       </Table.Tr>
     </Table.Thead>
   );
 }
-
-export default ReagentsTableThead;
