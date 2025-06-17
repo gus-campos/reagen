@@ -5,7 +5,7 @@ export default function EstoquePage() {
   return (
     <Box
       style={{
-        padding: '100px',
+        padding: '10px',
       }}
     >
       <TableView />

@@ -58,9 +58,8 @@ export default function FilterOptions({
 
         <h3>Filtros</h3>
 
-        {/* TODO: usar checkbox e radio select do mantine!!  */}
         <form>
-          <Divider my="md" label="Data" />
+          <Divider my="sm" label="Por data" />
 
           <Grid>
             <Grid.Col span={{ base: 12 }}>
@@ -95,7 +94,7 @@ export default function FilterOptions({
             </Grid.Col>
           </Grid>
 
-          <Divider my="md" label="Quantidade" />
+          <Divider my="sm" label="Por quantidade" />
 
           <Grid>
             <Grid.Col span={{ base: 12 }}>

@@ -117,7 +117,7 @@ export default function TableView() {
 
       {/* Add button */}
       <Button
-        style={{ position: 'fixed', bottom: '20px', right: '20px' }}
+        style={{ position: 'fixed', bottom: '30px', right: '30px' }}
         onClick={beginReagentAddition}
       >
         +

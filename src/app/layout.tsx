@@ -3,17 +3,21 @@ import '@mantine/dates/styles.css';
 
 //import './globals.css';
 
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { ColorSchemeScript, mantineHtmlProps, MantineProvider } from '@mantine/core';
 import { theme } from '../../theme';
-import SideDrawer from '../components/SideDrawer';
+import ReagentShell from '../view/ReagentsShell';
 
 export const metadata = {
   title: 'Mantine Next.js template',
   description: 'I am using Mantine with Next.js!',
 };
 
-export default function RootLayout({ children }: { children: any }) {
+type RootLayoutProps = {
+  children: ReactNode[];
+};
+
+export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en" {...mantineHtmlProps}>
       <head>
@@ -26,8 +30,7 @@ export default function RootLayout({ children }: { children: any }) {
       </head>
       <body>
         <MantineProvider theme={theme}>
-          <SideDrawer></SideDrawer>
-          {children}
+          <ReagentShell>{children}</ReagentShell>
         </MantineProvider>
       </body>
     </html>

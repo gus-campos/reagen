@@ -11,5 +11,3 @@ interface Reagent {
 }
 
 export default Reagent;
-
-// TODO: Verificar se unidade está listada
