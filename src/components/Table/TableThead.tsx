@@ -1,38 +1,34 @@
 import { useState } from 'react';
 import { Group, Table, Text } from '@mantine/core';
 import { ActionsCollumnButtons } from './ActionsCollumnButtons';
+import { TableCollumn } from './DataTable';
 
-type ReagentsTableTheadProps = {
-  fixedCollumns: string[];
-  collumnsShown: Record<string, boolean>;
+type ReagentsTableTheadProps<T> = {
+  collumns: TableCollumn<T>[];
   onHideCollumn: (collumnName: string) => void;
 };
 
-export function ReagentsTableThead({
-  fixedCollumns,
-  collumnsShown,
-  onHideCollumn,
-}: ReagentsTableTheadProps) {
+export function TableThead<T>({ collumns, onHideCollumn }: ReagentsTableTheadProps<T>) {
   const [collumnHovered, setCollumnHovered] = useState<string | null>(null);
 
   return (
     <Table.Thead>
       <Table.Tr>
         {/* Para todas as colunas que devem ser exibidas, incluir um nome no cabeçalho, e botões, se for o caso */}
-        {Object.keys(collumnsShown)
-          .filter((collumnsName) => collumnsShown[collumnsName])
-          .map((collumnName, index) => (
+        {collumns
+          .filter((collumn) => !collumn.hidden)
+          .map((collumn, index) => (
             <Table.Th
               key={index}
-              onMouseEnter={() => setCollumnHovered(collumnName)}
+              onMouseEnter={() => setCollumnHovered(collumn.name)}
               onMouseLeave={() => setCollumnHovered(null)}
             >
               <Group gap="xs" justify="flex-start">
-                <Text>{collumnName}</Text>
-                {!fixedCollumns.includes(collumnName) && (
+                <Text>{collumn.name}</Text>
+                {!collumn.fixed && (
                   <ActionsCollumnButtons
-                    ishovered={collumnName == collumnHovered}
-                    onHandleHideCollumn={() => onHideCollumn(collumnName)}
+                    ishovered={collumn.name == collumnHovered}
+                    onHandleHideCollumn={() => onHideCollumn(collumn.name)}
                   />
                 )}
               </Group>

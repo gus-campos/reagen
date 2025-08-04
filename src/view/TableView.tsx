@@ -1,36 +1,45 @@
 'use client';
 
-import { collection } from 'firebase/firestore';
-import { useCollectionData } from 'react-firebase-hooks/firestore';
-import { ReagentsTable } from '@/src/components/Table/ReagentsTable';
-import { reagentConverter } from '@/src/services/reagentsDB';
-import { Reagent } from '@/src/typings/reagent';
-import { db } from '@/src/utils/firebase';
-import { ReagentsFilter } from '../typings/reagents-filter';
+import { CrudOperations, DataTable, TableCollumn } from '@/src/components/Table/DataTable';
+import { ReagentsFilter } from '../models/reagents-filter';
 
-type TableViewProps = {
+type TableViewProps<T> = {
+  datas?: T[];
+  initialCollumns: TableCollumn<T>[];
+  crudOperations: CrudOperations<T>;
   search: string;
   filter: ReagentsFilter;
+  errorLoading: boolean;
+  loading: boolean;
 };
 
-export function TableView({ search, filter }: TableViewProps) {
-  const [reagents, loadingReagents, errorLoadingReagents] = useCollectionData<Reagent>(
-    collection(db, 'reagents').withConverter(reagentConverter)
-  );
-
+export function TableView<T>({
+  datas,
+  initialCollumns,
+  crudOperations,
+  search,
+  filter,
+  errorLoading,
+  loading,
+}: TableViewProps<T>) {
   return (
     <>
       {/* Coluna dos reagentes */}
 
       {/* Table */}
-      {errorLoadingReagents ? (
+      {errorLoading ? (
         <p>ERRO AO CARREGAR DADOS!</p>
-      ) : loadingReagents ? (
+      ) : loading ? (
         <p>CARREGANDO DADOS...</p>
-      ) : !reagents ? (
+      ) : !datas ? (
         <p>NENHUM DADO ENCONTRADO</p>
       ) : (
-        <ReagentsTable reagents={reagents} search={search} filter={filter} />
+        <DataTable
+          datas={datas}
+          initialCollumns={initialCollumns}
+          search={search}
+          crudOperations={crudOperations}
+        />
       )}
     </>
   );

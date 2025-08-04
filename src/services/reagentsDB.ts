@@ -6,7 +6,7 @@ import {
   FirestoreDataConverter,
   updateDoc,
 } from 'firebase/firestore';
-import { Reagent } from '@/src/typings/reagent';
+import { Reagent } from '@/src/models/reagent';
 import { db } from '@/src/utils/firebase';
 
 export const reagentConverter: FirestoreDataConverter<Reagent> = {

@@ -12,8 +12,8 @@ import {
 } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
-import { Reagent } from '../typings/reagent';
-import Unit, { Dimension, UnitDimension } from '../typings/unit';
+import { Reagent } from '../models/reagent';
+import Unit, { Dimension, UnitDimension } from '../models/unit';
 import { toNullableLocalDate, validateDate } from '../utils/date';
 import { formattedAmount } from '../utils/formatted-amount';
 import { formattedDate } from '../utils/formatted-date';

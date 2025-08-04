@@ -3,8 +3,8 @@ import { Box, Divider, Grid, NumberInput, Paper, Select } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
 import { SearchBar } from '../components/SearchBar';
-import { DateField, ReagentsFilter } from '../typings/reagents-filter';
-import { Dimension, DimensionDefaultUnit } from '../typings/unit';
+import { DateField, ReagentsFilter } from '../models/reagents-filter';
+import { Dimension, DimensionDefaultUnit } from '../models/unit';
 import { toNullableLocalDate } from '../utils/date';
 
 type FilterOptionsProps = {

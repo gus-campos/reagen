@@ -1,6 +1,6 @@
-import { Reagent } from '../typings/reagent';
-import { DateField, ReagentsFilter } from '../typings/reagents-filter';
-import { UnitDimension } from '../typings/unit';
+import { Reagent } from '../models/reagent';
+import { DateField, ReagentsFilter } from '../models/reagents-filter';
+import { UnitDimension } from '../models/unit';
 import { normalizedAmount } from './normalized-amount';
 
 export function filteredReagent(reagent: Reagent, filter: ReagentsFilter): boolean {

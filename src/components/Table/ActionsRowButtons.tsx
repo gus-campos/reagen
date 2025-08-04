@@ -1,24 +1,25 @@
 import { useContext } from 'react';
 import { IconEdit, IconFileText, IconTrash } from '@tabler/icons-react';
 import { ActionIcon } from '@mantine/core';
-import { CrudContext } from '@/src/pages/StockPage';
-import { Reagent } from '@/src/typings/reagent';
+import { CrudOperations } from './DataTable';
 
-type ActionsRowButtonsProps = {
-  reagent: Reagent;
+type ActionsRowButtonsProps<T> = {
+  data: T;
   ishovered: boolean;
+  crudOperations: CrudOperations<T>;
 };
 
-export function ActionsRowButtons({ reagent, ishovered }: ActionsRowButtonsProps) {
-  const { handleDeleteReagent, handleBeginReagentEdit, handleShowReagent } =
-    useContext(CrudContext);
-
+export function ActionsRowButtons<T>({
+  data,
+  ishovered,
+  crudOperations,
+}: ActionsRowButtonsProps<T>) {
   return (
     <>
       <ActionIcon
         variant="transparent"
         opacity={ishovered ? 1 : 0}
-        onClick={() => handleDeleteReagent(reagent)}
+        onClick={() => crudOperations.handleDeleteData(data)}
       >
         <IconTrash />
       </ActionIcon>
@@ -26,7 +27,7 @@ export function ActionsRowButtons({ reagent, ishovered }: ActionsRowButtonsProps
       <ActionIcon
         variant="transparent"
         opacity={ishovered ? 1 : 0}
-        onClick={() => handleBeginReagentEdit(reagent)}
+        onClick={() => crudOperations.handleBeginDataEdit(data)}
       >
         <IconEdit />
       </ActionIcon>
@@ -34,7 +35,7 @@ export function ActionsRowButtons({ reagent, ishovered }: ActionsRowButtonsProps
       <ActionIcon
         variant="transparent"
         opacity={ishovered ? 1 : 0}
-        onClick={() => handleShowReagent(reagent)}
+        onClick={() => crudOperations.handleShowData(data)}
       >
         <IconFileText />
       </ActionIcon>

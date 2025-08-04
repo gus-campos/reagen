@@ -1,5 +1,5 @@
-import { Reagent } from '../typings/reagent';
-import { DimensionDefaultUnit, UnitDimension, UnitMultiplier } from '../typings/unit';
+import { Reagent } from '../models/reagent';
+import { DimensionDefaultUnit, UnitDimension, UnitMultiplier } from '../models/unit';
 
 export function normalizedAmount(reagent: Reagent): number {
   const defaultMultiplier = UnitMultiplier[DimensionDefaultUnit[UnitDimension[reagent.unit]]];
