@@ -1,44 +1,54 @@
 'use client';
 
-import { CrudOperations, DataTable, TableCollumn } from '@/src/components/Table/DataTable';
-import { ReagentsFilter } from '../models/reagents-filter';
+import { DataTable } from '@/src/components/Crud/Table/DataTable';
+
+export type TableCollumn<T> = {
+  name: string;
+  accessor: (data: T) => string;
+  fixed?: boolean;
+  hidden?: boolean;
+  ascending?: boolean | null;
+  sorter?: (a: T, b: T) => number;
+  sortingPriority?: number | null;
+};
+
+export type CrudOperations<T> = {
+  handleDeleteData: (data: T) => void;
+  handleBeginDataEdit: (data: T) => void;
+  handleShowData: (data: T) => void;
+};
 
 type TableViewProps<T> = {
   datas?: T[];
   initialCollumns: TableCollumn<T>[];
-  crudOperations: CrudOperations<T>;
-  search: string;
-  filter: ReagentsFilter;
-  errorLoading: boolean;
-  loading: boolean;
+  crudOperations?: CrudOperations<T>;
+  search?: string;
+  searched?: (data: T) => string;
+  dataFilter?: (data: T) => boolean;
+  errorLoading?: boolean;
+  loading?: boolean;
 };
 
-export function TableView<T>({
-  datas,
-  initialCollumns,
-  crudOperations,
-  search,
-  filter,
-  errorLoading,
-  loading,
-}: TableViewProps<T>) {
+export function TableView<T>(props: TableViewProps<T>) {
   return (
     <>
       {/* Coluna dos reagentes */}
 
       {/* Table */}
-      {errorLoading ? (
+      {props.errorLoading ? (
         <p>ERRO AO CARREGAR DADOS!</p>
-      ) : loading ? (
+      ) : props.loading ? (
         <p>CARREGANDO DADOS...</p>
-      ) : !datas ? (
+      ) : !props.datas ? (
         <p>NENHUM DADO ENCONTRADO</p>
       ) : (
         <DataTable
-          datas={datas}
-          initialCollumns={initialCollumns}
-          search={search}
-          crudOperations={crudOperations}
+          datas={props.datas}
+          initialCollumns={props.initialCollumns}
+          crudOperations={props.crudOperations}
+          search={props.search}
+          searched={props.searched}
+          dataFilter={props.dataFilter}
         />
       )}
     </>

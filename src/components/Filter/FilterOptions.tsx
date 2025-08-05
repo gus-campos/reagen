@@ -11,9 +11,9 @@ type FilterOptionsProps = {
   handleChangeFilter: (filter: ReagentsFilter) => void;
 };
 
-export default function FilterOptions({ filter, handleChangeFilter }: FilterOptionsProps) {
+export default function FilterOptions(props: FilterOptionsProps) {
   const form = useForm<ReagentsFilter>({
-    initialValues: filter,
+    initialValues: props.filter,
 
     transformValues: (values) => ({
       ...values,
@@ -25,7 +25,7 @@ export default function FilterOptions({ filter, handleChangeFilter }: FilterOpti
   useEffect(() => {
     const timer = setTimeout(() => {
       if (form.isTouched()) {
-        handleChangeFilter(form.getTransformedValues());
+        props.handleChangeFilter(form.getTransformedValues());
       }
     }, 500);
 

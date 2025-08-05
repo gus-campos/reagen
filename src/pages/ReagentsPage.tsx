@@ -1,21 +1,22 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { collection } from 'firebase/firestore';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 import { Box, Button, Grid } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { reagentConverter, uploadDeleteReagent } from '@/src/services/reagentsDB';
 import { db } from '@/src/utils/firebase';
-import { ReagentModal } from '../components/ReagentModal';
-import { CrudOperations, TableCollumn } from '../components/Table/DataTable';
+import { ReagentModal } from '../components/Reagent/ReagentModal';
 import { Reagent } from '../models/reagent';
 import { ReagentsFilter } from '../models/reagents-filter';
 import { uploadAddReagent, uploadEditReagent } from '../services/reagentsDB';
+import { filteredReagent } from '../utils/filtered-reagent';
 import { formattedAmount } from '../utils/formatted-amount';
 import { formattedDate } from '../utils/formatted-date';
+import { normalizedAmount } from '../utils/normalized-amount';
 import { FilterOptions } from '../view/FilterOptions';
-import { TableView } from '../view/TableView';
+import { CrudOperations, TableCollumn, TableView } from '../view/TableView';
 
 const initialFilter: ReagentsFilter = {
   expired: null,
@@ -27,7 +28,7 @@ const initialFilter: ReagentsFilter = {
   maxAmount: null,
 };
 
-export function StockPage() {
+export function ReagentsPage() {
   const [reagents, loadingReagents, errorLoadingReagents] = useCollectionData<Reagent>(
     collection(db, 'reagents').withConverter(reagentConverter)
   );
@@ -39,11 +40,11 @@ export function StockPage() {
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState<ReagentsFilter>(initialFilter);
 
-  const handleChangeSearch = (search: string) => {
+  const handleSearchChange = (search: string) => {
     setSearch(search);
   };
 
-  const handleChangeFilter = (filter: ReagentsFilter) => {
+  const handleFilterChange = (filter: ReagentsFilter) => {
     setFilter(filter);
   };
 
@@ -79,17 +80,7 @@ export function StockPage() {
     uploadDeleteReagent(reagent);
   };
 
-  const sortReagents = (a: Reagent, b: Reagent) => {
-    return b.name.localeCompare(a.name);
-  };
-
   const crudOperations: CrudOperations<Reagent> = {
-    // handleChangeSearch,
-    // handleChangeFilter,
-    // handleBeginReagentAddition,
-    // handleAddReagent,
-    // handleEditReagent,
-    sortData: sortReagents,
     handleShowData: handleShowReagent,
     handleBeginDataEdit: handleBeginReagentEdit,
     handleDeleteData: handleDeleteReagent,
@@ -97,36 +88,57 @@ export function StockPage() {
 
   const initialCollumns: TableCollumn<Reagent>[] = [
     {
-      name: 'Nome',
-      accessor: (reagent: Reagent) => reagent.name,
+      name: 'Definição',
+      accessor: (reagent: Reagent) => reagent.definition.name,
       hidden: false,
       fixed: true,
+      ascending: false,
+      sorter: (a: Reagent, b: Reagent) =>
+        a.definition.name.trim().localeCompare(b.definition.name.trim()),
+      sortingPriority: 0,
     },
     {
       name: 'Quantidade',
       accessor: (reagent: Reagent) => formattedAmount(reagent),
       hidden: false,
       fixed: false,
+      ascending: null,
+      sorter: (a: Reagent, b: Reagent) => normalizedAmount(a) - normalizedAmount(b),
+      sortingPriority: null,
     },
     {
       name: 'Entrada',
       accessor: (reagent: Reagent) => formattedDate(reagent.inDate),
       hidden: false,
       fixed: false,
+      ascending: null,
+      sorter: (a: Reagent, b: Reagent) =>
+        (a.inDate?.getTime() ?? Infinity) - (b.inDate?.getTime() ?? Infinity),
+      sortingPriority: null,
     },
     {
       name: 'Saída',
       accessor: (reagent: Reagent) => formattedDate(reagent.outDate),
       hidden: false,
       fixed: false,
+      ascending: null,
+      sorter: (a: Reagent, b: Reagent) =>
+        (a.outDate?.getTime() ?? Infinity) - (b.outDate?.getTime() ?? Infinity),
+      sortingPriority: null,
     },
     {
       name: 'Vencimeto',
       accessor: (reagent: Reagent) => formattedDate(reagent.expireDate),
       hidden: false,
       fixed: false,
+      ascending: null,
+      sorter: (a: Reagent, b: Reagent) =>
+        (a.expireDate?.getTime() ?? Infinity) - (b.expireDate?.getTime() ?? Infinity),
+      sortingPriority: null,
     },
   ];
+
+  console.log(reagents);
 
   return (
     <>
@@ -137,30 +149,19 @@ export function StockPage() {
           <FilterOptions
             search={search}
             filter={filter}
-            onSearchChange={handleChangeSearch}
-            onFilterChange={handleChangeFilter}
+            onSearchChange={handleSearchChange}
+            onFilterChange={handleFilterChange}
           />
         </Grid.Col>
 
-        {/* Modal de criação, edição e visualização */}
-        <ReagentModal
-          showMode={showMode}
-          selectedReagent={selectedReagent}
-          reagentModalOpened={reagentModalOpened}
-          onCloseReagentModal={closeReagentModal}
-          onAddReagent={handleAddReagent}
-          onEditReagent={handleEditReagent}
-          onBeginShownReagentEdit={
-            selectedReagent ? () => handleBeginReagentEdit(selectedReagent) : () => {}
-          }
-        />
         <Grid.Col span={{ base: 9 }}>
           <Box w={'100%'}>
             <TableView
               datas={reagents}
               initialCollumns={initialCollumns}
               search={search}
-              filter={filter}
+              searched={(reagent: Reagent) => reagent.definition.name}
+              dataFilter={(reagent: Reagent) => filteredReagent(reagent, filter)}
               crudOperations={crudOperations}
               errorLoading={!!errorLoadingReagents}
               loading={loadingReagents}
@@ -176,6 +177,19 @@ export function StockPage() {
       >
         +
       </Button>
+
+      {/* Modal de criação, edição e visualização */}
+      <ReagentModal
+        showMode={showMode}
+        selectedReagent={selectedReagent}
+        reagentModalOpened={reagentModalOpened}
+        onCloseReagentModal={closeReagentModal}
+        onAddReagent={handleAddReagent}
+        onEditReagent={handleEditReagent}
+        onBeginShownReagentEdit={
+          selectedReagent ? () => handleBeginReagentEdit(selectedReagent) : () => {}
+        }
+      />
     </>
   );
 }

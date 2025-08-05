@@ -1,3 +1,3 @@
-import { StockPage } from '@/src/pages/StockPage';
+import { ReagentsPage } from '@/src/pages/ReagentsPage';
 
-export default StockPage;
+export default ReagentsPage;

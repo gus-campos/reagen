@@ -1,4 +1,3 @@
-
 export function toNullableLocalDate(dateStr: Date | null) {
   if (!dateStr) return null;
 
@@ -9,7 +8,7 @@ export function toNullableLocalDate(dateStr: Date | null) {
   return localDate;
 }
 
-export function validateDate(date: Date | null, optional: boolean = false) {
+export function validateDate(date?: Date | null, optional: boolean = false) {
   if (!date) {
     if (optional) return null;
     else return 'Selecione uma data';

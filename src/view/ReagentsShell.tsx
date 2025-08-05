@@ -10,7 +10,7 @@ type ReagentShellProps = {
   children: ReactNode[];
 };
 
-export function ReagentShell({ children }: ReagentShellProps) {
+export function ReagentShell(props: ReagentShellProps) {
   const [opened, { toggle }] = useDisclosure();
   const router = useRouter();
 
@@ -54,9 +54,21 @@ export function ReagentShell({ children }: ReagentShellProps) {
               <Text size="md">Estoque</Text>
             </Group>
           </Menu.Item>
+
+          <Menu.Item
+            onClick={() => {
+              toggle();
+              router.push('/definicoes');
+            }}
+          >
+            <Group>
+              <IconTable size={20} />
+              <Text size="md">Definições</Text>
+            </Group>
+          </Menu.Item>
         </Menu>
       </AppShell.Navbar>
-      <AppShell.Main>{children}</AppShell.Main>
+      <AppShell.Main>{props.children}</AppShell.Main>
     </AppShell>
   );
 }

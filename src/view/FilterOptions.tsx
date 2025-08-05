@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { Box, Divider, Grid, NumberInput, Paper, Select } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
-import { SearchBar } from '../components/SearchBar';
+import { SearchBar } from '../components/Crud/Filter/SearchBar';
 import { DateField, ReagentsFilter } from '../models/reagents-filter';
 import { Dimension, DimensionDefaultUnit } from '../models/unit';
 import { toNullableLocalDate } from '../utils/date';
@@ -14,15 +14,9 @@ type FilterOptionsProps = {
   onFilterChange: (filter: ReagentsFilter) => void;
 };
 
-export function FilterOptions({
-  search,
-  filter,
-  onSearchChange,
-  onFilterChange,
-}: FilterOptionsProps) {
+export function FilterOptions(props: FilterOptionsProps) {
   const form = useForm<ReagentsFilter>({
-    initialValues: filter,
-
+    initialValues: props.filter,
     transformValues: (values) => ({
       ...values,
       minDate: toNullableLocalDate(values.minDate),
@@ -35,7 +29,7 @@ export function FilterOptions({
   useEffect(() => {
     const timer = setTimeout(() => {
       if (form.isTouched()) {
-        onFilterChange(form.getTransformedValues());
+        props.onFilterChange(form.getTransformedValues());
       }
     }, 500);
 
@@ -43,34 +37,30 @@ export function FilterOptions({
   }, [form.values]);
 
   const defaultUnit = form.values.dimension ? DimensionDefaultUnit[form.values.dimension] : null;
-
   const parenthesizedUnit = defaultUnit ? `(${defaultUnit})` : '';
   const suffixUnit = defaultUnit ? ' ' + defaultUnit : '';
 
   return (
     <Box style={{ padding: '0 10px 0 0' }}>
       <Paper radius="md" withBorder style={{ padding: '10px' }}>
-        <h3>Busca</h3>
+        <h2>Filtrar</h2>
 
-        <SearchBar search={search} setSearch={onSearchChange} />
+        <h3>Por nome</h3>
 
-        <Divider my="md" />
+        <SearchBar search={props.search} setSearch={props.onSearchChange} />
 
-        <h3>Filtros</h3>
+        <h3>Por data</h3>
 
         <form>
-          <Divider my="sm" label="Por data" />
-
           <Grid>
             <Grid.Col span={{ base: 12 }}>
               <Select
-                label="Campo de data"
+                label="Data de"
                 placeholder="Selecione um campo de data"
                 data={Object.values(DateField)}
                 {...form.getInputProps('dateField')}
               ></Select>
             </Grid.Col>
-
             <Grid.Col span={{ base: 6 }}>
               <DatePickerInput
                 clearable
@@ -94,12 +84,12 @@ export function FilterOptions({
             </Grid.Col>
           </Grid>
 
-          <Divider my="sm" label="Por quantidade" />
+          <h3>Por quantidade</h3>
 
           <Grid>
             <Grid.Col span={{ base: 12 }}>
               <Select
-                label="Dimensão"
+                label="Dimensão da quantidade"
                 placeholder="Selecione a dimensão"
                 data={Object.values(Dimension)}
                 {...form.getInputProps('dimension')}

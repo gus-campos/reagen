@@ -4,27 +4,29 @@ import {
   deleteDoc,
   doc,
   FirestoreDataConverter,
+  Timestamp,
   updateDoc,
 } from 'firebase/firestore';
 import { Reagent } from '@/src/models/reagent';
 import { db } from '@/src/utils/firebase';
 
+type ReagentFirestoreData = Omit<Reagent, 'id'>;
+
 export const reagentConverter: FirestoreDataConverter<Reagent> = {
-  toFirestore(reagent: Reagent): Reagent {
-    return {
-      ...reagent,
-      id: null,
-    };
+  toFirestore(reagent: Reagent): ReagentFirestoreData {
+    const { id, ...rest } = reagent;
+    return rest;
   },
   fromFirestore(snapshot): Reagent {
-    const data = snapshot.data();
+    const data = snapshot.data() as ReagentFirestoreData;
 
     return {
       ...data,
       id: snapshot.id,
-      inDate: data.inDate?.toDate() ?? null,
-      outDate: data.outDate?.toDate() ?? null,
-      expireDate: data.expireDate?.toDate() ?? null,
+      inDate: data.inDate instanceof Timestamp ? data.inDate.toDate() : (data.inDate ?? null),
+      outDate: data.outDate instanceof Timestamp ? data.outDate.toDate() : (data.outDate ?? null),
+      expireDate:
+        data.expireDate instanceof Timestamp ? data.expireDate.toDate() : (data.expireDate ?? null),
     } as Reagent;
   },
 };

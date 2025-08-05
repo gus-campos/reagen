@@ -1,8 +1,9 @@
+import { Definition } from './definition';
 import Unit from './unit';
 
 export interface Reagent {
-  id: string | null;
-  name: string;
+  id: string;
+  definition: Definition;
   amount: number;
   unit: Unit;
   inDate: Date | null;
