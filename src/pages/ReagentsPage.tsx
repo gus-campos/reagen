@@ -1,15 +1,16 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { collection } from 'firebase/firestore';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
-import { Box, Button, Grid } from '@mantine/core';
+import { Box, Button, Grid, Text, Textarea } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { reagentConverter, uploadDeleteReagent } from '@/src/services/reagentsDB';
 import { db } from '@/src/utils/firebase';
 import { ReagentModal } from '../components/Reagent/ReagentModal';
 import { Reagent } from '../models/reagent';
 import { ReagentsFilter } from '../models/reagents-filter';
+import { useData } from '../providers/DataProvider';
 import { uploadAddReagent, uploadEditReagent } from '../services/reagentsDB';
 import { filteredReagent } from '../utils/filtered-reagent';
 import { formattedAmount } from '../utils/formatted-amount';
@@ -28,11 +29,21 @@ const initialFilter: ReagentsFilter = {
   maxAmount: null,
 };
 
-export function ReagentsPage() {
-  const [reagents, loadingReagents, errorLoadingReagents] = useCollectionData<Reagent>(
-    collection(db, 'reagents').withConverter(reagentConverter)
+function ExpandedComponent(reagent: Reagent) {
+  return (
+    <>
+      <Text size="lg" fw="bold">
+        Operações
+      </Text>
+      {reagent.operations.map((operation) => (
+        <Text>{operation.type}</Text>
+      ))}
+    </>
   );
+}
 
+export function ReagentsPage() {
+  const { reagents, getDefinitionById } = useData();
   const [reagentModalOpened, { open: openReagentModal, close: closeReagentModal }] =
     useDisclosure(false);
   const [selectedReagent, setSelectedReagent] = useState<Reagent | null>(null);
@@ -89,12 +100,14 @@ export function ReagentsPage() {
   const initialCollumns: TableCollumn<Reagent>[] = [
     {
       name: 'Definição',
-      accessor: (reagent: Reagent) => reagent.definition.name,
+      accessor: (reagent: Reagent) => getDefinitionById(reagent.definitionId)?.name ?? 'ND',
       hidden: false,
       fixed: true,
       ascending: false,
       sorter: (a: Reagent, b: Reagent) =>
-        a.definition.name.trim().localeCompare(b.definition.name.trim()),
+        (getDefinitionById(a.definitionId)?.name ?? '')
+          .trim()
+          .localeCompare((getDefinitionById(b.definitionId)?.name ?? '').trim()),
       sortingPriority: 0,
     },
     {
@@ -138,8 +151,6 @@ export function ReagentsPage() {
     },
   ];
 
-  console.log(reagents);
-
   return (
     <>
       <h1>Reagentes</h1>
@@ -160,11 +171,10 @@ export function ReagentsPage() {
               datas={reagents}
               initialCollumns={initialCollumns}
               search={search}
-              searched={(reagent: Reagent) => reagent.definition.name}
+              searched={(reagent: Reagent) => getDefinitionById(reagent.definitionId)?.name ?? ''}
               dataFilter={(reagent: Reagent) => filteredReagent(reagent, filter)}
               crudOperations={crudOperations}
-              errorLoading={!!errorLoadingReagents}
-              loading={loadingReagents}
+              expandedComponent={ExpandedComponent}
             />
           </Box>
         </Grid.Col>

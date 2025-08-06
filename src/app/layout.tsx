@@ -6,6 +6,7 @@ import '@mantine/dates/styles.css';
 import React, { ReactNode } from 'react';
 import { ColorSchemeScript, mantineHtmlProps, MantineProvider } from '@mantine/core';
 import { theme } from '../../theme';
+import { DataProvider } from '../providers/DataProvider';
 import { ReagentShell } from '../view/ReagentsShell';
 
 export const metadata = {
@@ -30,7 +31,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
       </head>
       <body>
         <MantineProvider theme={theme}>
-          <ReagentShell>{children}</ReagentShell>
+          <DataProvider>
+            <ReagentShell>{children}</ReagentShell>
+          </DataProvider>
         </MantineProvider>
       </body>
     </html>

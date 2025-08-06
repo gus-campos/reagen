@@ -61,7 +61,6 @@ export function DataModal<T>(props: ReagentModalProps<T>) {
         ) : (
           <Button
             onClick={() => {
-              console.log(props.form.values);
               props.form.onSubmit(handleSubmit)();
             }}
           >

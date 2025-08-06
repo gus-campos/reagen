@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Table } from '@mantine/core';
+import { Accordion, Table } from '@mantine/core';
 import { CrudOperations, TableCollumn } from '@/src/view/TableView';
 import { ActionsRowButtons } from './ActionsRowButtons';
 
@@ -7,6 +7,7 @@ type TableRowProps<T> = {
   data: T;
   collumns: TableCollumn<T>[];
   crudOperations?: CrudOperations<T>;
+  handleClick?: () => void;
 };
 
 export function TableRow<T>(props: TableRowProps<T>) {
@@ -17,7 +18,13 @@ export function TableRow<T>(props: TableRowProps<T>) {
       {props.collumns
         .filter((collumn) => !collumn.hidden)
         .map((collumn, index) => (
-          <Table.Td key={index}>{collumn.accessor(props.data)}</Table.Td>
+          <Table.Td
+            key={index}
+            onClick={props.handleClick}
+            style={{ cursor: props.handleClick ? 'unset' : 'unset' }}
+          >
+            {collumn.accessor(props.data)}
+          </Table.Td>
         ))}
       <Table.Td>
         <ActionsRowButtons

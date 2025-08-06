@@ -1,3 +1,3 @@
-import { DefinitionPage } from '@/src/pages/DefinitionsPage';
+import { DefinitionsPage } from '@/src/pages/DefinitionsPage';
 
-export default DefinitionPage;
+export default DefinitionsPage;

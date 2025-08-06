@@ -4,6 +4,7 @@ import { Box, ComboboxItem, ComboboxItemGroup, Grid, NumberInput, Select } from 
 import { DatePickerInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
 import { Definition } from '@/src/models/definition';
+import { useData } from '@/src/providers/DataProvider';
 import { definitionConverter } from '@/src/services/definitionsDB';
 import { db } from '@/src/utils/firebase';
 import { Reagent } from '../../models/reagent';
@@ -24,9 +25,7 @@ type ReagentModalProps = {
 };
 
 export function ReagentModal(props: ReagentModalProps) {
-  const [definitions] = useCollectionData<Definition>(
-    collection(db, 'definitions').withConverter(definitionConverter)
-  );
+  const { definitions, getDefinitionById } = useData();
 
   const validateAmount = (value: number): string | null => {
     const countUnits =
@@ -42,12 +41,13 @@ export function ReagentModal(props: ReagentModalProps) {
   const form = useForm<Reagent>({
     initialValues: props.selectedReagent || {
       id: crypto.randomUUID(),
-      definition: { id: '-1', name: '', dimension: Dimension.COUNT },
+      definitionId: '',
       inDate: null,
       outDate: null,
       expireDate: null,
       amount: 0,
       unit: Unit.GRAM,
+      operations: [],
     },
 
     transformValues: (values) => ({
@@ -58,7 +58,7 @@ export function ReagentModal(props: ReagentModalProps) {
     }),
 
     validate: {
-      definition: (definition) => (definition.id !== '-1' ? null : 'Inserir uma definição'),
+      definitionId: (id) => (id !== '' ? null : 'Inserir uma definição'),
       amount: validateAmount,
       unit: (unit) => (unit != null ? null : 'Inserir unidade de medida'),
       inDate: (date: Date | null) => validateDate(date),
@@ -67,7 +67,7 @@ export function ReagentModal(props: ReagentModalProps) {
     },
   });
 
-  const dimension = form.values.definition.dimension ?? null;
+  const dimension = getDefinitionById(form.values.definitionId)?.dimension ?? null;
   const unitSelectOptions: ComboboxItemGroup[] = dimension
     ? [
         {
@@ -99,7 +99,8 @@ export function ReagentModal(props: ReagentModalProps) {
           {props.selectedReagent && (
             <Grid>
               <Grid.Col span={{ base: 12 }}>
-                <strong>Definição:</strong> {props.selectedReagent.definition.name}
+                <strong>Definição:</strong>{' '}
+                {getDefinitionById(props.selectedReagent.definitionId)?.name ?? 'ND'}
               </Grid.Col>
 
               <Grid.Col span={{ base: 12 }}>
@@ -127,14 +128,9 @@ export function ReagentModal(props: ReagentModalProps) {
             <Select
               label="Definição"
               data={definitions?.map((opt) => ({ value: opt.id, label: opt.name })) ?? []}
-              value={form.values.definition?.id ?? null}
               searchable
               allowDeselect={false}
-              onChange={(value) => {
-                const definition = definitions?.find((def) => def.id === value) ?? null;
-                if (definition) form.setFieldValue('definition', definition);
-              }}
-              error={form.errors.definition}
+              {...form.getInputProps('definitionId')}
             ></Select>
           </Grid.Col>
 
@@ -150,13 +146,12 @@ export function ReagentModal(props: ReagentModalProps) {
             <Select
               allowDeselect={false}
               label="Unidade"
-              {...form.getInputProps('unit')}
               data={unitSelectOptions}
-              disabled={form.values.definition.id === '-1'}
+              disabled={form.values.definitionId === ''}
+              {...form.getInputProps('unit')}
             ></Select>
           </Grid.Col>
 
-          {/* TODO: Datas todas iguais entrada */}
           <Grid.Col span={{ base: 4 }}>
             <DatePickerInput
               clearable

@@ -38,7 +38,12 @@ export function TableThead<T>(props: ReagentsTableTheadProps<T>) {
               </Group>
             </Table.Th>
           ))}
-        <TableExtraOptions collumns={props.collumns} onShowCollumn={props.onShowCollumn} />
+        <Table.Th>
+          <Group gap="5px" justify="center">
+            <Text fw="bold">Ações</Text>
+            <TableExtraOptions collumns={props.collumns} onShowCollumn={props.onShowCollumn} />
+          </Group>
+        </Table.Th>
       </Table.Tr>
     </Table.Thead>
   );

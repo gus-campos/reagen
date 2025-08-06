@@ -46,12 +46,24 @@ export function ReagentShell(props: ReagentShellProps) {
           <Menu.Item
             onClick={() => {
               toggle();
-              router.push('/estoque');
+              router.push('/reagentes');
             }}
           >
             <Group>
               <IconTable size={20} />
-              <Text size="md">Estoque</Text>
+              <Text size="md">Reagentes</Text>
+            </Group>
+          </Menu.Item>
+
+          <Menu.Item
+            onClick={() => {
+              toggle();
+              router.push('/operacoes');
+            }}
+          >
+            <Group>
+              <IconTable size={20} />
+              <Text size="md">Operações</Text>
             </Group>
           </Menu.Item>
 

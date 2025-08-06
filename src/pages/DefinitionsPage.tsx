@@ -1,37 +1,33 @@
 'use client';
 
 import { useState } from 'react';
-import { collection } from 'firebase/firestore';
-import { useCollectionData } from 'react-firebase-hooks/firestore';
-import { Box, Button, Grid, Modal } from '@mantine/core';
+import { Box, Button } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { DefinitionModal } from '../components/Definitions/DefinitionModal';
 import { Definition } from '../models/definition';
+import { useData } from '../providers/DataProvider';
 import {
-  definitionConverter,
   uploadAddDefinition,
   uploadDeleteDefinition,
   uploadEditDefinition,
 } from '../services/definitionsDB';
-import { db } from '../utils/firebase';
 import { CrudOperations, TableCollumn, TableView } from '../view/TableView';
 
 const initialCollums: TableCollumn<Definition>[] = [
   {
     name: 'Nome',
     accessor: (definition: Definition) => definition.name,
+    sorter: (a: Definition, b: Definition) => a.name.trim().localeCompare(b.name.trim()),
   },
   {
     name: 'Dimensão',
     accessor: (definition: Definition) => definition.dimension,
+    sorter: (a: Definition, b: Definition) => a.dimension.trim().localeCompare(b.dimension.trim()),
   },
 ];
 
-export function DefinitionPage() {
-  const [definitions, loadingDefinitions, errorLoadingDefinitions] = useCollectionData<Definition>(
-    collection(db, 'definitions').withConverter(definitionConverter)
-  );
-
+export function DefinitionsPage() {
+  const { definitions } = useData();
   const [definitionModalOpened, { open: openDefinitionModal, close: closeDefinitionModal }] =
     useDisclosure(false);
   const [selectedDefinition, setSelectedDefinition] = useState<Definition | null>(null);
@@ -83,8 +79,6 @@ export function DefinitionPage() {
         <TableView
           initialCollumns={initialCollums}
           datas={definitions}
-          loading={loadingDefinitions}
-          errorLoading={!!errorLoadingDefinitions}
           crudOperations={crudOperations}
         />
       </Box>

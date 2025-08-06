@@ -25,8 +25,7 @@ type TableViewProps<T> = {
   search?: string;
   searched?: (data: T) => string;
   dataFilter?: (data: T) => boolean;
-  errorLoading?: boolean;
-  loading?: boolean;
+  expandedComponent?: (data: T) => React.ReactNode;
 };
 
 export function TableView<T>(props: TableViewProps<T>) {
@@ -35,12 +34,8 @@ export function TableView<T>(props: TableViewProps<T>) {
       {/* Coluna dos reagentes */}
 
       {/* Table */}
-      {props.errorLoading ? (
-        <p>ERRO AO CARREGAR DADOS!</p>
-      ) : props.loading ? (
+      {!props.datas ? (
         <p>CARREGANDO DADOS...</p>
-      ) : !props.datas ? (
-        <p>NENHUM DADO ENCONTRADO</p>
       ) : (
         <DataTable
           datas={props.datas}
@@ -49,6 +44,7 @@ export function TableView<T>(props: TableViewProps<T>) {
           search={props.search}
           searched={props.searched}
           dataFilter={props.dataFilter}
+          expandedComponent={props.expandedComponent}
         />
       )}
     </>

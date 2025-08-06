@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Paper, Table } from '@mantine/core';
+import React, { ReactNode, useState } from 'react';
+import { Accordion, Button, Paper, Table, Text } from '@mantine/core';
 import { CrudOperations, TableCollumn } from '@/src/view/TableView';
 import { TableRow } from './TableRow';
 import { TableThead } from './TableThead';
@@ -24,11 +24,13 @@ type TableProps<T> = {
   search?: string;
   searched?: (data: T) => string;
   dataFilter?: (data: T) => boolean;
+  expandedComponent?: (data: T) => React.ReactNode;
 };
 
 export function DataTable<T>(props: TableProps<T>) {
   const [collumns, setCollumns] = useState<TableCollumn<T>[]>(props.initialCollumns);
   const collumnsNames = collumns.map((collumn) => collumn.name);
+  const [expandedDataIndex, setExpandedDataIndex] = useState(-1);
 
   const setCollumnsVisibility = (collumnName: string, hidden: boolean) => {
     if (!collumnsNames.includes(collumnName)) throw new Error('Coluna inválida');
@@ -92,6 +94,10 @@ export function DataTable<T>(props: TableProps<T>) {
     return -1;
   });
 
+  const handleClickRow = (index: number) => {
+    setExpandedDataIndex(index !== expandedDataIndex ? index : -1);
+  };
+
   return (
     <Paper radius="md" withBorder style={{ overflow: 'hidden' }}>
       <Table tabularNums striped highlightOnHover>
@@ -110,13 +116,22 @@ export function DataTable<T>(props: TableProps<T>) {
                 : true
             )
             .filter((data) => (props.dataFilter ? props.dataFilter(data) : true))
-            .map((data, key) => (
-              <TableRow
-                key={key}
-                data={data}
-                collumns={collumns}
-                crudOperations={props.crudOperations}
-              />
+            .map((data, index) => (
+              <React.Fragment key={index}>
+                <TableRow
+                  data={data}
+                  collumns={collumns}
+                  crudOperations={props.crudOperations}
+                  handleClick={() => handleClickRow(index)}
+                />
+                {index === expandedDataIndex && props.expandedComponent && (
+                  <Table.Tr>
+                    <Table.Td colSpan={collumns.length + 1}>
+                      {props.expandedComponent(data)}
+                    </Table.Td>
+                  </Table.Tr>
+                )}
+              </React.Fragment>
             ))}
         </Table.Tbody>
       </Table>

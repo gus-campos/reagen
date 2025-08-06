@@ -11,12 +11,12 @@ export function TableExtraOptions<T>(props: TableExtraOptionsProps<T>) {
   const hiddenCollumns = props.collumns.filter((collumn) => collumn.hidden);
 
   return (
-    <Table.Th>
+    <>
       {hiddenCollumns.length > 0 && (
         <Menu>
           <Menu.Target>
-            <Group justify="end">
-              <ActionIcon variant="transparent">
+            <Group gap={0} justify="end">
+              <ActionIcon style={{ '--ai-size': '20px' }} variant="transparent">
                 <IconEye size="20px" color="grey" />
               </ActionIcon>
             </Group>
@@ -33,6 +33,6 @@ export function TableExtraOptions<T>(props: TableExtraOptionsProps<T>) {
           </Menu.Dropdown>
         </Menu>
       )}
-    </Table.Th>
+    </>
   );
 }

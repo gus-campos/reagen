@@ -40,7 +40,7 @@ export function ActionsCollumnButtons(props: ActionsCollumnButtonsProps) {
           opacity={opacity}
           onClick={props.onHandleHideCollumn}
         >
-          <IconEyeOff size="20px" />
+          <IconEyeOff color="gray" size="20px" />
         </ActionIcon>
       )}
     </Group>
