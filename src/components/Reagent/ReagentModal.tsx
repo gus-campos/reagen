@@ -1,12 +1,7 @@
-import { collection } from 'firebase/firestore';
-import { useCollectionData } from 'react-firebase-hooks/firestore';
-import { Box, ComboboxItem, ComboboxItemGroup, Grid, NumberInput, Select } from '@mantine/core';
+import { Box, ComboboxItemGroup, Grid, NumberInput, Select } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
-import { Definition } from '@/src/models/definition';
 import { useData } from '@/src/providers/DataProvider';
-import { definitionConverter } from '@/src/services/definitionsDB';
-import { db } from '@/src/utils/firebase';
 import { Reagent } from '../../models/reagent';
 import Unit, { Dimension, UnitDimension } from '../../models/unit';
 import { toNullableLocalDate, validateDate } from '../../utils/date';
@@ -40,20 +35,17 @@ export function ReagentModal(props: ReagentModalProps) {
 
   const form = useForm<Reagent>({
     initialValues: props.selectedReagent || {
-      id: crypto.randomUUID(),
+      id: '[NULL]',
       definitionId: '',
-      inDate: null,
-      outDate: null,
       expireDate: null,
       amount: 0,
       unit: Unit.GRAM,
-      operations: [],
+      operationsIds: [],
     },
 
     transformValues: (values) => ({
       ...values,
-      inDate: toNullableLocalDate(values.inDate),
-      outDate: toNullableLocalDate(values.outDate),
+
       expireDate: toNullableLocalDate(values.expireDate),
     }),
 
@@ -61,8 +53,6 @@ export function ReagentModal(props: ReagentModalProps) {
       definitionId: (id) => (id !== '' ? null : 'Inserir uma definição'),
       amount: validateAmount,
       unit: (unit) => (unit != null ? null : 'Inserir unidade de medida'),
-      inDate: (date: Date | null) => validateDate(date),
-      outDate: (date: Date | null) => validateDate(date, true),
       expireDate: (date: Date | null) => validateDate(date, true),
     },
   });
@@ -108,14 +98,6 @@ export function ReagentModal(props: ReagentModalProps) {
               </Grid.Col>
 
               <Grid.Col span={{ base: 12 }}>
-                <strong>Entrada:</strong> {formattedDate(props.selectedReagent.inDate)}
-              </Grid.Col>
-
-              <Grid.Col span={{ base: 12 }}>
-                <strong>Saída:</strong> {formattedDate(props.selectedReagent.outDate)}
-              </Grid.Col>
-
-              <Grid.Col span={{ base: 12 }}>
                 <strong>Vencimento:</strong> {formattedDate(props.selectedReagent.expireDate)}
               </Grid.Col>
             </Grid>
@@ -152,27 +134,7 @@ export function ReagentModal(props: ReagentModalProps) {
             ></Select>
           </Grid.Col>
 
-          <Grid.Col span={{ base: 4 }}>
-            <DatePickerInput
-              clearable
-              valueFormat="DD/MM/YYYY"
-              label="Entrada"
-              placeholder="Selecione data"
-              {...form.getInputProps('inDate')}
-            ></DatePickerInput>
-          </Grid.Col>
-
-          <Grid.Col span={{ base: 4 }}>
-            <DatePickerInput
-              clearable
-              valueFormat="DD/MM/YYYY"
-              label="Saída"
-              placeholder="Selecione data"
-              {...form.getInputProps('outDate')}
-            ></DatePickerInput>
-          </Grid.Col>
-
-          <Grid.Col span={{ base: 4 }}>
+          <Grid.Col span={{ base: 12 }}>
             <DatePickerInput
               clearable
               valueFormat="DD/MM/YYYY"

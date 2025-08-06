@@ -1,5 +1,5 @@
-import React, { ReactNode, useState } from 'react';
-import { Accordion, Button, Paper, Table, Text } from '@mantine/core';
+import React, { useState } from 'react';
+import { Paper, Table } from '@mantine/core';
 import { CrudOperations, TableCollumn } from '@/src/view/TableView';
 import { TableRow } from './TableRow';
 import { TableThead } from './TableThead';
@@ -29,8 +29,9 @@ type TableProps<T> = {
 
 export function DataTable<T>(props: TableProps<T>) {
   const [collumns, setCollumns] = useState<TableCollumn<T>[]>(props.initialCollumns);
-  const collumnsNames = collumns.map((collumn) => collumn.name);
   const [expandedDataIndex, setExpandedDataIndex] = useState(-1);
+
+  const collumnsNames = collumns.map((collumn) => collumn.name);
 
   const setCollumnsVisibility = (collumnName: string, hidden: boolean) => {
     if (!collumnsNames.includes(collumnName)) throw new Error('Coluna inválida');
@@ -123,6 +124,7 @@ export function DataTable<T>(props: TableProps<T>) {
                   collumns={collumns}
                   crudOperations={props.crudOperations}
                   handleClick={() => handleClickRow(index)}
+                  clickable={!!props.expandedComponent}
                 />
                 {index === expandedDataIndex && props.expandedComponent && (
                   <Table.Tr>

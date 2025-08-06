@@ -1,21 +1,25 @@
 'use client';
 
-import React, { useContext, useState } from 'react';
-import { collection } from 'firebase/firestore';
-import { useCollectionData } from 'react-firebase-hooks/firestore';
-import { Box, Button, Grid, Text, Textarea } from '@mantine/core';
+import React, { useState } from 'react';
+import { Box, Button, Grid, Paper, Stack, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { reagentConverter, uploadDeleteReagent } from '@/src/services/reagentsDB';
-import { db } from '@/src/utils/firebase';
+import { OperationModal } from '../components/Operations/OperationModal';
 import { ReagentModal } from '../components/Reagent/ReagentModal';
+import { Operation } from '../models/operation';
 import { Reagent } from '../models/reagent';
 import { ReagentsFilter } from '../models/reagents-filter';
 import { useData } from '../providers/DataProvider';
-import { uploadAddReagent, uploadEditReagent } from '../services/reagentsDB';
+import {
+  uploadAddOperation,
+  uploadDeleteOperation,
+  uploadEditOperation,
+} from '../services/operationsDB';
+import { uploadAddReagent, uploadDeleteReagent, uploadEditReagent } from '../services/reagentsDB';
 import { filteredReagent } from '../utils/filtered-reagent';
 import { formattedAmount } from '../utils/formatted-amount';
 import { formattedDate } from '../utils/formatted-date';
 import { normalizedAmount } from '../utils/normalized-amount';
+import { truncate } from '../utils/truncate';
 import { FilterOptions } from '../view/FilterOptions';
 import { CrudOperations, TableCollumn, TableView } from '../view/TableView';
 
@@ -29,16 +33,102 @@ const initialFilter: ReagentsFilter = {
   maxAmount: null,
 };
 
-function ExpandedComponent(reagent: Reagent) {
+function ExpandedComponent({ reagent }: { reagent: Reagent }) {
+  const [operationModalOpened, { open: openOperationModal, close: closeOperationModal }] =
+    useDisclosure(false);
+  const [selectedOperation, setSelectedOperation] = useState<Operation | null>(null);
+  const [showMode, { open: activateShowMode, close: deactivateShowMode }] = useDisclosure(false);
+  const { getOperationById } = useData();
+
+  const handleBeginOperationAddition = () => {
+    setSelectedOperation(null);
+    deactivateShowMode();
+    openOperationModal();
+  };
+  const handleAddOperation = (operation: Operation) => {
+    uploadAddOperation(operation);
+    closeOperationModal();
+  };
+  const handleEditOperation = (operation: Operation) => {
+    uploadEditOperation(operation);
+    closeOperationModal();
+  };
+
+  const handleBeginOperationEdit = (operation: Operation) => {
+    setSelectedOperation(operation);
+    deactivateShowMode();
+    openOperationModal();
+  };
+
+  const handleShowOperation = (operation: Operation) => {
+    setSelectedOperation(operation);
+    activateShowMode();
+    openOperationModal();
+  };
+
+  const handleDeleteOperation = (operation: Operation) => {
+    uploadDeleteOperation(operation);
+  };
+
+  const crudOperations: CrudOperations<Operation> = {
+    handleShowData: handleShowOperation,
+    handleBeginDataEdit: handleBeginOperationEdit,
+    handleDeleteData: handleDeleteOperation,
+  };
+
+  const initialCollums: TableCollumn<Operation>[] = [
+    {
+      name: 'Tipo',
+      accessor: (operation: Operation) => String(operation.type),
+    },
+    {
+      name: 'Data',
+      accessor: (operation: Operation) => formattedDate(operation.date),
+    },
+    {
+      name: 'Observações',
+      accessor: (operation: Operation) => truncate(operation.notes ?? '', 15),
+    },
+  ];
+
+  const operations = reagent.operationsIds
+    .map((id) => getOperationById(id))
+    .filter((operation) => !!operation);
+
   return (
-    <>
-      <Text size="lg" fw="bold">
-        Operações
-      </Text>
-      {reagent.operations.map((operation) => (
-        <Text>{operation.type}</Text>
-      ))}
-    </>
+    <Paper p="md" radius="md" withBorder style={{ overflow: 'hidden' }}>
+      <Text fw="bold">Operações</Text>
+
+      <TableView
+        datas={operations}
+        initialCollumns={initialCollums}
+        crudOperations={crudOperations}
+      ></TableView>
+
+      <Stack>
+        <Button
+          // style={{ position: 'fixed', bottom: '30px', right: '30px' }}
+          onClick={handleBeginOperationAddition}
+          variant="outline"
+          bg="dark-grey"
+        >
+          +
+        </Button>
+      </Stack>
+
+      <OperationModal
+        reagent={reagent}
+        onBeginShownOperationEdit={
+          selectedOperation ? () => handleBeginOperationEdit(selectedOperation) : () => {}
+        }
+        onCloseOperationModal={closeOperationModal}
+        onEditOperation={handleEditOperation}
+        onAddOperation={handleAddOperation}
+        operationModalOpened={operationModalOpened}
+        selectedOperation={selectedOperation}
+        showMode={showMode}
+      />
+    </Paper>
   );
 }
 
@@ -120,26 +210,6 @@ export function ReagentsPage() {
       sortingPriority: null,
     },
     {
-      name: 'Entrada',
-      accessor: (reagent: Reagent) => formattedDate(reagent.inDate),
-      hidden: false,
-      fixed: false,
-      ascending: null,
-      sorter: (a: Reagent, b: Reagent) =>
-        (a.inDate?.getTime() ?? Infinity) - (b.inDate?.getTime() ?? Infinity),
-      sortingPriority: null,
-    },
-    {
-      name: 'Saída',
-      accessor: (reagent: Reagent) => formattedDate(reagent.outDate),
-      hidden: false,
-      fixed: false,
-      ascending: null,
-      sorter: (a: Reagent, b: Reagent) =>
-        (a.outDate?.getTime() ?? Infinity) - (b.outDate?.getTime() ?? Infinity),
-      sortingPriority: null,
-    },
-    {
       name: 'Vencimeto',
       accessor: (reagent: Reagent) => formattedDate(reagent.expireDate),
       hidden: false,
@@ -151,11 +221,19 @@ export function ReagentsPage() {
     },
   ];
 
+  // if (reagents && reagents[0])
+  //   reagents[0].operations.push({
+  //     date: new Date(),
+  //     id: '',
+  //     reagentId: '',
+  //     type: OperationType.CONSUMPTION,
+  //     notes: 'Notas',
+  //   });
+
   return (
     <>
       <h1>Reagentes</h1>
       <Grid>
-        {/* Coluna dos filtros */}
         <Grid.Col span={{ base: 3 }}>
           <FilterOptions
             search={search}
@@ -174,13 +252,12 @@ export function ReagentsPage() {
               searched={(reagent: Reagent) => getDefinitionById(reagent.definitionId)?.name ?? ''}
               dataFilter={(reagent: Reagent) => filteredReagent(reagent, filter)}
               crudOperations={crudOperations}
-              expandedComponent={ExpandedComponent}
+              expandedComponent={(reagent: Reagent) => <ExpandedComponent reagent={reagent} />}
             />
           </Box>
         </Grid.Col>
       </Grid>
 
-      {/* Add button */}
       <Button
         style={{ position: 'fixed', bottom: '30px', right: '30px' }}
         onClick={handleBeginReagentAddition}
@@ -188,7 +265,6 @@ export function ReagentsPage() {
         +
       </Button>
 
-      {/* Modal de criação, edição e visualização */}
       <ReagentModal
         showMode={showMode}
         selectedReagent={selectedReagent}

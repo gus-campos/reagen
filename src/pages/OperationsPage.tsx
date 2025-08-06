@@ -3,14 +3,9 @@
 import { useState } from 'react';
 import { Box } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { OperationModal } from '../components/Operations/OperationModal';
-import { Operation, OperationType } from '../models/operation';
+import { Operation } from '../models/operation';
 import { useData } from '../providers/DataProvider';
-import {
-  uploadAddOperation,
-  uploadDeleteOperation,
-  uploadEditOperation,
-} from '../services/operationsDB';
+import { uploadDeleteOperation } from '../services/operationsDB';
 import { formattedDate } from '../utils/formatted-date';
 import { truncate } from '../utils/truncate';
 import { CrudOperations, TableCollumn, TableView } from '../view/TableView';
@@ -23,12 +18,6 @@ export function OperationsPage() {
   const [selectedOperation, setSelectedOperation] = useState<Operation | null>(null);
   const [showMode, { open: activateShowMode, close: deactivateShowMode }] = useDisclosure(false);
 
-  const handleBeginOperationAddition = () => {
-    setSelectedOperation(null);
-    deactivateShowMode();
-    openOperationModal();
-  };
-
   const handleShowOperation = (operation: Operation) => {
     setSelectedOperation(operation);
     activateShowMode();
@@ -39,16 +28,6 @@ export function OperationsPage() {
     setSelectedOperation(operation);
     deactivateShowMode();
     openOperationModal();
-  };
-
-  const handleAddOperation = (operation: Operation) => {
-    uploadAddOperation(operation);
-    closeOperationModal();
-  };
-
-  const handleEditOperation = (operation: Operation) => {
-    uploadEditOperation(operation);
-    closeOperationModal();
   };
 
   const handleDeleteOperation = (operation: Operation) => {
@@ -85,15 +64,6 @@ export function OperationsPage() {
     },
   ];
 
-  // useEffect(() => {
-  //   handleAddOperation({
-  //     id: crypto.randomUUID(),
-  //     date: new Date(),
-  //     reagentId: 'WSuMzbLkIvgF1RLQPr3r',
-  //     type: OperationType.CONSUMPTION,
-  //   });
-  // }, []);
-
   return (
     <>
       <h1>Operações</h1>
@@ -105,17 +75,6 @@ export function OperationsPage() {
           crudOperations={crudOperations}
         />
       </Box>
-
-      <OperationModal
-        onBeginShownOperationEdit={
-          selectedOperation ? () => handleBeginOperationEdit(selectedOperation) : () => {}
-        }
-        onCloseOperationModal={closeOperationModal}
-        onEditOperation={handleEditOperation}
-        operationModalOpened={operationModalOpened}
-        selectedOperation={selectedOperation}
-        showMode={showMode}
-      />
     </>
   );
 }

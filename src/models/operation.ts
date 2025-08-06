@@ -1,5 +1,4 @@
 export enum OperationType {
-  BASE = 'Base',
   INPUT = 'Entrada',
   TRANSFER = 'Transferência',
   CONSUMPTION = 'Consumo',

@@ -1,5 +1,6 @@
 import {
   addDoc,
+  arrayUnion,
   collection,
   deleteDoc,
   doc,
@@ -9,6 +10,7 @@ import {
 } from 'firebase/firestore';
 import { db } from '@/src/utils/firebase';
 import { Operation } from '../models/operation';
+import { uploadEditReagent } from './reagentsDB';
 
 type OperationFirestoreData = Omit<Operation, 'id'>;
 
@@ -40,6 +42,11 @@ export async function uploadDeleteOperation(operation: Operation) {
 export async function uploadAddOperation(operation: Operation) {
   try {
     const docRef = await addDoc(collection(db, 'operations'), operation);
+    // Associar a operação com o reagente
+    const reagentRef = doc(db, 'reagents', operation.reagentId);
+    await updateDoc(reagentRef, {
+      operationsIds: arrayUnion(docRef.id),
+    });
   } catch (e) {
     console.error('Erro ao adicionar documento: ', e);
   }

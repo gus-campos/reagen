@@ -17,7 +17,7 @@ type DefinitionModalProps = {
 export function DefinitionModal(props: DefinitionModalProps) {
   const form = useForm<Definition>({
     initialValues: {
-      id: crypto.randomUUID(),
+      id: '[NULL]',
       name: '',
       dimension: Dimension.MASS,
     },

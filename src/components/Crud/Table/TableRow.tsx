@@ -8,10 +8,13 @@ type TableRowProps<T> = {
   collumns: TableCollumn<T>[];
   crudOperations?: CrudOperations<T>;
   handleClick?: () => void;
+  clickable: boolean;
 };
 
 export function TableRow<T>(props: TableRowProps<T>) {
   const [isHovered, setIsHovered] = useState(false);
+
+  console.log('teste', props.handleClick);
 
   return (
     <Table.Tr onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
@@ -21,7 +24,7 @@ export function TableRow<T>(props: TableRowProps<T>) {
           <Table.Td
             key={index}
             onClick={props.handleClick}
-            style={{ cursor: props.handleClick ? 'unset' : 'unset' }}
+            style={{ cursor: props.clickable ? 'pointer' : 'unset' }}
           >
             {collumn.accessor(props.data)}
           </Table.Td>

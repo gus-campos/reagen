@@ -10,6 +10,7 @@ import { definitionConverter } from '../services/definitionsDB';
 import { operationConverter } from '../services/operationsDB';
 import { reagentConverter } from '../services/reagentsDB';
 import { db } from '../utils/firebase';
+import { sortKeys } from '../utils/sortKeys';
 
 const DataContext = createContext<{
   reagents: Reagent[] | undefined;
@@ -45,11 +46,24 @@ export const DataProvider = (props: DataProviderProps) => {
     return definitions?.find((op) => op.id === id) ?? null;
   };
   const getReagentById = (id: string) => {
-    console.log('reagentes: ', reagents);
-
     return reagents?.find((op) => op.id === id) ?? null;
   };
   const getOperationById = (id: string) => operations?.find((op) => op.id === id) ?? null;
+
+  console.log(
+    'reagents: ',
+    reagents?.map((r) => sortKeys(r))
+  );
+
+  console.log(
+    'operations: ',
+    operations?.map((op) => sortKeys(op))
+  );
+
+  console.log(
+    'definitions: ',
+    definitions?.map((op) => sortKeys(op))
+  );
 
   return (
     <DataContext.Provider
