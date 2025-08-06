@@ -3,12 +3,12 @@
 import { useState } from 'react';
 import { Box } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { Operation } from '../models/operation';
-import { useData } from '../providers/DataProvider';
-import { uploadDeleteOperation } from '../services/operationsDB';
-import { formattedDate } from '../utils/formatted-date';
-import { truncate } from '../utils/truncate';
-import { CrudOperations, TableCollumn, TableView } from '../view/TableView';
+import { Operation } from '../../models/operation';
+import { useData } from '../../providers/DataProvider';
+import { uploadDeleteOperation } from '../../services/operationsDB';
+import { formattedDate } from '../../utils/formatted-date';
+import { truncate } from '../../utils/truncate';
+import { CrudOperations, TableCollumn, TableView } from '../Crud/Table/TableView';
 
 export function OperationsPage() {
   const { operations, getReagentById, getDefinitionById } = useData();

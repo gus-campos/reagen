@@ -29,7 +29,6 @@ type TableViewProps<T> = {
 };
 
 export function TableView<T>(props: TableViewProps<T>) {
-  console.log('TableView: ', props.datas);
   return (
     <>
       {/* Coluna dos reagentes */}

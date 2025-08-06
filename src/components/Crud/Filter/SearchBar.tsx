@@ -1,18 +1,26 @@
-import { Box, TextInput } from '@mantine/core';
+import { Autocomplete, Box, TextInput } from '@mantine/core';
+import { Definition } from '@/src/models/definition';
+import { useData } from '@/src/providers/DataProvider';
 
 type SearchBarProps = {
   search: string;
-  setSearch: (search: string) => void;
+  onChangeSearch: (search: string) => void;
+  onChangeDefinition: (definition: Definition | null) => void;
 };
 
 export function SearchBar(props: SearchBarProps) {
+  const { definitions } = useData();
+
   return (
-    // TODO: Tirar da table, colocar ícone de busca à direita
     <Box style={{ padding: '0 0 10px 0' }}>
-      <TextInput
+      <Autocomplete
         placeholder={'Busque por nome de reagentes...'}
-        value={props.search}
-        onChange={(event) => props.setSearch(event.currentTarget.value)}
+        data={definitions?.map((def) => ({ value: def.id, label: def.name })) ?? []}
+        onChange={(value) => {
+          const definition = definitions?.find((def) => def.name === value) ?? null;
+          props.onChangeSearch(value);
+          props.onChangeDefinition(definition);
+        }}
         radius="md"
       />
     </Box>

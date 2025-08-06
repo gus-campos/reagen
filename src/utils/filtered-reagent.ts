@@ -1,5 +1,5 @@
 import { Reagent } from '../models/reagent';
-import { DateField, ReagentsFilter } from '../models/reagents-filter';
+import ReagentsFilter from '../models/reagents-filter';
 import { UnitDimension } from '../models/unit';
 import { normalizedAmount } from './normalized-amount';
 
@@ -8,19 +8,10 @@ export function filteredReagent(reagent: Reagent, filter: ReagentsFilter): boole
 }
 
 function filteredDate(reagent: Reagent, filter: ReagentsFilter): boolean {
-  if (!filter.dateField) return true;
+  if (!reagent.expireDate) return false;
 
-  const reagentDate =
-    filter.dateField === DateField.IN_DATE
-      ? reagent.inDate
-      : filter.dateField == DateField.OUT_DATE
-        ? reagent.outDate
-        : reagent.expireDate;
-
-  if (!reagentDate) return false;
-
-  if (filter.minDate && reagentDate < filter.minDate) return false;
-  if (filter.maxDate && reagentDate > filter.maxDate) return false;
+  if (filter.minDate && reagent.expireDate < filter.minDate) return false;
+  if (filter.maxDate && reagent.expireDate > filter.maxDate) return false;
 
   return true;
 }

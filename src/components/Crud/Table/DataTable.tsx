@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Paper, Table } from '@mantine/core';
-import { CrudOperations, TableCollumn } from '@/src/view/TableView';
+import { CrudOperations, TableCollumn } from '@/src/components/Crud/Table/TableView';
 import { TableRow } from './TableRow';
 import { TableThead } from './TableThead';
 

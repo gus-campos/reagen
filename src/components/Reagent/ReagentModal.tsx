@@ -39,13 +39,13 @@ export function ReagentModal(props: ReagentModalProps) {
       definitionId: '',
       expireDate: null,
       amount: 0,
+      purity: 0,
       unit: Unit.GRAM,
       operationsIds: [],
     },
 
     transformValues: (values) => ({
       ...values,
-
       expireDate: toNullableLocalDate(values.expireDate),
     }),
 
@@ -53,7 +53,8 @@ export function ReagentModal(props: ReagentModalProps) {
       definitionId: (id) => (id !== '' ? null : 'Inserir uma definição'),
       amount: validateAmount,
       unit: (unit) => (unit != null ? null : 'Inserir unidade de medida'),
-      expireDate: (date: Date | null) => validateDate(date, true),
+      purity: (value) => (value > 1 && value <= 100 ? null : 'Insira uma pureza entre 1 e 100 %'),
+      expireDate: (date: Date | null) => validateDate(date, false),
     },
   });
 
@@ -98,6 +99,11 @@ export function ReagentModal(props: ReagentModalProps) {
               </Grid.Col>
 
               <Grid.Col span={{ base: 12 }}>
+                <strong>Pureza:</strong>{' '}
+                {props.selectedReagent.purity ? `${props.selectedReagent.purity} %` : ''}
+              </Grid.Col>
+
+              <Grid.Col span={{ base: 12 }}>
                 <strong>Vencimento:</strong> {formattedDate(props.selectedReagent.expireDate)}
               </Grid.Col>
             </Grid>
@@ -119,6 +125,7 @@ export function ReagentModal(props: ReagentModalProps) {
           <Grid.Col span={{ base: 6 }}>
             <NumberInput
               label="Quantidade"
+              placeholder="Quantidade"
               hideControls
               {...form.getInputProps('amount')}
             ></NumberInput>
@@ -134,7 +141,17 @@ export function ReagentModal(props: ReagentModalProps) {
             ></Select>
           </Grid.Col>
 
-          <Grid.Col span={{ base: 12 }}>
+          <Grid.Col span={{ base: 6 }}>
+            <NumberInput
+              label="Pureza"
+              placeholder="Pureza em %"
+              hideControls
+              suffix=" %"
+              {...form.getInputProps('purity')}
+            ></NumberInput>
+          </Grid.Col>
+
+          <Grid.Col span={{ base: 6 }}>
             <DatePickerInput
               clearable
               valueFormat="DD/MM/YYYY"

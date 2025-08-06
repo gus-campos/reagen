@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Group, Table, Text } from '@mantine/core';
-import { TableCollumn } from '@/src/view/TableView';
+import { TableCollumn } from '@/src/components/Crud/Table/TableView';
 import { ActionsCollumnButtons } from './ActionsCollumnButtons';
 import { TableExtraOptions } from './TableExtraOptions';
 
@@ -26,7 +26,9 @@ export function TableThead<T>(props: ReagentsTableTheadProps<T>) {
               onMouseLeave={() => setCollumnHovered(null)}
             >
               <Group gap="5px" justify="flex-start">
-                <Text fw="bold">{collumn.name}</Text>
+                <Text size="md" fw="bold">
+                  {collumn.name}
+                </Text>
                 <ActionsCollumnButtons
                   fixed={collumn.fixed != null ? collumn.fixed : true}
                   sortable={collumn.sorter != null}

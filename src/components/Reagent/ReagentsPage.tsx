@@ -3,29 +3,33 @@
 import React, { useState } from 'react';
 import { Box, Button, Grid, Paper, Stack, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { OperationModal } from '../components/Operations/OperationModal';
-import { ReagentModal } from '../components/Reagent/ReagentModal';
-import { Operation } from '../models/operation';
-import { Reagent } from '../models/reagent';
-import { ReagentsFilter } from '../models/reagents-filter';
-import { useData } from '../providers/DataProvider';
+import { Definition } from '@/src/models/definition';
+import { Operation } from '../../models/operation';
+import { Reagent } from '../../models/reagent';
+import { ReagentsFilter } from '../../models/reagents-filter';
+import { useData } from '../../providers/DataProvider';
 import {
   uploadAddOperation,
   uploadDeleteOperation,
   uploadEditOperation,
-} from '../services/operationsDB';
-import { uploadAddReagent, uploadDeleteReagent, uploadEditReagent } from '../services/reagentsDB';
-import { filteredReagent } from '../utils/filtered-reagent';
-import { formattedAmount } from '../utils/formatted-amount';
-import { formattedDate } from '../utils/formatted-date';
-import { normalizedAmount } from '../utils/normalized-amount';
-import { truncate } from '../utils/truncate';
-import { FilterOptions } from '../view/FilterOptions';
-import { CrudOperations, TableCollumn, TableView } from '../view/TableView';
+} from '../../services/operationsDB';
+import {
+  uploadAddReagent,
+  uploadDeleteReagent,
+  uploadEditReagent,
+} from '../../services/reagentsDB';
+import { filteredReagent } from '../../utils/filtered-reagent';
+import { formattedAmount } from '../../utils/formatted-amount';
+import { formattedDate } from '../../utils/formatted-date';
+import { normalizedAmount } from '../../utils/normalized-amount';
+import { truncate } from '../../utils/truncate';
+import { FilterOptions } from '../Crud/Filter/FilterOptions';
+import { CrudOperations, TableCollumn, TableView } from '../Crud/Table/TableView';
+import { OperationModal } from '../Operations/OperationModal';
+import { ReagentModal } from './ReagentModal';
 
 const initialFilter: ReagentsFilter = {
   expired: null,
-  dateField: null,
   minDate: null,
   maxDate: null,
   dimension: null,
@@ -96,8 +100,10 @@ function ExpandedComponent({ reagent }: { reagent: Reagent }) {
     .filter((operation) => !!operation);
 
   return (
-    <Paper p="md" radius="md" withBorder style={{ overflow: 'hidden' }}>
-      <Text fw="bold">Operações</Text>
+    <Paper py="md" px="50px" pb="50px" radius="md" withBorder style={{ overflow: 'hidden' }}>
+      <Text size="xl" ta="center" fw="bold" pb="md">
+        Operações
+      </Text>
 
       <TableView
         datas={operations}
@@ -140,6 +146,7 @@ export function ReagentsPage() {
   const [showMode, { open: activateShowMode, close: deactivateShowMode }] = useDisclosure(false);
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState<ReagentsFilter>(initialFilter);
+  const [definition, setDefinition] = useState<Definition | null>(null);
 
   const handleSearchChange = (search: string) => {
     setSearch(search);
@@ -181,6 +188,10 @@ export function ReagentsPage() {
     uploadDeleteReagent(reagent);
   };
 
+  const handleChangeDefinition = (definition: Definition | null) => {
+    setDefinition(definition);
+  };
+
   const crudOperations: CrudOperations<Reagent> = {
     handleShowData: handleShowReagent,
     handleBeginDataEdit: handleBeginReagentEdit,
@@ -207,6 +218,15 @@ export function ReagentsPage() {
       fixed: false,
       ascending: null,
       sorter: (a: Reagent, b: Reagent) => normalizedAmount(a) - normalizedAmount(b),
+      sortingPriority: null,
+    },
+    {
+      name: 'Pureza',
+      accessor: (reagent: Reagent) => (reagent.purity ? `${reagent.purity} %` : ''),
+      hidden: false,
+      fixed: false,
+      ascending: null,
+      sorter: (a: Reagent, b: Reagent) => a.purity - b.purity,
       sortingPriority: null,
     },
     {
@@ -240,6 +260,8 @@ export function ReagentsPage() {
             filter={filter}
             onSearchChange={handleSearchChange}
             onFilterChange={handleFilterChange}
+            onDefinitionChange={handleChangeDefinition}
+            definition={definition}
           />
         </Grid.Col>
 

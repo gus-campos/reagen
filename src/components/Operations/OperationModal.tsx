@@ -1,6 +1,6 @@
 import { Box, Grid, Select, Text, TextInput } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
-import { useForm } from '@mantine/form';
+import { isNotEmpty, useForm } from '@mantine/form';
 import { Reagent } from '@/src/models/reagent';
 import { useData } from '@/src/providers/DataProvider';
 import { toNullableLocalDate } from '@/src/utils/date';
@@ -28,6 +28,17 @@ export function OperationModal(props: OperationModalProps) {
       type: OperationType.CONSUMPTION,
       notes: '',
     },
+    validate: (values) => ({
+      date: isNotEmpty('Campo obrigatório')(values.date),
+      from:
+        values.type === OperationType.TRANSFER
+          ? isNotEmpty('Campo obrigatório')(values.from)
+          : null,
+      to:
+        values.type === OperationType.TRANSFER ? isNotEmpty('Campo obrigatório')(values.to) : null,
+      source:
+        values.type === OperationType.INPUT ? isNotEmpty('Campo obrigatório')(values.source) : null,
+    }),
 
     transformValues: (values) => ({
       ...values,
@@ -37,7 +48,7 @@ export function OperationModal(props: OperationModalProps) {
 
   return (
     <DataModal
-      dataName="operation"
+      dataName="operação"
       form={form}
       modalOpened={props.operationModalOpened}
       onAddData={props.onAddOperation}
@@ -104,21 +115,18 @@ export function OperationModal(props: OperationModalProps) {
               label="Tipo"
               clearable={false}
               data={Object.values(OperationType)}
+              allowDeselect={false}
               {...form.getInputProps('type')}
             ></Select>
-          </Grid.Col>
-
-          <Grid.Col span={{ base: 12 }}>
-            <TextInput label="Observações" {...form.getInputProps('notes')}></TextInput>
           </Grid.Col>
 
           {/* TODO: Adicionar holders */}
           {form.values.type === OperationType.TRANSFER && (
             <>
-              <Grid.Col span={{ base: 12 }}>
+              <Grid.Col span={{ base: 6 }}>
                 <TextInput label="Fonte" {...form.getInputProps('from')}></TextInput>
               </Grid.Col>
-              <Grid.Col span={{ base: 12 }}>
+              <Grid.Col span={{ base: 6 }}>
                 <TextInput label="Destino" {...form.getInputProps('to')}></TextInput>
               </Grid.Col>
             </>
@@ -128,14 +136,14 @@ export function OperationModal(props: OperationModalProps) {
           {form.values.type === OperationType.INPUT && (
             <>
               <Grid.Col span={{ base: 12 }}>
-                <TextInput
-                  value={form.values.source}
-                  label="Origem"
-                  {...form.getInputProps('source')}
-                ></TextInput>
+                <TextInput label="Origem" {...form.getInputProps('source')}></TextInput>
               </Grid.Col>
             </>
           )}
+
+          <Grid.Col span={{ base: 12 }}>
+            <TextInput label="Observações" {...form.getInputProps('notes')}></TextInput>
+          </Grid.Col>
         </Grid>
       }
     />

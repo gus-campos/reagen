@@ -1,6 +1,6 @@
 import { IconEye } from '@tabler/icons-react';
 import { ActionIcon, Group, Menu, Table } from '@mantine/core';
-import { TableCollumn } from '@/src/view/TableView';
+import { TableCollumn } from '@/src/components/Crud/Table/TableView';
 
 type TableExtraOptionsProps<T> = {
   collumns: TableCollumn<T>[];

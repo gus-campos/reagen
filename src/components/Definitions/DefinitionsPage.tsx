@@ -3,15 +3,15 @@
 import { useState } from 'react';
 import { Box, Button } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { DefinitionModal } from '../components/Definitions/DefinitionModal';
-import { Definition } from '../models/definition';
-import { useData } from '../providers/DataProvider';
+import { Definition } from '../../models/definition';
+import { useData } from '../../providers/DataProvider';
 import {
   uploadAddDefinition,
   uploadDeleteDefinition,
   uploadEditDefinition,
-} from '../services/definitionsDB';
-import { CrudOperations, TableCollumn, TableView } from '../view/TableView';
+} from '../../services/definitionsDB';
+import { CrudOperations, TableCollumn, TableView } from '../Crud/Table/TableView';
+import { DefinitionModal } from './DefinitionModal';
 
 const initialCollums: TableCollumn<Definition>[] = [
   {

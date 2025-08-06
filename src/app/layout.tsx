@@ -7,7 +7,7 @@ import React, { ReactNode } from 'react';
 import { ColorSchemeScript, mantineHtmlProps, MantineProvider } from '@mantine/core';
 import { theme } from '../../theme';
 import { DataProvider } from '../providers/DataProvider';
-import { ReagentShell } from '../view/ReagentsShell';
+import { ReagentShell } from '../view/AppShell';
 
 export const metadata = {
   title: 'Mantine Next.js template',

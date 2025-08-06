@@ -29,7 +29,7 @@ export function DefinitionModal(props: DefinitionModalProps) {
 
   return (
     <DataModal
-      dataName="definitione"
+      dataName="definição"
       form={form}
       modalOpened={props.definitionModalOpened}
       onAddData={props.onAddDefinition}

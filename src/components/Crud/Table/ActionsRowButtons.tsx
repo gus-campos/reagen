@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { IconEdit, IconFileText, IconTrash } from '@tabler/icons-react';
 import { ActionIcon, Group } from '@mantine/core';
-import { CrudOperations } from '@/src/view/TableView';
+import { CrudOperations } from '@/src/components/Crud/Table/TableView';
 
 type ActionsRowButtonsProps<T> = {
   data: T;

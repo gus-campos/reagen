@@ -2,16 +2,19 @@ import { useEffect } from 'react';
 import { Box, Divider, Grid, NumberInput, Paper, Select } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
-import { SearchBar } from '../components/Crud/Filter/SearchBar';
-import { DateField, ReagentsFilter } from '../models/reagents-filter';
-import { Dimension, DimensionDefaultUnit } from '../models/unit';
-import { toNullableLocalDate } from '../utils/date';
+import { Definition } from '@/src/models/definition';
+import ReagentsFilter from '@/src/models/reagents-filter';
+import { Dimension, DimensionDefaultUnit } from '@/src/models/unit';
+import { toNullableLocalDate } from '@/src/utils/date';
+import { SearchBar } from './SearchBar';
 
 type FilterOptionsProps = {
   search: string;
   filter: ReagentsFilter;
   onSearchChange: (search: string) => void;
   onFilterChange: (filter: ReagentsFilter) => void;
+  onDefinitionChange: (definition: Definition | null) => void;
+  definition: Definition | null;
 };
 
 export function FilterOptions(props: FilterOptionsProps) {
@@ -23,8 +26,6 @@ export function FilterOptions(props: FilterOptionsProps) {
       maxDate: toNullableLocalDate(values.maxDate),
     }),
   });
-
-  // Armazenar UTC, converter local, ver como mantine lida com isso, definir locale?
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -40,6 +41,10 @@ export function FilterOptions(props: FilterOptionsProps) {
   const parenthesizedUnit = defaultUnit ? `(${defaultUnit})` : '';
   const suffixUnit = defaultUnit ? ' ' + defaultUnit : '';
 
+  useEffect(() => {
+    form.setFieldValue('dimension', props.definition?.dimension ?? null);
+  }, [props.definition?.dimension]);
+
   return (
     <Box style={{ padding: '0 10px 0 0' }}>
       <Paper radius="md" withBorder style={{ padding: '10px' }}>
@@ -47,24 +52,19 @@ export function FilterOptions(props: FilterOptionsProps) {
 
         <h3>Por nome</h3>
 
-        <SearchBar search={props.search} setSearch={props.onSearchChange} />
+        <SearchBar
+          search={props.search}
+          onChangeSearch={props.onSearchChange}
+          onChangeDefinition={props.onDefinitionChange}
+        />
 
-        <h3>Por data</h3>
+        <h3>Por vencimento</h3>
 
         <form>
           <Grid>
-            <Grid.Col span={{ base: 12 }}>
-              <Select
-                label="Data de"
-                placeholder="Selecione um campo de data"
-                data={Object.values(DateField)}
-                {...form.getInputProps('dateField')}
-              ></Select>
-            </Grid.Col>
             <Grid.Col span={{ base: 6 }}>
               <DatePickerInput
                 clearable
-                disabled={!form.values.dateField}
                 valueFormat="DD/MM/YYYY"
                 label="A partir de"
                 placeholder="Selecione"
@@ -75,7 +75,6 @@ export function FilterOptions(props: FilterOptionsProps) {
             <Grid.Col span={{ base: 6 }}>
               <DatePickerInput
                 clearable
-                disabled={!form.values.dateField}
                 valueFormat="DD/MM/YYYY"
                 label="Até"
                 placeholder="Selecione"
@@ -89,9 +88,10 @@ export function FilterOptions(props: FilterOptionsProps) {
           <Grid>
             <Grid.Col span={{ base: 12 }}>
               <Select
-                label="Dimensão da quantidade"
+                label="Dimensão"
                 placeholder="Selecione a dimensão"
                 data={Object.values(Dimension)}
+                disabled={!!props.definition}
                 {...form.getInputProps('dimension')}
               ></Select>
             </Grid.Col>

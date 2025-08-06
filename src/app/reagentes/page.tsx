@@ -1,3 +1,3 @@
-import { ReagentsPage } from '@/src/pages/ReagentsPage';
+import { ReagentsPage } from '@/src/components/Reagent/ReagentsPage';
 
 export default ReagentsPage;

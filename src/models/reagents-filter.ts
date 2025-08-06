@@ -13,16 +13,9 @@
 
 import { Dimension } from './unit';
 
-export enum DateField {
-  IN_DATE = 'Entrada',
-  OUT_DATE = 'Saída',
-  EXPIRE_DATE = 'Vencimento',
-}
-
 export interface ReagentsFilter {
   expired: boolean | null; // TODO
 
-  dateField: DateField | null;
   minDate: Date | null;
   maxDate: Date | null;
 

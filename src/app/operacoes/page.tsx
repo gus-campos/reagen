@@ -1,3 +1,3 @@
-import { OperationsPage } from '@/src/pages/OperationsPage';
+import { OperationsPage } from '@/src/components/Operations/OperationsPage';
 
 export default OperationsPage;
