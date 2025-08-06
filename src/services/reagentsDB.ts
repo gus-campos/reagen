@@ -23,8 +23,6 @@ export const reagentConverter: FirestoreDataConverter<Reagent> = {
     return {
       ...data,
       id: snapshot.id,
-      inDate: data.inDate instanceof Timestamp ? data.inDate.toDate() : (data.inDate ?? null),
-      outDate: data.outDate instanceof Timestamp ? data.outDate.toDate() : (data.outDate ?? null),
       expireDate:
         data.expireDate instanceof Timestamp ? data.expireDate.toDate() : (data.expireDate ?? null),
     } as Reagent;
