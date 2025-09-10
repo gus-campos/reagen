@@ -20,6 +20,7 @@ export function DefinitionModal(props: DefinitionModalProps) {
       id: '[NULL]',
       name: '',
       dimension: Dimension.MASS,
+      reagentsId: [],
     },
 
     validate: {

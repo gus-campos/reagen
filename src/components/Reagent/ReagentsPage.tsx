@@ -109,7 +109,7 @@ function ExpandedComponent({ reagent }: { reagent: Reagent }) {
         datas={operations}
         initialCollumns={initialCollums}
         crudOperations={crudOperations}
-      ></TableView>
+      />
 
       <Stack>
         <Button
@@ -240,15 +240,6 @@ export function ReagentsPage() {
       sortingPriority: null,
     },
   ];
-
-  // if (reagents && reagents[0])
-  //   reagents[0].operations.push({
-  //     date: new Date(),
-  //     id: '',
-  //     reagentId: '',
-  //     type: OperationType.CONSUMPTION,
-  //     notes: 'Notas',
-  //   });
 
   return (
     <>

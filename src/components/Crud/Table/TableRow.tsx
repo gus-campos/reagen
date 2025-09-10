@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Accordion, Table } from '@mantine/core';
+import { useHover } from '@mantine/hooks';
 import { CrudOperations, TableCollumn } from '@/src/components/Crud/Table/TableView';
 import { ActionsRowButtons } from './ActionsRowButtons';
 
@@ -12,10 +13,10 @@ type TableRowProps<T> = {
 };
 
 export function TableRow<T>(props: TableRowProps<T>) {
-  const [isHovered, setIsHovered] = useState(false);
+  const { hovered, ref } = useHover();
 
   return (
-    <Table.Tr onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
+    <Table.Tr ref={ref}>
       {props.collumns
         .filter((collumn) => !collumn.hidden)
         .map((collumn, index) => (
@@ -29,7 +30,7 @@ export function TableRow<T>(props: TableRowProps<T>) {
         ))}
       <Table.Td>
         <ActionsRowButtons
-          ishovered={isHovered}
+          ishovered={hovered}
           data={props.data}
           crudOperations={props.crudOperations}
         />

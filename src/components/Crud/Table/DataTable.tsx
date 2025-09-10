@@ -47,10 +47,30 @@ export function DataTable<T>(props: TableProps<T>) {
   const handleToggleSorting = (collumnName: string) => {
     if (!collumnsNames.includes(collumnName)) throw new Error('Coluna inválida');
 
+    // Apenas uma ordenação por vez
+    setCollumns(
+      collumns.map((collumn) =>
+        collumn.name === collumnName
+          ? {
+              ...collumn,
+              ascending:
+                collumn.ascending === null ? false : collumn.ascending === false ? true : null,
+              sortingPriority: 0,
+            }
+          : {
+              ...collumn,
+              ascending: null,
+              sortingPriority: Infinity,
+            }
+      )
+    );
+
+    /*
+    Múltiplas ordenações com prioridades => pouco intuitivo, por enquanto
+
     // ascending true -> ascending null
     // ascending null -> ascending false
     // ascending false -> ascending true
-
     const nextOdering = (collumn: TableCollumn<T>) => {
       return collumn.ascending != null ? (collumn.ascending ? null : true) : false;
     };
@@ -81,6 +101,7 @@ export function DataTable<T>(props: TableProps<T>) {
           : collumn
       )
     );
+    */
   };
 
   const sortedDatas = [...props.datas].sort((a, b) => {

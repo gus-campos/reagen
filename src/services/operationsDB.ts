@@ -10,9 +10,10 @@ import {
 } from 'firebase/firestore';
 import { db } from '@/src/utils/firebase';
 import { Operation } from '../models/operation';
-import { uploadEditReagent } from './reagentsDB';
 
 type OperationFirestoreData = Omit<Operation, 'id'>;
+
+export const operationsDocName = 'operations';
 
 export const operationConverter: FirestoreDataConverter<Operation> = {
   toFirestore(operation: Operation): OperationFirestoreData {
@@ -30,18 +31,16 @@ export const operationConverter: FirestoreDataConverter<Operation> = {
   },
 };
 
-export async function uploadDeleteOperation(operation: Operation) {
-  if (!operation.id) {
-    console.error('ID do documento não encontrado');
-    return;
-  }
-  const docRef = doc(db, 'operations', operation.id);
+export async function uploadDeleteOperation(operation: Operation | string) {
+  const id = typeof operation === 'string' ? operation : operation.id;
+
+  const docRef = doc(db, operationsDocName, id);
   await deleteDoc(docRef);
 }
 
 export async function uploadAddOperation(operation: Operation) {
   try {
-    const docRef = await addDoc(collection(db, 'operations'), operation);
+    const docRef = await addDoc(collection(db, operationsDocName), operation);
     // Associar a operação com o reagente
     const reagentRef = doc(db, 'reagents', operation.reagentId);
     await updateDoc(reagentRef, {
@@ -58,6 +57,6 @@ export async function uploadEditOperation(operation: Operation) {
     return;
   }
   const { id, ...updateData } = operation;
-  const docRef = doc(db, 'operations', id);
+  const docRef = doc(db, operationsDocName, id);
   await updateDoc(docRef, updateData);
 }

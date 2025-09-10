@@ -12,19 +12,13 @@ type ReagentsTableTheadProps<T> = {
 };
 
 export function TableThead<T>(props: ReagentsTableTheadProps<T>) {
-  const [collumnHovered, setCollumnHovered] = useState<string | null>(null);
-
   return (
     <Table.Thead>
       <Table.Tr>
         {props.collumns
           .filter((collumn) => !collumn.hidden)
           .map((collumn, index) => (
-            <Table.Th
-              key={index}
-              onMouseEnter={() => setCollumnHovered(collumn.name)}
-              onMouseLeave={() => setCollumnHovered(null)}
-            >
+            <Table.Th key={index}>
               <Group gap="5px" justify="flex-start">
                 <Text size="md" fw="bold">
                   {collumn.name}
@@ -33,7 +27,6 @@ export function TableThead<T>(props: ReagentsTableTheadProps<T>) {
                   fixed={collumn.fixed != null ? collumn.fixed : true}
                   sortable={collumn.sorter != null}
                   ascending={collumn.ascending != null ? collumn.ascending : null}
-                  ishovered={collumn.name == collumnHovered}
                   onHandleHideCollumn={() => props.onHideCollumn(collumn.name)}
                   onToggleSorting={() => props.onToggleSorting(collumn.name)}
                 />

@@ -11,7 +11,7 @@ import { Definition } from '../models/definition';
 
 type DefinitionFirestoreData = Omit<Definition, 'id'>;
 
-const documentName = 'definitions';
+export const definitionDocName = 'definitions';
 
 export const definitionConverter: FirestoreDataConverter<Definition> = {
   toFirestore(definition: Definition): DefinitionFirestoreData {
@@ -29,17 +29,13 @@ export const definitionConverter: FirestoreDataConverter<Definition> = {
 };
 
 export async function uploadDeleteDefinition(definition: Definition) {
-  if (!definition.id) {
-    console.error('ID do documento não encontrado');
-    return;
-  }
-  const docRef = doc(db, documentName, definition.id);
+  const docRef = doc(db, definitionDocName, definition.id);
   await deleteDoc(docRef);
 }
 
 export async function uploadAddDefinition(definition: Definition) {
   try {
-    const docRef = await addDoc(collection(db, documentName), definition);
+    const docRef = await addDoc(collection(db, definitionDocName), definition);
   } catch (e) {
     console.error('Erro ao adicionar documento: ', e);
   }
@@ -51,6 +47,6 @@ export async function uploadEditDefinition(definition: Definition) {
     return;
   }
   const { id, ...updateData } = definition;
-  const docRef = doc(db, documentName, id);
+  const docRef = doc(db, definitionDocName, id);
   await updateDoc(docRef, updateData);
 }
