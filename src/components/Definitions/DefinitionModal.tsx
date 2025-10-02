@@ -1,8 +1,8 @@
-import { Box, Grid, Select, TextInput } from '@mantine/core';
-import { useForm } from '@mantine/form';
-import { Definition } from '../../models/definition';
-import { Dimension } from '../../models/unit';
-import { DataModal } from '../Crud/Table/Modal/DataModal';
+import { Box, Grid, Select, TextInput } from "@mantine/core";
+import { useForm } from "@mantine/form";
+import { Definition } from "../../models/definition";
+import { Dimension } from "../../models/unit";
+import { DataEdit } from "../Crud/Table/Modal/DataShowEdit";
 
 type DefinitionModalProps = {
   showMode: boolean;
@@ -17,32 +17,33 @@ type DefinitionModalProps = {
 export function DefinitionModal(props: DefinitionModalProps) {
   const form = useForm<Definition>({
     initialValues: {
-      id: '[NULL]',
-      name: '',
+      id: "[NULL]",
+      name: "",
       dimension: Dimension.MASS,
       reagentsId: [],
     },
 
     validate: {
-      name: (value) => (value.trim().length > 0 ? null : 'O nome não pode estar vazio'),
+      name: (value) =>
+        value.trim().length > 0 ? null : "O nome não pode estar vazio",
     },
   });
 
   return (
-    <DataModal
+    <DataEdit<Definition>
       dataName="definição"
       form={form}
-      modalOpened={props.definitionModalOpened}
       onAddData={props.onAddDefinition}
       onCloseModal={props.onCloseDefinitionModal}
       onEditData={props.onEditDefinition}
       onBeginShownDataEdit={props.onBeginShownDefinitionEdit}
       showMode={props.showMode}
       selectedData={props.selectedDefinition}
-      showModeChildren={
+    >
+      {/* </DataEdit>
         <Box
           style={{
-            padding: '10px',
+            padding: "10px",
           }}
         >
           {props.selectedDefinition && (
@@ -57,23 +58,22 @@ export function DefinitionModal(props: DefinitionModalProps) {
             </Grid>
           )}
         </Box>
-      }
-      editModeChildren={
-        <Grid>
-          <Grid.Col span={{ base: 12 }}>
-            <TextInput label="Nome" {...form.getInputProps('name')}></TextInput>
-          </Grid.Col>
+      } */}
 
-          <Grid.Col span={{ base: 12 }}>
-            <Select
-              allowDeselect={false}
-              label="Dimensão"
-              {...form.getInputProps('dimension')}
-              data={Object.values(Dimension)}
-            ></Select>
-          </Grid.Col>
-        </Grid>
-      }
-    />
+      <Grid>
+        <Grid.Col span={{ base: 12 }}>
+          <TextInput label="Nome" {...form.getInputProps("name")}></TextInput>
+        </Grid.Col>
+
+        <Grid.Col span={{ base: 12 }}>
+          <Select
+            allowDeselect={false}
+            label="Dimensão"
+            {...form.getInputProps("dimension")}
+            data={Object.values(Dimension)}
+          ></Select>
+        </Grid.Col>
+      </Grid>
+    </DataEdit>
   );
 }

@@ -1,8 +1,7 @@
-import { useState } from 'react';
-import { Group, Table, Text } from '@mantine/core';
-import { TableCollumn } from '@/src/components/Crud/Table/TableView';
-import { ActionsCollumnButtons } from './ActionsCollumnButtons';
-import { TableExtraOptions } from './TableExtraOptions';
+import { Group, Table, Text } from "@mantine/core";
+import { TableCollumn } from "@/src/components/Crud/Table/TableView";
+import { ActionsCollumnButtons } from "./ActionsCollumnButtons";
+import { TableExtraOptions } from "./TableExtraOptions";
 
 type ReagentsTableTheadProps<T> = {
   collumns: TableCollumn<T>[];
@@ -26,7 +25,9 @@ export function TableThead<T>(props: ReagentsTableTheadProps<T>) {
                 <ActionsCollumnButtons
                   fixed={collumn.fixed != null ? collumn.fixed : true}
                   sortable={collumn.sorter != null}
-                  ascending={collumn.ascending != null ? collumn.ascending : null}
+                  ascending={
+                    collumn.ascending != null ? collumn.ascending : null
+                  }
                   onHandleHideCollumn={() => props.onHideCollumn(collumn.name)}
                   onToggleSorting={() => props.onToggleSorting(collumn.name)}
                 />
@@ -36,7 +37,10 @@ export function TableThead<T>(props: ReagentsTableTheadProps<T>) {
         <Table.Th>
           <Group gap="5px" justify="center">
             <Text fw="bold">Ações</Text>
-            <TableExtraOptions collumns={props.collumns} onShowCollumn={props.onShowCollumn} />
+            <TableExtraOptions
+              collumns={props.collumns}
+              onShowCollumn={props.onShowCollumn}
+            />
           </Group>
         </Table.Th>
       </Table.Tr>

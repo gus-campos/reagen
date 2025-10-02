@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { DataTable } from '@/src/components/Crud/Table/DataTable';
+import { DataTable } from "@/src/components/Crud/Table/DataTable";
 
 export type TableCollumn<T> = {
   name: string;
@@ -25,7 +25,7 @@ type TableViewProps<T> = {
   search?: string;
   searched?: (data: T) => string;
   dataFilter?: (data: T) => boolean;
-  expandedComponent?: (data: T) => React.ReactNode;
+  handleClickRow?: () => void;
 };
 
 export function TableView<T>(props: TableViewProps<T>) {
@@ -44,7 +44,7 @@ export function TableView<T>(props: TableViewProps<T>) {
           search={props.search}
           searched={props.searched}
           dataFilter={props.dataFilter}
-          expandedComponent={props.expandedComponent}
+          handleClickRow={props.handleClickRow}
         />
       )}
     </>
