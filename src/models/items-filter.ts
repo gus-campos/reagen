@@ -13,7 +13,7 @@
 
 import { Dimension } from './unit';
 
-export interface ReagentsFilter {
+export interface ItemsFilter {
   expired: boolean | null; // TODO
 
   minDate: Date | null;
@@ -24,4 +24,4 @@ export interface ReagentsFilter {
   maxAmount: number | null;
 }
 
-export default ReagentsFilter;
+export default ItemsFilter;

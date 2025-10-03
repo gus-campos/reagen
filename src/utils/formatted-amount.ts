@@ -1,5 +1,5 @@
-import { Reagent } from '../models/reagent';
+import { Item } from '../models/item';
 
-export function formattedAmount(reagent: Reagent) {
-  return reagent.amount + ' ' + reagent.unit;
+export function formattedAmount(item: Item) {
+  return item.amount + ' ' + item.unit;
 }

@@ -10,24 +10,13 @@ type ActionsRowButtonsProps<T> = {
 };
 
 export function ActionsRowButtons<T>(props: ActionsRowButtonsProps<T>) {
-  const iconColors = props.ishovered ? 'blue' : 'lightgrey';
-
   return (
     <>
       {props.crudOperations && (
         <Group gap="xs" justify="center">
           <ActionIcon
             variant="transparent"
-            color={iconColors}
-            onClick={() => props.crudOperations!.handleDeleteData(props.data)}
-            size="20px"
-          >
-            <IconTrash />
-          </ActionIcon>
-
-          <ActionIcon
-            variant="transparent"
-            color={iconColors}
+            color={props.ishovered ? 'blue' : 'lightgrey'}
             onClick={() => props.crudOperations!.handleBeginDataEdit(props.data)}
             size="20px"
           >
@@ -36,11 +25,11 @@ export function ActionsRowButtons<T>(props: ActionsRowButtonsProps<T>) {
 
           <ActionIcon
             variant="transparent"
-            color={iconColors}
-            onClick={() => props.crudOperations!.handleShowData(props.data)}
+            color={props.ishovered ? 'red' : 'lightgrey'}
+            onClick={() => props.crudOperations!.handleDeleteData(props.data)}
             size="20px"
           >
-            <IconFileText />
+            <IconTrash />
           </ActionIcon>
         </Group>
       )}

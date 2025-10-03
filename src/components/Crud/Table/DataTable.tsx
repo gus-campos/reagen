@@ -1,18 +1,15 @@
-import React, { useState } from "react";
-import { Paper, Table } from "@mantine/core";
-import {
-  CrudOperations,
-  TableCollumn,
-} from "@/src/components/Crud/Table/TableView";
-import { TableRow } from "./TableRow";
-import { TableThead } from "./TableThead";
+import React, { useState } from 'react';
+import { Paper, Table } from '@mantine/core';
+import { CrudOperations, TableCollumn } from '@/src/components/Crud/Table/TableView';
+import { TableRow } from './TableRow';
+import { TableThead } from './TableThead';
 
 // Função auxiliar da busca
 const normalizeString = (str: string) => {
   return str
     .trim()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
     .toLowerCase();
 };
 
@@ -27,35 +24,27 @@ type TableProps<T> = {
   search?: string;
   searched?: (data: T) => string;
   dataFilter?: (data: T) => boolean;
-  handleClickRow?: (reagentId: number) => void;
+  handleClickRow?: (itemId: T) => void;
 };
 
 export function DataTable<T>(props: TableProps<T>) {
-  const [collumns, setCollumns] = useState<TableCollumn<T>[]>(
-    props.initialCollumns
-  );
+  const [collumns, setCollumns] = useState<TableCollumn<T>[]>(props.initialCollumns);
 
   const collumnsNames = collumns.map((collumn) => collumn.name);
 
   const setCollumnsVisibility = (collumnName: string, hidden: boolean) => {
-    if (!collumnsNames.includes(collumnName))
-      throw new Error("Coluna inválida");
+    if (!collumnsNames.includes(collumnName)) throw new Error('Coluna inválida');
 
     setCollumns(
-      collumns.map((collumn) =>
-        collumn.name === collumnName ? { ...collumn, hidden } : collumn
-      )
+      collumns.map((collumn) => (collumn.name === collumnName ? { ...collumn, hidden } : collumn))
     );
   };
 
-  const handleHideCollumn = (collumnName: string) =>
-    setCollumnsVisibility(collumnName, true);
-  const handleShowCollumn = (collumnName: string) =>
-    setCollumnsVisibility(collumnName, false);
+  const handleHideCollumn = (collumnName: string) => setCollumnsVisibility(collumnName, true);
+  const handleShowCollumn = (collumnName: string) => setCollumnsVisibility(collumnName, false);
 
   const handleToggleSorting = (collumnName: string) => {
-    if (!collumnsNames.includes(collumnName))
-      throw new Error("Coluna inválida");
+    if (!collumnsNames.includes(collumnName)) throw new Error('Coluna inválida');
 
     // Apenas uma ordenação por vez
     setCollumns(
@@ -64,11 +53,7 @@ export function DataTable<T>(props: TableProps<T>) {
           ? {
               ...collumn,
               ascending:
-                collumn.ascending === null
-                  ? false
-                  : collumn.ascending === false
-                    ? true
-                    : null,
+                collumn.ascending === null ? false : collumn.ascending === false ? true : null,
               sortingPriority: 0,
             }
           : {
@@ -121,10 +106,7 @@ export function DataTable<T>(props: TableProps<T>) {
   const sortedDatas = [...props.datas].sort((a, b) => {
     const sortingCollumns = [...collumns]
       .filter((collum) => collum.ascending !== null)
-      .sort(
-        (a, b) =>
-          (a.sortingPriority ?? Infinity) - (b.sortingPriority ?? Infinity)
-      );
+      .sort((a, b) => (a.sortingPriority ?? Infinity) - (b.sortingPriority ?? Infinity));
 
     for (const sortingCollumn of sortingCollumns) {
       const result = sortingCollumn.sorter ? sortingCollumn.sorter(a, b) : 0;
@@ -134,7 +116,7 @@ export function DataTable<T>(props: TableProps<T>) {
   });
 
   return (
-    <Paper radius="md" withBorder style={{ overflow: "hidden" }}>
+    <Paper radius="md" withBorder style={{ overflow: 'hidden' }}>
       <Table tabularNums striped highlightOnHover>
         <TableThead
           collumns={collumns}
@@ -150,20 +132,14 @@ export function DataTable<T>(props: TableProps<T>) {
                 ? searchMatch(props.searched(data), props.search)
                 : true
             )
-            .filter((data) =>
-              props.dataFilter ? props.dataFilter(data) : true
-            )
+            .filter((data) => (props.dataFilter ? props.dataFilter(data) : true))
             .map((data, index) => (
               <TableRow
                 key={index}
                 data={data}
                 collumns={collumns}
                 crudOperations={props.crudOperations}
-                handleClick={
-                  props.handleClickRow
-                    ? () => props.handleClickRow!(index)
-                    : undefined
-                }
+                handleClick={props.handleClickRow ? () => props.handleClickRow!(data) : undefined}
               />
             ))}
         </Table.Tbody>

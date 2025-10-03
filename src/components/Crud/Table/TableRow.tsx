@@ -1,10 +1,7 @@
-import { Table } from "@mantine/core";
-import { useHover } from "@mantine/hooks";
-import {
-  CrudOperations,
-  TableCollumn,
-} from "@/src/components/Crud/Table/TableView";
-import { ActionsRowButtons } from "./ActionsRowButtons";
+import { Table } from '@mantine/core';
+import { useHover } from '@mantine/hooks';
+import { CrudOperations, TableCollumn } from '@/src/components/Crud/Table/TableView';
+import { ActionsRowButtons } from './ActionsRowButtons';
 
 type TableRowProps<T> = {
   data: T;
@@ -21,11 +18,7 @@ export function TableRow<T>(props: TableRowProps<T>) {
       {props.collumns
         .filter((collumn) => !collumn.hidden)
         .map((collumn, index) => (
-          <Table.Td
-            key={index}
-            onClick={props.handleClick}
-            style={{ cursor: "pointer" }}
-          >
+          <Table.Td key={index} onClick={props.handleClick} style={{ cursor: 'pointer' }}>
             {collumn.accessor(props.data)}
           </Table.Td>
         ))}

@@ -21,6 +21,8 @@ export const definitionConverter: FirestoreDataConverter<Definition> = {
   fromFirestore(snapshot): Definition {
     const data = snapshot.data() as DefinitionFirestoreData;
 
+    console.log(data);
+
     return {
       ...data,
       id: snapshot.id,

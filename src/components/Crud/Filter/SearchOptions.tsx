@@ -1,13 +1,13 @@
 import { Box, Divider, Paper } from '@mantine/core';
 import { SearchBar } from '../components/Crud/Filter/SearchBar';
 import FilterOptions from '../components/Filter/FilterOptions';
-import ReagentsFilter from '../models/reagents-filter';
+import ItemsFilter from '../models/items-filter';
 
 type SearchOptionsProps = {
   search: string;
   handleChangeSearch: (search: string) => void;
-  filter: ReagentsFilter;
-  handleChangeFilter: (filter: ReagentsFilter) => void;
+  filter: ItemsFilter;
+  handleChangeFilter: (filter: ItemsFilter) => void;
 };
 
 export default function SearchOptions(props: SearchOptionsProps) {

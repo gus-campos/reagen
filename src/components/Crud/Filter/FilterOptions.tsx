@@ -3,22 +3,22 @@ import { Box, Divider, Grid, NumberInput, Paper, Select } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
 import { Definition } from '@/src/models/definition';
-import ReagentsFilter from '@/src/models/reagents-filter';
+import ItemsFilter from '@/src/models/items-filter';
 import { Dimension, DimensionDefaultUnit } from '@/src/models/unit';
 import { toNullableLocalDate } from '@/src/utils/date';
 import { SearchBar } from './SearchBar';
 
 type FilterOptionsProps = {
   search: string;
-  filter: ReagentsFilter;
+  filter: ItemsFilter;
   onSearchChange: (search: string) => void;
-  onFilterChange: (filter: ReagentsFilter) => void;
+  onFilterChange: (filter: ItemsFilter) => void;
   onDefinitionChange: (definition: Definition | null) => void;
   definition: Definition | null;
 };
 
 export function FilterOptions(props: FilterOptionsProps) {
-  const form = useForm<ReagentsFilter>({
+  const form = useForm<ItemsFilter>({
     initialValues: props.filter,
     transformValues: (values) => ({
       ...values,

@@ -1,8 +1,8 @@
-import React, { ReactNode, useEffect } from "react";
-import { Box, Button, Group, Modal } from "@mantine/core";
-import { UseFormReturnType } from "@mantine/form";
+import React, { ReactNode, useEffect } from 'react';
+import { Box, Button, Group, Modal } from '@mantine/core';
+import { UseFormReturnType } from '@mantine/form';
 
-type ReagentModalProps<T> = {
+type ItemModalProps<T> = {
   showMode: boolean;
   selectedData: T | null;
   children: ReactNode;
@@ -14,7 +14,7 @@ type ReagentModalProps<T> = {
   onBeginShownDataEdit: () => void;
 };
 
-export function DataEdit<T>(props: ReagentModalProps<T>) {
+export function DataEdit<T>(props: ItemModalProps<T>) {
   const handleSubmit = (data: T) => {
     props.onCloseModal();
 
@@ -37,7 +37,7 @@ export function DataEdit<T>(props: ReagentModalProps<T>) {
             props.form.onSubmit(handleSubmit)();
           }}
         >
-          {props.selectedData ? "Salvar" : "Adicionar"}
+          {props.selectedData ? 'Salvar' : 'Adicionar'}
         </Button>
 
         <Button variant="outline" onClick={props.onCloseModal}>

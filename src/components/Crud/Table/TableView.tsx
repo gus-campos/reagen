@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { DataTable } from "@/src/components/Crud/Table/DataTable";
+import { DataTable } from '@/src/components/Crud/Table/DataTable';
 
 export type TableCollumn<T> = {
   name: string;
@@ -19,34 +19,31 @@ export type CrudOperations<T> = {
 };
 
 type TableViewProps<T> = {
-  datas?: T[];
+  datas: T[];
   initialCollumns: TableCollumn<T>[];
   crudOperations?: CrudOperations<T>;
   search?: string;
   searched?: (data: T) => string;
   dataFilter?: (data: T) => boolean;
-  handleClickRow?: () => void;
+  handleClickRow?: (item: T) => void;
 };
 
 export function TableView<T>(props: TableViewProps<T>) {
   return (
     <>
-      {/* Coluna dos reagentes */}
+      {/* Coluna dos items */}
 
       {/* Table */}
-      {!props.datas ? (
-        <p>CARREGANDO DADOS...</p>
-      ) : (
-        <DataTable
-          datas={props.datas}
-          initialCollumns={props.initialCollumns}
-          crudOperations={props.crudOperations}
-          search={props.search}
-          searched={props.searched}
-          dataFilter={props.dataFilter}
-          handleClickRow={props.handleClickRow}
-        />
-      )}
+
+      <DataTable
+        datas={props.datas}
+        initialCollumns={props.initialCollumns}
+        crudOperations={props.crudOperations}
+        search={props.search}
+        searched={props.searched}
+        dataFilter={props.dataFilter}
+        handleClickRow={props.handleClickRow}
+      />
     </>
   );
 }

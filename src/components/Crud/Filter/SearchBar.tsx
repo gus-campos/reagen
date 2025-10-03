@@ -14,7 +14,7 @@ export function SearchBar(props: SearchBarProps) {
   return (
     <Box style={{ padding: '0 0 10px 0' }}>
       <Autocomplete
-        placeholder={'Busque por nome de reagentes...'}
+        placeholder={'Busque por nome de itens...'}
         data={definitions?.map((def) => ({ value: def.id, label: def.name })) ?? []}
         onChange={(value) => {
           const definition = definitions?.find((def) => def.name === value) ?? null;

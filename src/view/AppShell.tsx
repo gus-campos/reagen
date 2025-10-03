@@ -6,11 +6,11 @@ import { IconHome, IconTable, IconTestPipe } from '@tabler/icons-react';
 import { AppShell, Burger, Group, Menu, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 
-type ReagentShellProps = {
+type ItemShellProps = {
   children: ReactNode[];
 };
 
-export function ReagentShell(props: ReagentShellProps) {
+export function ItemShell(props: ItemShellProps) {
   const [opened, { toggle }] = useDisclosure();
   const router = useRouter();
 
@@ -24,7 +24,7 @@ export function ReagentShell(props: ReagentShellProps) {
         <Group h="100%" px="md">
           <Burger opened={opened} onClick={toggle} size="sm" />
           <IconTestPipe size={28} />
-          <Text size="xl">Controle de Reagentes</Text>
+          <Text size="xl">Controle de Items</Text>
         </Group>
       </AppShell.Header>
 
@@ -46,36 +46,12 @@ export function ReagentShell(props: ReagentShellProps) {
           <Menu.Item
             onClick={() => {
               toggle();
-              router.push('/reagentes');
+              router.push('/items');
             }}
           >
             <Group>
               <IconTable size={20} />
-              <Text size="md">Reagentes</Text>
-            </Group>
-          </Menu.Item>
-
-          <Menu.Item
-            onClick={() => {
-              toggle();
-              router.push('/operacoes');
-            }}
-          >
-            <Group>
-              <IconTable size={20} />
-              <Text size="md">Operações</Text>
-            </Group>
-          </Menu.Item>
-
-          <Menu.Item
-            onClick={() => {
-              toggle();
-              router.push('/definicoes');
-            }}
-          >
-            <Group>
-              <IconTable size={20} />
-              <Text size="md">Definições</Text>
+              <Text size="md">Itens</Text>
             </Group>
           </Menu.Item>
         </Menu>

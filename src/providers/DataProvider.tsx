@@ -1,24 +1,25 @@
 'use client';
 
 import React, { createContext, ReactNode, useContext } from 'react';
+import { FirebaseError } from 'firebase/app';
 import { collection } from 'firebase/firestore';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 import { Definition } from '../models/definition';
-import { Operation } from '../models/operation';
-import { Reagent } from '../models/reagent';
+import { Item } from '../models/item';
 import { definitionConverter } from '../services/definitionsDB';
-import { operationConverter } from '../services/operationsDB';
-import { reagentConverter } from '../services/reagentsDB';
+import { itemConverter } from '../services/itemsDB';
 import { db } from '../utils/firebase';
 import { sortKeys } from '../utils/sortKeys';
 
 const DataContext = createContext<{
-  reagents: Reagent[] | undefined;
-  definitions: Definition[] | undefined;
-  operations: Operation[] | undefined;
+  items?: Item[];
+  loadingItems: boolean;
+  itemsError?: FirebaseError;
+  definitions?: Definition[];
+  loadingDefinitions: boolean;
+  definitionsError?: FirebaseError;
   getDefinitionById: (id: string) => Definition | null;
-  getReagentById: (id: string) => Reagent | null;
-  getOperationById: (id: string) => Operation | null;
+  getItemById: (id: string) => Item | null;
 } | null>(null);
 
 export function useData() {
@@ -32,32 +33,24 @@ type DataProviderProps = {
 };
 
 export const DataProvider = (props: DataProviderProps) => {
-  const [definitions] = useCollectionData<Definition>(
+  // Única ocorrência de nomes antigos, pois são o nome dos arquivos do firebase
+  const [definitions, loadingDefinitions, definitionsError] = useCollectionData<Definition>(
     collection(db, 'definitions').withConverter(definitionConverter)
   );
-  const [reagents] = useCollectionData<Reagent>(
-    collection(db, 'reagents').withConverter(reagentConverter)
-  );
-  const [operations] = useCollectionData<Operation>(
-    collection(db, 'operations').withConverter(operationConverter)
+  const [items, loadingItems, itemsError] = useCollectionData<Item>(
+    collection(db, 'reagents').withConverter(itemConverter)
   );
 
   const getDefinitionById = (id: string) => {
     return definitions?.find((op) => op.id === id) ?? null;
   };
-  const getReagentById = (id: string) => {
-    return reagents?.find((op) => op.id === id) ?? null;
+  const getItemById = (id: string) => {
+    return items?.find((op) => op.id === id) ?? null;
   };
-  const getOperationById = (id: string) => operations?.find((op) => op.id === id) ?? null;
 
   console.log(
-    'reagents: ',
-    reagents?.map((r) => sortKeys(r))
-  );
-
-  console.log(
-    'operations: ',
-    operations?.map((op) => sortKeys(op))
+    'items: ',
+    items?.map((r) => sortKeys(r))
   );
 
   console.log(
@@ -69,11 +62,13 @@ export const DataProvider = (props: DataProviderProps) => {
     <DataContext.Provider
       value={{
         definitions,
-        reagents,
-        operations,
+        loadingDefinitions,
+        definitionsError,
+        loadingItems,
+        itemsError,
+        items,
         getDefinitionById,
-        getReagentById,
-        getOperationById,
+        getItemById,
       }}
     >
       {props.children}

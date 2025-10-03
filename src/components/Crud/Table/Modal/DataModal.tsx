@@ -2,7 +2,7 @@ import React, { ReactNode, useEffect } from 'react';
 import { Box, Button, Group, Modal } from '@mantine/core';
 import { UseFormReturnType } from '@mantine/form';
 
-type ReagentModalProps<T> = {
+type ItemModalProps<T> = {
   showMode: boolean;
   selectedData: T | null;
   modalOpened: boolean;
@@ -16,7 +16,7 @@ type ReagentModalProps<T> = {
   onBeginShownDataEdit: () => void;
 };
 
-export function DataModal<T>(props: ReagentModalProps<T>) {
+export function DataModal<T>(props: ItemModalProps<T>) {
   const handleSubmit = (data: T) => {
     props.onCloseModal();
 

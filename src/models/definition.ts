@@ -4,5 +4,5 @@ export type Definition = {
   id: string;
   name: string;
   dimension: Dimension;
-  reagentsId: string[];
+  itemsId: string[];
 };

@@ -1,8 +1,8 @@
-import { Box, Grid, Select, TextInput } from "@mantine/core";
-import { useForm } from "@mantine/form";
-import { Definition } from "../../models/definition";
-import { Dimension } from "../../models/unit";
-import { DataEdit } from "../Crud/Table/Modal/DataShowEdit";
+import { Box, Grid, Select, TextInput } from '@mantine/core';
+import { useForm } from '@mantine/form';
+import { Definition } from '../../models/definition';
+import { Dimension } from '../../models/unit';
+import { DataEdit } from '../Crud/Table/Modal/DataShowEdit';
 
 type DefinitionModalProps = {
   showMode: boolean;
@@ -17,15 +17,14 @@ type DefinitionModalProps = {
 export function DefinitionModal(props: DefinitionModalProps) {
   const form = useForm<Definition>({
     initialValues: {
-      id: "[NULL]",
-      name: "",
+      id: '[NULL]',
+      name: '',
       dimension: Dimension.MASS,
-      reagentsId: [],
+      itemsId: [],
     },
 
     validate: {
-      name: (value) =>
-        value.trim().length > 0 ? null : "O nome não pode estar vazio",
+      name: (value) => (value.trim().length > 0 ? null : 'O nome não pode estar vazio'),
     },
   });
 
@@ -62,14 +61,14 @@ export function DefinitionModal(props: DefinitionModalProps) {
 
       <Grid>
         <Grid.Col span={{ base: 12 }}>
-          <TextInput label="Nome" {...form.getInputProps("name")}></TextInput>
+          <TextInput label="Nome" {...form.getInputProps('name')}></TextInput>
         </Grid.Col>
 
         <Grid.Col span={{ base: 12 }}>
           <Select
             allowDeselect={false}
             label="Dimensão"
-            {...form.getInputProps("dimension")}
+            {...form.getInputProps('dimension')}
             data={Object.values(Dimension)}
           ></Select>
         </Grid.Col>

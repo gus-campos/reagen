@@ -1,9 +1,9 @@
-import { Reagent } from '../models/reagent';
+import { Item } from '../models/item';
 import { DimensionDefaultUnit, UnitDimension, UnitMultiplier } from '../models/unit';
 
-export function normalizedAmount(reagent: Reagent): number {
-  const defaultMultiplier = UnitMultiplier[DimensionDefaultUnit[UnitDimension[reagent.unit]]];
-  const reagentMultiplier = UnitMultiplier[reagent.unit];
+export function normalizedAmount(item: Item): number {
+  const defaultMultiplier = UnitMultiplier[DimensionDefaultUnit[UnitDimension[item.unit]]];
+  const itemMultiplier = UnitMultiplier[item.unit];
 
-  return (reagent.amount * reagentMultiplier) / defaultMultiplier;
+  return (item.amount * itemMultiplier) / defaultMultiplier;
 }
