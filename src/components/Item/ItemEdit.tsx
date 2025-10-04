@@ -61,7 +61,7 @@ export function ItemEdit(props: ItemModalProps) {
       expireDate: null,
       amount: 0,
       purity: 0,
-      unit: Unit.GRAM, // Começa vazio? Por causa do desselect? Parece que por o valor setado não estar listado nas opções
+      unit: Unit.GRAM,
     },
 
     transformValues: (values) => ({
@@ -141,11 +141,10 @@ export function ItemEdit(props: ItemModalProps) {
   }, [reagentAddMode]);
 
   // Dar erro se já existir!
-  // Quando adicionar, deixar selecionado no select
-  // Quando começar a adicionar, já passar o que estava digitando?
-  // Pode fazer adicionar qualquer coisa sem querer...
   // Incluir view que permite olhar definições e editar, mas que deve ser pouco usada
   // Voltar pra opção já existente de definição???
+
+  // FIXME: Não está adicionando sempre!!!
 
   return (
     <Box>
