@@ -9,7 +9,7 @@ type ItemShowProps = {
 };
 
 export function ItemShow(props: ItemShowProps) {
-  const { getDefinitionById } = useData();
+  const { getReagentById } = useData();
 
   /* TODO: Incluir botão de edição? */
 
@@ -22,7 +22,7 @@ export function ItemShow(props: ItemShowProps) {
           <Text size="sm" c="dimmed">
             Reagente
           </Text>
-          <Text fw={500}>{getDefinitionById(props.item.definitionId)?.name}</Text>
+          <Text fw={500}>{getReagentById(props.item.reagentId)?.name}</Text>
         </Grid.Col>
 
         <Grid.Col span={{ base: 12, md: 6 }}>

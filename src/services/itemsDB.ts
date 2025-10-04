@@ -10,7 +10,7 @@ import {
 } from 'firebase/firestore';
 import { Item } from '@/src/models/item';
 import { db } from '@/src/utils/firebase';
-import { definitionDocName } from './definitionsDB';
+import { reagentsDocName } from './reagentsDB';
 
 type ItemFirestoreData = Omit<Item, 'id'>;
 
@@ -35,7 +35,6 @@ export const itemConverter: FirestoreDataConverter<Item> = {
 };
 
 export async function uploadDeleteItem(item: Item) {
-
   const docRef = doc(db, itemsDocName, item.id);
   await deleteDoc(docRef);
 }
@@ -44,9 +43,9 @@ export async function uploadAddItem(item: Item) {
   try {
     const docRef = await addDoc(collection(db, itemsDocName), item);
 
-    // Adicionar uma associação a sua Definition
-    const definitionRef = doc(db, definitionDocName, item.definitionId);
-    await updateDoc(definitionRef, {
+    // Adicionar uma associação a sua Reagent
+    const reagentRef = doc(db, reagentsDocName, item.reagentId);
+    await updateDoc(reagentRef, {
       itemsId: arrayUnion(docRef.id),
     });
   } catch (e) {

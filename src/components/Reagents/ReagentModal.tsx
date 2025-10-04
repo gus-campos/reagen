@@ -1,21 +1,21 @@
 import { Box, Grid, Select, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { Definition } from '../../models/definition';
+import { Reagent } from '../../models/reagent';
 import { Dimension } from '../../models/unit';
 import { DataEdit } from '../Crud/Table/Modal/DataShowEdit';
 
-type DefinitionModalProps = {
+type ReagentModalProps = {
   showMode: boolean;
-  selectedDefinition: Definition | null;
-  definitionModalOpened: boolean;
-  onCloseDefinitionModal: () => void;
-  onAddDefinition: (definition: Definition) => void;
-  onEditDefinition: (selectedDefinition: Definition) => void;
-  onBeginShownDefinitionEdit: () => void;
+  selectedReagent: Reagent | null;
+  reagentModalOpened: boolean;
+  onCloseReagentModal: () => void;
+  onAddReagent: (reagent: Reagent) => void;
+  onEditReagent: (selectedReagent: Reagent) => void;
+  onBeginShownReagentEdit: () => void;
 };
 
-export function DefinitionModal(props: DefinitionModalProps) {
-  const form = useForm<Definition>({
+export function ReagentModal(props: ReagentModalProps) {
+  const form = useForm<Reagent>({
     initialValues: {
       id: '[NULL]',
       name: '',
@@ -29,15 +29,15 @@ export function DefinitionModal(props: DefinitionModalProps) {
   });
 
   return (
-    <DataEdit<Definition>
-      dataName="definição"
+    <DataEdit<Reagent>
+      dataName="reagente"
       form={form}
-      onAddData={props.onAddDefinition}
-      onCloseModal={props.onCloseDefinitionModal}
-      onEditData={props.onEditDefinition}
-      onBeginShownDataEdit={props.onBeginShownDefinitionEdit}
+      onAddData={props.onAddReagent}
+      onCloseModal={props.onCloseReagentModal}
+      onEditData={props.onEditReagent}
+      onBeginShownDataEdit={props.onBeginShownReagentEdit}
       showMode={props.showMode}
-      selectedData={props.selectedDefinition}
+      selectedData={props.selectedReagent}
     >
       {/* </DataEdit>
         <Box
@@ -45,14 +45,14 @@ export function DefinitionModal(props: DefinitionModalProps) {
             padding: "10px",
           }}
         >
-          {props.selectedDefinition && (
+          {props.selectedReagent && (
             <Grid>
               <Grid.Col span={{ base: 12 }}>
-                <strong>Nome:</strong> {props.selectedDefinition.name}
+                <strong>Nome:</strong> {props.selectedReagent.name}
               </Grid.Col>
 
               <Grid.Col span={{ base: 12 }}>
-                <strong>Dimensão:</strong> {props.selectedDefinition.dimension}
+                <strong>Dimensão:</strong> {props.selectedReagent.dimension}
               </Grid.Col>
             </Grid>
           )}

@@ -9,7 +9,6 @@ export function toNullableLocalDate(dateStr: Date | null) {
 }
 
 export function validateDate(date?: Date | null, optional: boolean = false) {
-  console.log(date, optional);
   if (!date) {
     if (optional) return null;
     else return 'Selecione uma data';

@@ -2,7 +2,7 @@ import Unit from './unit';
 
 export interface Item {
   id: string;
-  definitionId: string;
+  reagentId: string;
   amount: number;
   unit: Unit;
   purity: number;

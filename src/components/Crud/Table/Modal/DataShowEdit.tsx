@@ -1,5 +1,5 @@
 import React, { ReactNode, useEffect } from 'react';
-import { Box, Button, Group, Modal } from '@mantine/core';
+import { Box, Button, Group } from '@mantine/core';
 import { UseFormReturnType } from '@mantine/form';
 
 type ItemModalProps<T> = {

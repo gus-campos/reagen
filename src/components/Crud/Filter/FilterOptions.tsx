@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
-import { Box, Divider, Grid, NumberInput, Paper, Select } from '@mantine/core';
+import { Box, Grid, NumberInput, Paper, Select } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
-import { Definition } from '@/src/models/definition';
 import ItemsFilter from '@/src/models/items-filter';
+import { Reagent } from '@/src/models/reagent';
 import { Dimension, DimensionDefaultUnit } from '@/src/models/unit';
 import { toNullableLocalDate } from '@/src/utils/date';
 import { SearchBar } from './SearchBar';
@@ -13,8 +13,8 @@ type FilterOptionsProps = {
   filter: ItemsFilter;
   onSearchChange: (search: string) => void;
   onFilterChange: (filter: ItemsFilter) => void;
-  onDefinitionChange: (definition: Definition | null) => void;
-  definition: Definition | null;
+  onReagentChange: (reagent: Reagent | null) => void;
+  reagent: Reagent | null;
 };
 
 export function FilterOptions(props: FilterOptionsProps) {
@@ -42,8 +42,8 @@ export function FilterOptions(props: FilterOptionsProps) {
   const suffixUnit = defaultUnit ? ' ' + defaultUnit : '';
 
   useEffect(() => {
-    form.setFieldValue('dimension', props.definition?.dimension ?? null);
-  }, [props.definition?.dimension]);
+    form.setFieldValue('dimension', props.reagent?.dimension ?? null);
+  }, [props.reagent?.dimension]);
 
   return (
     <Box style={{ padding: '0 10px 0 0' }}>
@@ -55,7 +55,7 @@ export function FilterOptions(props: FilterOptionsProps) {
         <SearchBar
           search={props.search}
           onChangeSearch={props.onSearchChange}
-          onChangeDefinition={props.onDefinitionChange}
+          onChangeReagent={props.onReagentChange}
         />
 
         <h3>Por vencimento</h3>
@@ -91,7 +91,7 @@ export function FilterOptions(props: FilterOptionsProps) {
                 label="Dimensão"
                 placeholder="Selecione a dimensão"
                 data={Object.values(Dimension)}
-                disabled={!!props.definition}
+                disabled={!!props.reagent}
                 {...form.getInputProps('dimension')}
               ></Select>
             </Grid.Col>

@@ -15,7 +15,8 @@ import {
   Text,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { Definition } from '@/src/models/definition';
+import { Reagent } from '@/src/models/reagent';
+import { uploadAddReagent } from '@/src/services/reagentsDB';
 import { Item } from '../../models/item';
 import { ItemsFilter } from '../../models/items-filter';
 import { useData } from '../../providers/DataProvider';
@@ -39,14 +40,14 @@ const initialFilter: ItemsFilter = {
 };
 
 export function ItemsPage() {
-  const { items, loadingItems, itemsError, getDefinitionById } = useData();
+  const { items, loadingItems, itemsError, getReagentById } = useData();
   const [itemDrawerOpened, { open: openItemDrawer, close: closeItemDrawer }] = useDisclosure(false);
   const [itemModalOpened, { open: openItemModal, close: closeItemModal }] = useDisclosure(false);
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
   const [showMode, { open: activateShowMode, close: deactivateShowMode }] = useDisclosure(false);
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState<ItemsFilter>(initialFilter);
-  const [definition, setDefinition] = useState<Definition | null>(null);
+  const [reagent, setFilteredReagent] = useState<Reagent | null>(null);
 
   const handleClickRow = (item: Item) => {
     setSelectedItem(item);
@@ -93,8 +94,14 @@ export function ItemsPage() {
     uploadDeleteItem(item);
   };
 
-  const handleChangeDefinition = (definition: Definition | null) => {
-    setDefinition(definition);
+  const handleChangeFilteredReagent = (reagent: Reagent | null) => {
+    setFilteredReagent(reagent);
+  };
+
+  const handleAddReagent = (reagent: Reagent) => {
+    // FIXME: VERIFICAR SE NÃO TEM COM MESMO NOME
+    // Ou fazer isso antes?
+    uploadAddReagent(reagent);
   };
 
   const crudOperations: CrudOperations<Item> = {
@@ -106,14 +113,14 @@ export function ItemsPage() {
   const initialCollumns: TableCollumn<Item>[] = [
     {
       name: 'Definição',
-      accessor: (item: Item) => getDefinitionById(item.definitionId)?.name ?? 'ND',
+      accessor: (item: Item) => getReagentById(item.reagentId)?.name ?? 'ND',
       hidden: false,
       fixed: true,
       ascending: false,
       sorter: (a: Item, b: Item) =>
-        (getDefinitionById(a.definitionId)?.name ?? '')
+        (getReagentById(a.reagentId)?.name ?? '')
           .trim()
-          .localeCompare((getDefinitionById(b.definitionId)?.name ?? '').trim()),
+          .localeCompare((getReagentById(b.reagentId)?.name ?? '').trim()),
       sortingPriority: 0,
     },
     {
@@ -156,8 +163,8 @@ export function ItemsPage() {
             filter={filter}
             onSearchChange={handleSearchChange}
             onFilterChange={handleFilterChange}
-            onDefinitionChange={handleChangeDefinition}
-            definition={definition}
+            onReagentChange={handleChangeFilteredReagent}
+            reagent={reagent}
           />
         </Grid.Col>
 
@@ -172,7 +179,7 @@ export function ItemsPage() {
                 datas={items!}
                 initialCollumns={initialCollumns}
                 search={search}
-                searched={(item: Item) => getDefinitionById(item.definitionId)?.name ?? ''}
+                searched={(item: Item) => getReagentById(item.reagentId)?.name ?? ''}
                 dataFilter={(item: Item) => filteredItem(item, filter)}
                 crudOperations={crudOperations}
                 handleClickRow={handleClickRow}
@@ -207,6 +214,7 @@ export function ItemsPage() {
         </Tabs>
       </Drawer>
 
+      {/* FIXME: Dados são apagados por fechamento "clicar fora" */}
       <Modal
         title={<strong>{selectedItem ? `Editar item` : `Adicionar item`}</strong>}
         opened={itemModalOpened}
@@ -219,6 +227,7 @@ export function ItemsPage() {
           onCloseItemModal={closeItemModal}
           onAddItem={handleAddItem}
           onEditItem={handleEditItem}
+          onAddReagent={handleAddReagent}
           onBeginShownItemEdit={selectedItem ? () => handleBeginItemEdit(selectedItem) : () => {}}
         />
       </Modal>

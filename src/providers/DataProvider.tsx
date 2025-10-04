@@ -4,21 +4,21 @@ import React, { createContext, ReactNode, useContext } from 'react';
 import { FirebaseError } from 'firebase/app';
 import { collection } from 'firebase/firestore';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
-import { Definition } from '../models/definition';
-import { Item } from '../models/item';
-import { definitionConverter } from '../services/definitionsDB';
-import { itemConverter } from '../services/itemsDB';
-import { db } from '../utils/firebase';
-import { sortKeys } from '../utils/sortKeys';
+import { Item } from '@/src/models/item';
+import { Reagent } from '@/src/models/reagent';
+import { itemConverter, itemsDocName } from '@/src/services/itemsDB';
+import { reagentConverter, reagentsDocName } from '@/src/services/reagentsDB';
+import { db } from '@/src/utils/firebase';
+import { sortKeys } from '@/src/utils/sortKeys';
 
 const DataContext = createContext<{
   items?: Item[];
   loadingItems: boolean;
   itemsError?: FirebaseError;
-  definitions?: Definition[];
-  loadingDefinitions: boolean;
-  definitionsError?: FirebaseError;
-  getDefinitionById: (id: string) => Definition | null;
+  reagents?: Reagent[];
+  loadingReagents: boolean;
+  reagentsError?: FirebaseError;
+  getReagentById: (id: string) => Reagent | null;
   getItemById: (id: string) => Item | null;
 } | null>(null);
 
@@ -34,15 +34,15 @@ type DataProviderProps = {
 
 export const DataProvider = (props: DataProviderProps) => {
   // Única ocorrência de nomes antigos, pois são o nome dos arquivos do firebase
-  const [definitions, loadingDefinitions, definitionsError] = useCollectionData<Definition>(
-    collection(db, 'definitions').withConverter(definitionConverter)
+  const [reagents, loadingReagents, reagentsError] = useCollectionData<Reagent>(
+    collection(db, reagentsDocName).withConverter(reagentConverter)
   );
   const [items, loadingItems, itemsError] = useCollectionData<Item>(
-    collection(db, 'reagents').withConverter(itemConverter)
+    collection(db, itemsDocName).withConverter(itemConverter)
   );
 
-  const getDefinitionById = (id: string) => {
-    return definitions?.find((op) => op.id === id) ?? null;
+  const getReagentById = (id: string) => {
+    return reagents?.find((op) => op.id === id) ?? null;
   };
   const getItemById = (id: string) => {
     return items?.find((op) => op.id === id) ?? null;
@@ -54,20 +54,20 @@ export const DataProvider = (props: DataProviderProps) => {
   );
 
   console.log(
-    'definitions: ',
-    definitions?.map((op) => sortKeys(op))
+    'reagents: ',
+    reagents?.map((op) => sortKeys(op))
   );
 
   return (
     <DataContext.Provider
       value={{
-        definitions,
-        loadingDefinitions,
-        definitionsError,
+        reagents,
+        loadingReagents,
+        reagentsError,
         loadingItems,
         itemsError,
         items,
-        getDefinitionById,
+        getReagentById,
         getItemById,
       }}
     >

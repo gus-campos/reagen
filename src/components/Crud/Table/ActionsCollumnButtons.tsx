@@ -1,4 +1,4 @@
-import { IconEye, IconEyeOff, IconSortAscending2, IconSortDescending2 } from '@tabler/icons-react';
+import { IconEyeOff } from '@tabler/icons-react';
 import { FaArrowDownLong, FaArrowUpLong } from 'react-icons/fa6';
 import { ActionIcon, Group, useMantineTheme } from '@mantine/core';
 import { useHover } from '@mantine/hooks';

@@ -1,6 +1,6 @@
 import { Dimension } from './unit';
 
-export type Definition = {
+export type Reagent = {
   id: string;
   name: string;
   dimension: Dimension;

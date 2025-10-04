@@ -1,5 +1,4 @@
-import { useContext } from 'react';
-import { IconEdit, IconFileText, IconTrash } from '@tabler/icons-react';
+import { IconEdit, IconTrash } from '@tabler/icons-react';
 import { ActionIcon, Group } from '@mantine/core';
 import { CrudOperations } from '@/src/components/Crud/Table/TableView';
 
