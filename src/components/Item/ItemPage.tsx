@@ -99,8 +99,6 @@ export function ItemsPage() {
   };
 
   const handleAddReagent = (reagent: Reagent) => {
-    // FIXME: VERIFICAR SE NÃO TEM COM MESMO NOME
-    // Ou fazer isso antes?
     uploadAddReagent(reagent);
   };
 

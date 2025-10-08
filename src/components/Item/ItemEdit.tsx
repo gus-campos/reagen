@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   Box,
   Button,
@@ -7,6 +7,7 @@ import {
   Group,
   NumberInput,
   Select,
+  Text,
   TextInput,
 } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
@@ -33,6 +34,7 @@ export function ItemEdit(props: ItemModalProps) {
   const { reagents, getReagentById } = useData();
 
   const [reagentAddMode, toggleReagentAddMode] = useToggle([false, true]);
+  const [createdReagentName, setCreatedReagentName] = useState('');
 
   const validateAmount = (value: number): string | null => {
     const countUnits =
@@ -140,6 +142,18 @@ export function ItemEdit(props: ItemModalProps) {
     }
   }, [reagentAddMode]);
 
+  // Deixa selecionado o reagente criado
+
+  // FIXME: Isso não está imprimindo??? E tem que certificar que dá certo
+  console.log('AAAAAAAAAAAAAAAA');
+  // const reagent = reagents?.find((reag) => createdReagentName.includes(reag.name));
+
+  useEffect(() => {
+    const reagent = reagents?.find((reag) => createdReagentName.includes(reag.name));
+    console.log(createdReagentName, reagents, reagent);
+    if (reagent) itemForm.setFieldValue('reagentId', reagent.id);
+  }, [createdReagentName]);
+
   // Dar erro se já existir!
   // Incluir view que permite olhar definições e editar, mas que deve ser pouco usada
   // Voltar pra opção já existente de definição???
@@ -148,14 +162,32 @@ export function ItemEdit(props: ItemModalProps) {
 
   return (
     <Box>
-      <form>
-        <Grid>
-          {reagentAddMode && (
-            <>
+      {reagentAddMode && (
+        <Box
+          pt="md"
+          px="sm"
+          mb="md"
+          style={{
+            border: '1px solid var(--mantine-color-default-border)',
+            borderRadius: 'var(--mantine-radius-sm)',
+          }}
+        >
+          <Text fw="bold" mb="md">
+            Novo reagente
+          </Text>
+          <form
+            onSubmit={reagentForm.onSubmit((values) => {
+              props.onAddReagent(values);
+              setCreatedReagentName(values.name);
+              reagentForm.reset();
+              toggleReagentAddMode();
+            })}
+          >
+            <Grid>
               <Grid.Col span={{ base: 6 }}>
                 <TextInput
                   ref={inputFocusRef}
-                  label="Novo reagente"
+                  label="Nome"
                   {...reagentForm.getInputProps('name')}
                 ></TextInput>
               </Grid.Col>
@@ -168,10 +200,23 @@ export function ItemEdit(props: ItemModalProps) {
                   data={Object.values(Dimension)}
                 ></Select>
               </Grid.Col>
-            </>
-          )}
-        </Grid>
-      </form>
+            </Grid>
+            <Group my="lg" justify="right">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  toggleReagentAddMode();
+                  //FIXME: Tem que resetar
+                  reagentForm.reset();
+                }}
+              >
+                Cancelar
+              </Button>
+              <Button type="submit">Adicionar</Button>
+            </Group>
+          </form>
+        </Box>
+      )}
 
       {/* 
       Tem que acessr o onSubmit e validar!
@@ -181,19 +226,9 @@ export function ItemEdit(props: ItemModalProps) {
       */}
 
       <form
-        onSubmit={itemForm.onSubmit(
-          (values) => {
-            if (reagentAddMode) {
-              if (!reagentForm.validate().hasErrors) {
-                props.onAddReagent(reagentForm.values);
-              }
-            }
-            handleSubmitItem(values);
-          },
-          (errors) => {
-            if (reagentAddMode) reagentForm.validate();
-          }
-        )}
+        onSubmit={itemForm.onSubmit((values) => {
+          handleSubmitItem(values);
+        })}
       >
         <Grid>
           {!reagentAddMode && (
@@ -201,7 +236,7 @@ export function ItemEdit(props: ItemModalProps) {
               <Group justify="space-between" align="end">
                 <Select
                   style={{ flex: 1 }}
-                  label="Definição"
+                  label="Reagente"
                   data={
                     reagents?.map((opt) => ({
                       value: opt.id,
@@ -212,7 +247,12 @@ export function ItemEdit(props: ItemModalProps) {
                   allowDeselect={false}
                   {...itemForm.getInputProps('reagentId')}
                 ></Select>
-                <Button variant="outline" onClick={() => toggleReagentAddMode()}>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    toggleReagentAddMode();
+                  }}
+                >
                   +
                 </Button>
               </Group>
@@ -221,6 +261,7 @@ export function ItemEdit(props: ItemModalProps) {
 
           <Grid.Col span={{ base: 6 }}>
             <NumberInput
+              disabled={reagentAddMode}
               label="Quantidade"
               placeholder="Quantidade"
               hideControls
@@ -233,13 +274,14 @@ export function ItemEdit(props: ItemModalProps) {
               allowDeselect={false}
               label="Unidade"
               data={unitSelectOptions}
-              disabled={!reagentAddMode && itemForm.values.reagentId === '[NULL]'}
+              disabled={reagentAddMode || itemForm.values.reagentId === '[NULL]'}
               {...itemForm.getInputProps('unit')}
             ></Select>
           </Grid.Col>
 
           <Grid.Col span={{ base: 6 }}>
             <NumberInput
+              disabled={reagentAddMode}
               label="Pureza"
               placeholder="Pureza em %"
               hideControls
@@ -250,6 +292,7 @@ export function ItemEdit(props: ItemModalProps) {
 
           <Grid.Col span={{ base: 6 }}>
             <DatePickerInput
+              disabled={reagentAddMode}
               clearable
               valueFormat="DD/MM/YYYY"
               label="Vencimento"
@@ -260,8 +303,11 @@ export function ItemEdit(props: ItemModalProps) {
         </Grid>
         <Box>
           <Group mt="xl" justify="right">
-            <Button type="submit">{props.selectedItem ? 'Salvar' : 'Adicionar'}</Button>
+            <Button disabled={reagentAddMode} type="submit">
+              {props.selectedItem ? 'Salvar' : 'Adicionar'}
+            </Button>
             <Button
+              disabled={reagentAddMode}
               variant="outline"
               onClick={() => {
                 props.onCloseItemModal();

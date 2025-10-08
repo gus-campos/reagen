@@ -41,7 +41,10 @@ export async function uploadDeleteItem(item: Item) {
 
 export async function uploadAddItem(item: Item) {
   try {
-    const docRef = await addDoc(collection(db, itemsDocName), item);
+    // Cria o doc
+    const { id, ...updateData } = item;
+    const docRef = await addDoc(collection(db, itemsDocName), updateData);
+    // Atualiza o doc do reagente para incluir o item na sua listagem
     const reagentRef = doc(db, reagentsDocName, item.reagentId);
     await updateDoc(reagentRef, {
       itemsId: arrayUnion(docRef.id),
