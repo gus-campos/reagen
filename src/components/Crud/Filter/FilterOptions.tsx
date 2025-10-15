@@ -1,19 +1,14 @@
 import { useEffect } from 'react';
-import { Box, Grid, NumberInput, Paper, Select } from '@mantine/core';
+import { Accordion, Box, Grid, Group, Paper, Radio, Title } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
 import ItemsFilter from '@/src/models/items-filter';
 import { Reagent } from '@/src/models/reagent';
-import { Dimension, DimensionDefaultUnit } from '@/src/models/unit';
 import { toNullableLocalDate } from '@/src/utils/date';
-import { SearchBar } from './SearchBar';
 
 type FilterOptionsProps = {
-  search: string;
   filter: ItemsFilter;
-  onSearchChange: (search: string) => void;
   onFilterChange: (filter: ItemsFilter) => void;
-  onReagentChange: (reagent: Reagent | null) => void;
   reagent: Reagent | null;
 };
 
@@ -37,89 +32,81 @@ export function FilterOptions(props: FilterOptionsProps) {
     return () => clearTimeout(timer);
   }, [form.values]);
 
-  const defaultUnit = form.values.dimension ? DimensionDefaultUnit[form.values.dimension] : null;
-  const parenthesizedUnit = defaultUnit ? `(${defaultUnit})` : '';
-  const suffixUnit = defaultUnit ? ' ' + defaultUnit : '';
-
-  useEffect(() => {
-    form.setFieldValue('dimension', props.reagent?.dimension ?? null);
-  }, [props.reagent?.dimension]);
-
   return (
-    <Box style={{ padding: '0 10px 0 0' }}>
-      <Paper radius="md" withBorder style={{ padding: '10px' }}>
-        <h2>Filtrar</h2>
+    <>
+      <Box>
+        <Paper radius="sm" withBorder style={{ padding: '10px' }}>
+          <Title order={4} mb="sm">
+            Filtros
+          </Title>
 
-        <h3>Por nome</h3>
+          <form>
+            <Accordion
+              variant="default"
+              styles={{
+                control: {
+                  padding: '4px 8px',
+                  height: '32px',
+                  fontSize: '0.9rem',
+                },
+              }}
+            >
+              <Accordion.Item value="expireDate">
+                <Accordion.Control>Por vencimento</Accordion.Control>
+                <Accordion.Panel>
+                  <Grid>
+                    <Grid.Col span={{ base: 6 }}>
+                      <DatePickerInput
+                        clearable
+                        valueFormat="DD/MM/YYYY"
+                        label="A partir de"
+                        placeholder="Selecione"
+                        {...form.getInputProps('minDate')}
+                      />
+                    </Grid.Col>
 
-        <SearchBar
-          search={props.search}
-          onChangeSearch={props.onSearchChange}
-          onChangeReagent={props.onReagentChange}
-        />
+                    <Grid.Col span={{ base: 6 }}>
+                      <DatePickerInput
+                        clearable
+                        valueFormat="DD/MM/YYYY"
+                        label="Até"
+                        placeholder="Selecione"
+                        {...form.getInputProps('maxDate')}
+                      />
+                    </Grid.Col>
+                  </Grid>
+                </Accordion.Panel>
+              </Accordion.Item>
+            </Accordion>
+          </form>
 
-        <h3>Por vencimento</h3>
+          <Title order={4} mb="sm" mt="md">
+            Opções
+          </Title>
 
-        <form>
-          <Grid>
-            <Grid.Col span={{ base: 6 }}>
-              <DatePickerInput
-                clearable
-                valueFormat="DD/MM/YYYY"
-                label="A partir de"
-                placeholder="Selecione"
-                {...form.getInputProps('minDate')}
-              ></DatePickerInput>
-            </Grid.Col>
-
-            <Grid.Col span={{ base: 6 }}>
-              <DatePickerInput
-                clearable
-                valueFormat="DD/MM/YYYY"
-                label="Até"
-                placeholder="Selecione"
-                {...form.getInputProps('maxDate')}
-              ></DatePickerInput>
-            </Grid.Col>
-          </Grid>
-
-          <h3>Por quantidade</h3>
-
-          <Grid>
-            <Grid.Col span={{ base: 12 }}>
-              <Select
-                label="Dimensão"
-                placeholder="Selecione a dimensão"
-                data={Object.values(Dimension)}
-                disabled={!!props.reagent}
-                {...form.getInputProps('dimension')}
-              ></Select>
-            </Grid.Col>
-
-            <Grid.Col span={{ base: 6 }}>
-              <NumberInput
-                hideControls
-                label="A partir de"
-                disabled={!form.values.dimension}
-                suffix={suffixUnit}
-                placeholder={'Digite a quantidade ' + parenthesizedUnit}
-                {...form.getInputProps('minAmount')}
-              ></NumberInput>
-            </Grid.Col>
-
-            <Grid.Col span={{ base: 6 }}>
-              <NumberInput
-                hideControls
-                label="Até"
-                disabled={!form.values.dimension}
-                suffix={suffixUnit}
-                placeholder={'Digite a quantidade ' + parenthesizedUnit}
-                {...form.getInputProps('maxAmount')}
-              ></NumberInput>
-            </Grid.Col>
-          </Grid>
-        </form>
-      </Paper>
-    </Box>
+          <Accordion
+            styles={{
+              control: {
+                padding: '4px 8px',
+                height: '32px',
+                fontSize: '0.9rem',
+              },
+            }}
+          >
+            <Accordion.Item value="viewMode">
+              <Accordion.Control>Modo de visualização</Accordion.Control>
+              <Accordion.Panel>
+                <Radio.Group defaultValue="byItem" defaultChecked unselectable="off">
+                  <Group>
+                    <Radio label="Por itens" value="byItem" />
+                    <Radio label="Agrupado" value="grouped" />
+                  </Group>
+                </Radio.Group>
+              </Accordion.Panel>
+            </Accordion.Item>
+          </Accordion>
+        </Paper>
+      </Box>
+    </>
   );
 }

@@ -1,5 +1,5 @@
 export function toNullableLocalDate(dateStr: Date | null) {
-  if (!dateStr) return null;
+  if (!dateStr) {return null;}
 
   const date = new Date(dateStr);
   const offset = date.getTimezoneOffset();
@@ -10,8 +10,8 @@ export function toNullableLocalDate(dateStr: Date | null) {
 
 export function validateDate(date?: Date | null, optional: boolean = false) {
   if (!date) {
-    if (optional) return null;
-    else return 'Selecione uma data';
+    if (optional) {return null;}
+    return 'Selecione uma data';
   }
   return !isNaN(new Date(date).getTime()) ? null : 'Formato inválido';
 }

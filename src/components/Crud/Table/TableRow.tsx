@@ -5,6 +5,7 @@ import { ActionsRowButtons } from './ActionsRowButtons';
 
 type TableRowProps<T> = {
   data: T;
+  hiddenColunms: string[];
   collumns: TableCollumn<T>[];
   crudOperations?: CrudOperations<T>;
   handleClick?: () => void;
@@ -16,7 +17,7 @@ export function TableRow<T>(props: TableRowProps<T>) {
   return (
     <Table.Tr ref={ref}>
       {props.collumns
-        .filter((collumn) => !collumn.hidden)
+        .filter((collumn) => !props.hiddenColunms.includes(collumn.name))
         .map((collumn, index) => (
           <Table.Td key={index} onClick={props.handleClick} style={{ cursor: 'pointer' }}>
             {collumn.accessor(props.data)}

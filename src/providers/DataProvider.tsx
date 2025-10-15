@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, ReactNode, useContext } from 'react';
+import React, { createContext, ReactNode, useCallback, useContext } from 'react';
 import { FirebaseError } from 'firebase/app';
 import { collection } from 'firebase/firestore';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
@@ -24,7 +24,9 @@ const DataContext = createContext<{
 
 export function useData() {
   const context = useContext(DataContext);
-  if (!context) throw new Error('useData must be used within DataProvider');
+  if (!context) {
+    throw new Error('useData must be used within DataProvider');
+  }
   return context;
 }
 
@@ -37,6 +39,7 @@ export const DataProvider = (props: DataProviderProps) => {
   const [reagents, loadingReagents, reagentsError] = useCollectionData<Reagent>(
     collection(db, reagentsDocName).withConverter(reagentConverter)
   );
+
   const [items, loadingItems, itemsError] = useCollectionData<Item>(
     collection(db, itemsDocName).withConverter(itemConverter)
   );
@@ -44,9 +47,12 @@ export const DataProvider = (props: DataProviderProps) => {
   const getReagentById = (id: string) => {
     return reagents?.find((op) => op.id === id) ?? null;
   };
+
   const getItemById = (id: string) => {
     return items?.find((op) => op.id === id) ?? null;
   };
+
+  console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
 
   console.log(
     'items: ',
@@ -57,6 +63,8 @@ export const DataProvider = (props: DataProviderProps) => {
     'reagents: ',
     reagents?.map((op) => sortKeys(op))
   );
+
+  console.log('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<');
 
   return (
     <DataContext.Provider

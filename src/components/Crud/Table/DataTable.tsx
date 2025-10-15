@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Paper, Table } from '@mantine/core';
 import { CrudOperations, TableCollumn } from '@/src/components/Crud/Table/TableView';
 import { TableRow } from './TableRow';
@@ -19,107 +19,50 @@ const searchMatch = (serched: string, searchTerm: string) => {
 
 type TableProps<T> = {
   datas: T[];
-  initialCollumns: TableCollumn<T>[];
+  columns: TableCollumn<T>[];
   crudOperations?: CrudOperations<T>;
   search?: string;
   searched?: (data: T) => string;
   dataFilter?: (data: T) => boolean;
-  handleClickRow?: (itemId: T) => void;
 };
 
 export function DataTable<T>(props: TableProps<T>) {
-  const [collumns, setCollumns] = useState<TableCollumn<T>[]>(props.initialCollumns);
+  const [sortedBy, setSortedBy] = useState<string | null>(null);
+  const [sortedAscending, setSortedAscending] = useState<boolean | null>(null);
+  const [hiddenColumns, setHiddenColumns] = useState<string[]>([]);
 
-  const collumnsNames = collumns.map((collumn) => collumn.name);
-
-  const setCollumnsVisibility = (collumnName: string, hidden: boolean) => {
-    if (!collumnsNames.includes(collumnName)) throw new Error('Coluna inválida');
-
-    setCollumns(
-      collumns.map((collumn) => (collumn.name === collumnName ? { ...collumn, hidden } : collumn))
-    );
+  const handleHideCollumn = (collumnName: string) => {
+    if (hiddenColumns.includes(collumnName)) return;
+    setHiddenColumns([...hiddenColumns, collumnName]);
   };
 
-  const handleHideCollumn = (collumnName: string) => setCollumnsVisibility(collumnName, true);
-  const handleShowCollumn = (collumnName: string) => setCollumnsVisibility(collumnName, false);
+  const handleShowCollumn = (collumnName: string) => {
+    setHiddenColumns(hiddenColumns.filter((name) => name !== collumnName));
+  };
 
   const handleToggleSorting = (collumnName: string) => {
-    if (!collumnsNames.includes(collumnName)) throw new Error('Coluna inválida');
+    const newSortedAscending = sortedAscending === null ? false : !sortedAscending ? true : null;
+    const newSortedBy = newSortedAscending === null ? null : collumnName;
 
-    // Apenas uma ordenação por vez
-    setCollumns(
-      collumns.map((collumn) =>
-        collumn.name === collumnName
-          ? {
-              ...collumn,
-              ascending:
-                collumn.ascending === null ? false : collumn.ascending === false ? true : null,
-              sortingPriority: 0,
-            }
-          : {
-              ...collumn,
-              ascending: null,
-              sortingPriority: Infinity,
-            }
-      )
-    );
-
-    /*
-    Múltiplas ordenações com prioridades => pouco intuitivo, por enquanto
-
-    // ascending true -> ascending null
-    // ascending null -> ascending false
-    // ascending false -> ascending true
-    const nextOdering = (collumn: TableCollumn<T>) => {
-      return collumn.ascending != null ? (collumn.ascending ? null : true) : false;
-    };
-
-    const nextPriority = (collumn: TableCollumn<T>) => {
-      if (collumn.ascending !== null) {
-        // Deixou de ordenar - remover prioridade
-        if (collumn.ascending) return null;
-        // Mudou a ordem - manter prioridade
-        else return collumn.sortingPriority;
-      }
-
-      // Começou a ordenar - colocar em último
-      else {
-        const max = Math.max(...collumns.map((collumn) => collumn.sortingPriority ?? -1));
-        return max + 1;
-      }
-    };
-
-    setCollumns(
-      collumns.map((collumn) =>
-        collumn.name === collumnName
-          ? {
-              ...collumn,
-              ascending: nextOdering(collumn),
-              sortingPriority: nextPriority(collumn),
-            }
-          : collumn
-      )
-    );
-    */
+    setSortedAscending(newSortedAscending);
+    setSortedBy(newSortedBy);
   };
 
-  const sortedDatas = [...props.datas].sort((a, b) => {
-    const sortingCollumns = [...collumns]
-      .filter((collum) => collum.ascending !== null)
-      .sort((a, b) => (a.sortingPriority ?? Infinity) - (b.sortingPriority ?? Infinity));
-
-    for (const sortingCollumn of sortingCollumns) {
-      const result = sortingCollumn.sorter ? sortingCollumn.sorter(a, b) : 0;
-      if (result !== 0) return sortingCollumn.ascending ? -result : result;
-    }
-    return -1;
+  const sortedDatas = props.datas.sort((a, b) => {
+    const sortingCollumn = props.columns.find((collum) => collum.name === sortedBy) ?? null;
+    if (!sortingCollumn) return -1;
+    const result = sortingCollumn.sorter ? sortingCollumn.sorter(a, b) : 0;
+    return sortedAscending ? -result : result;
   });
 
   return (
-    <Paper radius="md" withBorder style={{ overflow: 'hidden' }}>
+    <Paper radius="sm" withBorder style={{ overflow: 'hidden' }}>
       <Table tabularNums striped highlightOnHover>
         <TableThead
-          collumns={collumns}
+          collumns={props.columns}
+          hiddenColunms={hiddenColumns}
+          sortedAscending={sortedAscending}
+          sortedBy={sortedBy}
           onHideCollumn={handleHideCollumn}
           onShowCollumn={handleShowCollumn}
           onToggleSorting={handleToggleSorting}
@@ -137,9 +80,14 @@ export function DataTable<T>(props: TableProps<T>) {
               <TableRow
                 key={index}
                 data={data}
-                collumns={collumns}
+                hiddenColunms={hiddenColumns}
+                collumns={props.columns}
                 crudOperations={props.crudOperations}
-                handleClick={props.handleClickRow ? () => props.handleClickRow!(data) : undefined}
+                handleClick={
+                  props.crudOperations?.handleClickRow
+                    ? () => props.crudOperations?.handleClickRow!(data)
+                    : undefined
+                }
               />
             ))}
         </Table.Tbody>

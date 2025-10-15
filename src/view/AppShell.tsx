@@ -24,7 +24,7 @@ export function ItemShell(props: ItemShellProps) {
         <Group h="100%" px="md">
           <Burger opened={opened} onClick={toggle} size="sm" />
           <IconTestPipe size={28} />
-          <Text size="xl">Controle de Items</Text>
+          <Text size="xl">Controle de Reagentes</Text>
         </Group>
       </AppShell.Header>
 
@@ -46,12 +46,24 @@ export function ItemShell(props: ItemShellProps) {
           <Menu.Item
             onClick={() => {
               toggle();
-              router.push('/items');
+              router.push('/itens');
             }}
           >
             <Group>
               <IconTable size={20} />
               <Text size="md">Itens</Text>
+            </Group>
+          </Menu.Item>
+
+          <Menu.Item
+            onClick={() => {
+              toggle();
+              router.push('/reagentes');
+            }}
+          >
+            <Group>
+              <IconTable size={20} />
+              <Text size="md">Reagentes</Text>
             </Group>
           </Menu.Item>
         </Menu>

@@ -1,0 +1,194 @@
+'use client';
+
+import React, { useState } from 'react';
+import { CiViewList } from 'react-icons/ci';
+import { Box, Button, Drawer, Grid, LoadingOverlay, Modal, Tabs } from '@mantine/core';
+import { Reagent } from '@/src/models/reagent';
+import { uploadAddReagent } from '@/src/services/reagentsDB';
+import { FilterOptions } from '../components/Crud/Filter/FilterOptions';
+import { SearchBar } from '../components/Crud/Filter/SearchBar';
+import { CrudOperations, TableView } from '../components/Crud/Table/TableView';
+import { getInitialCollumns } from '../components/Item/getInitialCollumns';
+import { ItemEdit } from '../components/Item/ItemEdit';
+import { ItemShow } from '../components/Item/ItemShow';
+import { ReagentShow } from '../components/Item/ReagentShow';
+import { Item } from '../models/item';
+import ItemsFilter from '../models/items-filter';
+import { useData } from '../providers/DataProvider';
+import { uploadAddItem, uploadDeleteItem, uploadEditItem } from '../services/itemsDB';
+import { filteredItem } from '../utils/filtered-item';
+
+const initialFilter: ItemsFilter = {
+  expired: null,
+  minDate: null,
+  maxDate: null,
+  dimension: null,
+  minAmount: null,
+  maxAmount: null,
+};
+
+// FIXME: Quando acaba de adicionar, aparece ND no reagente, dependendo
+
+export function ItemsPage() {
+  const { items, loadingItems, itemsError, getReagentById } = useData();
+
+  const initialCollumns = getInitialCollumns(getReagentById);
+
+  // STATES
+
+  const [mode, setMode] = useState<'show' | 'edit' | 'table'>('table');
+  const [selectedItem, setSelectedItem] = useState<Item | null>(null);
+  const [search, setSearch] = useState('');
+  const [filter, setFilter] = useState<ItemsFilter>(initialFilter);
+  const [reagent, setFilteredReagent] = useState<Reagent | null>(null);
+
+  // HANDLERS
+
+  const handleChangeFilteredReagent = (reagent: Reagent | null) => {
+    setFilteredReagent(reagent);
+  };
+
+  const handleAddReagent = (reagent: Reagent) => {
+    uploadAddReagent(reagent);
+  };
+
+  const handleClickRow = (item: Item) => {
+    setSelectedItem(item);
+    setMode('show');
+  };
+
+  const handleSearchChange = (search: string) => {
+    setSearch(search);
+  };
+
+  const handleFilterChange = (filter: ItemsFilter) => {
+    setFilter(filter);
+  };
+
+  const handleBeginItemAddition = () => {
+    setSelectedItem(null);
+    setMode('edit');
+  };
+
+  const handleShowItem = (item: Item) => {
+    setSelectedItem(item);
+    setMode('show');
+  };
+
+  const handleBeginItemEdit = (item: Item) => {
+    setSelectedItem(item);
+    setMode('edit');
+  };
+
+  const handleAddItem = (item: Item) => {
+    uploadAddItem(item);
+    setMode('table');
+  };
+
+  const handleEditItem = (item: Item) => {
+    uploadEditItem(item);
+    setMode('table');
+  };
+
+  const handleDeleteItem = (item: Item) => {
+    uploadDeleteItem(item);
+  };
+
+  const crudOperations: CrudOperations<Item> = {
+    handleShowData: handleShowItem,
+    handleBeginDataEdit: handleBeginItemEdit,
+    handleDeleteData: handleDeleteItem,
+    handleClickRow: handleClickRow,
+  };
+
+  // CONSTS
+
+  const selectedItemReagent = selectedItem?.reagentId
+    ? getReagentById(selectedItem?.reagentId)
+    : null;
+
+  return (
+    <>
+      <h1>Itens</h1>
+      <Grid>
+        <Grid.Col span={{ base: 3 }}>
+          <FilterOptions filter={filter} onFilterChange={handleFilterChange} reagent={reagent} />
+        </Grid.Col>
+
+        <Grid.Col span={{ base: 9 }}>
+          <SearchBar
+            search={search}
+            placeholder="Busque por nome de reagentes..."
+            onChangeSearch={handleSearchChange}
+            onChangeReagent={handleChangeFilteredReagent}
+          />
+          <Box>
+            {itemsError ? (
+              <p>ERRO</p>
+            ) : loadingItems ? (
+              <LoadingOverlay visible />
+            ) : (
+              <TableView
+                datas={items!}
+                initialCollumns={initialCollumns}
+                search={search}
+                searched={(item: Item) => getReagentById(item.reagentId)?.name ?? ''}
+                dataFilter={(item: Item) => filteredItem(item, filter)}
+                crudOperations={crudOperations}
+              />
+            )}
+          </Box>
+        </Grid.Col>
+      </Grid>
+
+      <Button
+        style={{ position: 'fixed', bottom: '30px', right: '30px' }}
+        onClick={handleBeginItemAddition}
+      >
+        +
+      </Button>
+
+      <Drawer
+        opened={mode === 'show'}
+        onClose={() => setMode('table')}
+        overlayProps={{ backgroundOpacity: 0.1, blur: 0 }}
+        position="right"
+      >
+        <Tabs defaultValue="overview">
+          <Tabs.List>
+            <Tabs.Tab value="overview" leftSection={<CiViewList size="18px" />}>
+              Visão geral
+            </Tabs.Tab>
+            <Tabs.Tab value="reagent" leftSection={<CiViewList size="18px" />}>
+              Reagente
+            </Tabs.Tab>
+          </Tabs.List>
+
+          <Tabs.Panel value="overview">
+            <ItemShow item={selectedItem!} />
+          </Tabs.Panel>
+          <Tabs.Panel value="reagent">
+            <ReagentShow reagent={selectedItemReagent!} />
+          </Tabs.Panel>
+        </Tabs>
+      </Drawer>
+
+      {/* FIXME: Dados são apagados por fechamento "clicar fora" */}
+      <Modal
+        title={<strong>{selectedItem ? `Editar item` : `Adicionar item`}</strong>}
+        opened={mode === 'edit'}
+        onClose={() => setMode('table')}
+      >
+        <ItemEdit
+          selectedItem={selectedItem}
+          itemModalOpened={mode === 'edit'}
+          onCloseItemModal={() => setMode('table')}
+          onAddItem={handleAddItem}
+          onEditItem={handleEditItem}
+          onAddReagent={handleAddReagent}
+          onBeginShownItemEdit={selectedItem ? () => handleBeginItemEdit(selectedItem) : () => {}}
+        />
+      </Modal>
+    </>
+  );
+}

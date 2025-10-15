@@ -4,11 +4,14 @@ import { TableCollumn } from '@/src/components/Crud/Table/TableView';
 
 type TableExtraOptionsProps<T> = {
   collumns: TableCollumn<T>[];
+  hiddenColunms: string[];
   onShowCollumn: (collumnName: string) => void;
 };
 
 export function TableExtraOptions<T>(props: TableExtraOptionsProps<T>) {
-  const hiddenCollumns = props.collumns.filter((collumn) => collumn.hidden);
+  const hiddenCollumns = props.collumns.filter((collumn) =>
+    props.hiddenColunms.includes(collumn.name)
+  );
 
   return (
     <>
@@ -24,7 +27,7 @@ export function TableExtraOptions<T>(props: TableExtraOptionsProps<T>) {
           <Menu.Dropdown>
             <Menu.Label>Reexibir coluna</Menu.Label>
             {props.collumns
-              .filter((collumn) => collumn.hidden)
+              .filter((collumn) => hiddenCollumns.includes(collumn))
               .map((collumn, index) => (
                 <Menu.Item key={index} onClick={() => props.onShowCollumn(collumn.name)}>
                   {collumn.name}

@@ -14,7 +14,7 @@ export function ItemShow(props: ItemShowProps) {
   /* TODO: Incluir botão de edição? */
 
   return (
-    <Stack p="md" justify="center" align="center">
+    <Stack p="md">
       <Grid>
         {/* ------------------------------------------------ */}
 
@@ -54,14 +54,14 @@ export function ItemShow(props: ItemShowProps) {
           <Text size="sm" c="dimmed">
             Entrada
           </Text>
-          <Text fw={500}>{formattedDate(props.item.expireDate)}</Text>
+          <Text fw={500}>{formattedDate(props.item.inDate)}</Text>
         </Grid.Col>
 
         <Grid.Col span={{ base: 12, md: 6 }}>
           <Text size="sm" c="dimmed">
             Saída
           </Text>
-          <Text fw={500}>{formattedDate(props.item.expireDate)}</Text>
+          <Text fw={500}>{props.item.outDate ? formattedDate(props.item.outDate) : '--'}</Text>
         </Grid.Col>
       </Grid>
     </Stack>

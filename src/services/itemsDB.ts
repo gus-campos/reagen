@@ -5,11 +5,11 @@ import {
   deleteDoc,
   doc,
   FirestoreDataConverter,
-  Timestamp,
   updateDoc,
 } from 'firebase/firestore';
 import { Item } from '@/src/models/item';
 import { db } from '@/src/utils/firebase';
+import { ReplaceDatesWithTimestamps } from '../utils/replace-dates-with-timestamp';
 import { reagentsDocName } from './reagentsDB';
 
 type ItemFirestoreData = Omit<Item, 'id'>;
@@ -22,14 +22,13 @@ export const itemConverter: FirestoreDataConverter<Item> = {
     return rest;
   },
   fromFirestore(snapshot): Item {
-    const data = snapshot.data() as ItemFirestoreData;
-
+    const data = snapshot.data() as ReplaceDatesWithTimestamps<ItemFirestoreData>;
     return {
       ...data,
       id: snapshot.id,
-      inDate: data.inDate instanceof Timestamp ? data.inDate.toDate() : (data.inDate ?? null),
-      expireDate:
-        data.expireDate instanceof Timestamp ? data.expireDate.toDate() : (data.expireDate ?? null),
+      inDate: data.inDate?.toDate(),
+      outDate: data.outDate?.toDate(),
+      expireDate: data.expireDate?.toDate() ?? null,
     } as Item;
   },
 };
