@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Paper, Table } from '@mantine/core';
 import { CrudOperations, TableCollumn } from '@/src/components/Crud/Table/TableView';
 import { TableRow } from './TableRow';
@@ -48,11 +48,17 @@ export function DataTable<T>(props: TableProps<T>) {
     setSortedBy(newSortedBy);
   };
 
+  console.log('datas', props.datas);
+
   const sortedDatas = props.datas.sort((a, b) => {
-    const sortingCollumn = props.columns.find((collum) => collum.name === sortedBy) ?? null;
-    if (!sortingCollumn) return -1;
-    const result = sortingCollumn.sorter ? sortingCollumn.sorter(a, b) : 0;
-    return sortedAscending ? -result : result;
+    const sortByCollumn = props.columns.find((collum) => collum.name === sortedBy) ?? null;
+    const defaultSortingCollumn = props.columns[0];
+
+    const sortByOrder = sortByCollumn ? sortByCollumn.sorter!(a, b) : 0;
+    const defaultOrder = defaultSortingCollumn.sorter ? defaultSortingCollumn.sorter(a, b) : 0;
+
+    const absoluteOrder = sortByOrder === 0 ? defaultOrder : sortByOrder;
+    return sortedAscending ? -absoluteOrder : absoluteOrder;
   });
 
   return (

@@ -1,44 +1,29 @@
-import { useEffect, useState } from 'react';
-import { Box, Button, Grid, Group, InputBase, Pill, Select, TextInput } from '@mantine/core';
+import { useState } from 'react';
+import { Box, Button, Grid, Group, InputBase, Modal, Pill, Select, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { Reagent } from '@/src/models/reagent';
 import { Size } from '@/src/models/size';
-import { uploadEditReagent } from '@/src/services/reagentsDB';
+import { useData } from '@/src/providers/DataProvider';
 import { formattedSize } from '@/src/utils/formatted-amount';
+import { findItemsOfReagentSizes, findRemovedSizes } from '@/src/utils/misc';
 import { Dimension } from '../../models/unit';
 import { SizeAddForm } from '../Item/SizeAddForm';
+import { ConfirmModal } from '../Util/ConfirmModal';
 
 type ItemModalProps = {
   selectedReagent: Reagent | null;
   itemModalOpened: boolean;
-  onExit: () => void;
+  onClose: () => void;
   onAddReagent: (item: Reagent) => void;
   onEditReagent: (selectedItem: Reagent) => void;
 };
 
 export function ReagentEdit(props: ItemModalProps) {
   const [sizeAddMode, setSizeAddMode] = useState(false);
-  const [loadingAddSize, setLoadingAddedSize] = useState(false);
+  const [unsavedSizes, setUnsavedSizes] = useState<Size[]>(props.selectedReagent?.sizes ?? []);
+  const [warning, setWarning] = useState<string | null>(null);
 
-  const handleAddSize = (size: Size) => {
-    uploadEditReagent({
-      ...props.selectedReagent!,
-      sizes: [...props.selectedReagent!.sizes, size],
-    });
-    setLoadingAddedSize(true);
-  };
-
-  const handleDeleteSize = (size: Size) => {
-    uploadEditReagent({
-      ...props.selectedReagent!,
-      sizes: props.selectedReagent!.sizes.filter((s) => formattedSize(s) !== formattedSize(size)),
-    });
-  };
-
-  const handleExit = () => {
-    props.onExit();
-    setSizeAddMode(false);
-  };
+  const { items } = useData();
 
   const reagentForm = useForm<Reagent>({
     initialValues: props.selectedReagent ?? {
@@ -48,44 +33,89 @@ export function ReagentEdit(props: ItemModalProps) {
       itemsId: [],
       sizes: [],
     },
+    validate: {
+      name: (value) => (!value.trim() ? 'Inserir nome' : null),
+    },
   });
 
-  // Conclui a adição do tamanho
-  useEffect(() => {
-    if (sizeAddMode && loadingAddSize) {
-      setSizeAddMode(false);
-      setLoadingAddedSize(false);
+  // Alerta: Excluir tamanho
+  // Alerta: Excluir reagente
+  // Exibir mensagem, retornar confirmação
+
+  const reagentWithSizes = props.selectedReagent
+    ? { ...props.selectedReagent, sizes: unsavedSizes }
+    : { ...reagentForm.values, sizes: unsavedSizes };
+
+  const handleAddSize = (size: Size) => {
+    setUnsavedSizes([...unsavedSizes, size]);
+    setSizeAddMode(false);
+  };
+
+  const handleRemoveSize = (size: Size) => {
+    setUnsavedSizes(unsavedSizes.filter((s) => formattedSize(s) !== formattedSize(size)));
+  };
+
+  const handleClose = () => {
+    setSizeAddMode(false);
+    props.onClose();
+  };
+
+  const handleConfirmEdit = () => {
+    props.onEditReagent(reagentWithSizes);
+    setWarning(null);
+    handleClose();
+  };
+
+  const handleSubmit = reagentForm.onSubmit((values) => {
+    if (props.selectedReagent) {
+      // Gerando mensagem de confirmação e chamando confirmação
+
+      const removedSizes = findRemovedSizes(reagentWithSizes.sizes, values.sizes);
+
+      const relatedItems = findItemsOfReagentSizes(props.selectedReagent, removedSizes, items!);
+
+      if (relatedItems.length > 0) {
+        // Criar warning (modal de confirmação reage)
+        const message = `Excluir o(s) tamanhos: ${removedSizes.map((size) => formattedSize(size)).join(', ')}
+          \nCausará a exclusão dos seguintes itens:
+          \n${relatedItems.map((item) => item.id).join('\n')}
+          `;
+
+        setWarning(message);
+      } else {
+        handleConfirmEdit();
+      }
+    } else {
+      // Fazendo adição
+      props.onAddReagent(reagentWithSizes);
+      handleClose();
     }
-  }, [props.selectedReagent]);
-
-  console.log('sizes', props.selectedReagent?.sizes);
-
-  // HANDLES
+  });
 
   return (
-    <Box>
-      <form
-        onSubmit={reagentForm.onSubmit((values) => {
-          if (props.selectedReagent) props.onEditReagent(values);
-          else props.onAddReagent(values);
-          handleExit();
-        })}
-      >
-        <Grid>
-          <Grid.Col span={{ base: 12 }}>
-            <TextInput label="Nome" {...reagentForm.getInputProps('name')} disabled={sizeAddMode} />
-          </Grid.Col>
+    <>
+      <Box>
+        <form onSubmit={handleSubmit}>
+          <Grid>
+            <Grid.Col span={{ base: 12 }}>
+              <TextInput
+                label="Nome"
+                {...reagentForm.getInputProps('name')}
+                disabled={sizeAddMode}
+              />
+            </Grid.Col>
 
-          <Grid.Col span={{ base: 12 }}>
-            <Select
-              label="Dimensão"
-              data={Object.values(Dimension)}
-              {...reagentForm.getInputProps('dimension')}
-              disabled={sizeAddMode}
-            />
-          </Grid.Col>
+            {!props.selectedReagent && (
+              <Grid.Col span={{ base: 12 }}>
+                <Select
+                  label="Dimensão"
+                  data={Object.values(Dimension)}
+                  {...reagentForm.getInputProps('dimension')}
+                  disabled={sizeAddMode}
+                />
+              </Grid.Col>
+            )}
 
-          {props.selectedReagent && (
             <Grid.Col span={{ base: 12 }}>
               <Group justify="space-between" align="end">
                 <InputBase
@@ -96,8 +126,8 @@ export function ReagentEdit(props: ItemModalProps) {
                   disabled={sizeAddMode}
                 >
                   <Pill.Group>
-                    {props.selectedReagent?.sizes.map((size, index) => (
-                      <Pill key={index} withRemoveButton onRemove={() => handleDeleteSize(size)}>
+                    {unsavedSizes.map((size, index) => (
+                      <Pill key={index} withRemoveButton onRemove={() => handleRemoveSize(size)}>
                         {formattedSize(size)}
                       </Pill>
                     ))}
@@ -114,40 +144,48 @@ export function ReagentEdit(props: ItemModalProps) {
                 </Button>
               </Group>
             </Grid.Col>
-          )}
-        </Grid>
-      </form>
+          </Grid>
+        </form>
 
-      {sizeAddMode && (
-        <Grid>
-          <Grid.Col span={{ base: 12 }}>
-            <SizeAddForm
-              selectedReagent={props.selectedReagent!}
-              loadingAddSize={loadingAddSize}
-              onAddSize={handleAddSize}
-              onCancel={() => setSizeAddMode(false)}
-            />
-          </Grid.Col>
-        </Grid>
-      )}
+        {sizeAddMode && (
+          <Grid>
+            <Grid.Col span={{ base: 12 }}>
+              <SizeAddForm
+                selectedReagent={props.selectedReagent ?? reagentForm.values}
+                loadingAddSize={false}
+                onAddSize={handleAddSize}
+                onCancel={() => setSizeAddMode(false)}
+              />
+            </Grid.Col>
+          </Grid>
+        )}
 
-      <form>
-        <Box>
-          <Group mt="xl" justify="right">
-            <Button
-              variant="outline"
-              onClick={() => {
-                handleExit();
-              }}
-            >
-              Cancelar
-            </Button>
-            <Button disabled={sizeAddMode} type="submit">
-              {props.selectedReagent ? 'Salvar' : 'Adicionar'}
-            </Button>
-          </Group>
-        </Box>
-      </form>
-    </Box>
+        <form onSubmit={handleSubmit}>
+          <Box>
+            <Group mt="xl" justify="right">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  handleClose();
+                }}
+              >
+                Cancelar
+              </Button>
+              <Button disabled={sizeAddMode} type="submit">
+                {props.selectedReagent ? 'Salvar' : 'Adicionar'}
+              </Button>
+            </Group>
+          </Box>
+        </form>
+      </Box>
+
+      <ConfirmModal
+        opened={warning !== null}
+        onClose={() => setWarning(null)}
+        onConfirm={handleConfirmEdit}
+      >
+        {warning}
+      </ConfirmModal>
+    </>
   );
 }

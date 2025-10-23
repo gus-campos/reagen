@@ -1,16 +1,5 @@
 import { useEffect, useState } from 'react';
-import {
-  Box,
-  Button,
-  ComboboxItemGroup,
-  Flex,
-  Grid,
-  Group,
-  Loader,
-  NumberInput,
-  Select,
-  Text,
-} from '@mantine/core';
+import { Box, Button, Grid, Group, NumberInput, Select, TextInput } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
 import { Reagent } from '@/src/models/reagent';
@@ -56,10 +45,12 @@ export function ItemEdit(props: ItemModalProps) {
       id: '[NULL]',
       reagentId: '[NULL]',
       inDate: new Date(),
-      outDate: null,
       expireDate: new Date(),
+      outDate: null,
       size: { amount: 0, unit: Unit.GRAM },
       purity: 0,
+      brand: '',
+      controlAgency: '',
     },
 
     transformValues: (values: Item) => ({
@@ -67,6 +58,9 @@ export function ItemEdit(props: ItemModalProps) {
       expireDate: toNullableLocalDate(values.expireDate)!,
       inDate: toNullableLocalDate(values.inDate)!,
       outDate: toNullableLocalDate(values.outDate),
+      // Começa como string vazia, e converte pra null se necessário
+      // controlAgency: values.controlAgency!.trim() !== '' ? values.controlAgency!.trim() : null,
+      // brand: values.brand!.trim() !== '' ? values.brand!.trim() : null,
     }),
 
     validate: {
@@ -75,7 +69,6 @@ export function ItemEdit(props: ItemModalProps) {
       size: (value) => (value.amount !== 0 ? null : 'Selecione um tamanho'),
       expireDate: (date: Date | null) => validateDate(date, false),
       inDate: (date: Date | null) => validateDate(date, false),
-      outDate: (date: Date | null) => date !== null && validateDate(date, false),
     },
   });
 
@@ -287,7 +280,32 @@ export function ItemEdit(props: ItemModalProps) {
               {...itemForm.getInputProps('outDate')}
             />
           </Grid.Col>
+
+          <Grid.Col span={{ base: 6 }}>
+            <TextInput
+              label="Orgão de controle"
+              placeholder="Nome do orgão"
+              value={itemForm.values.controlAgency ?? ''}
+              onChange={(e) => {
+                const value = e.currentTarget.value.trim();
+                itemForm.setValues({ controlAgency: value !== '' ? value : '' });
+              }}
+            />
+          </Grid.Col>
+
+          <Grid.Col span={{ base: 6 }}>
+            <TextInput
+              label="Marca"
+              placeholder="Nome da marca"
+              value={itemForm.values.brand ?? ''}
+              onChange={(e) => {
+                const value = e.currentTarget.value.trim();
+                itemForm.setValues({ brand: value !== '' ? value : '' });
+              }}
+            />
+          </Grid.Col>
         </Grid>
+
         <Box>
           <Group mt="xl" justify="right">
             <Button

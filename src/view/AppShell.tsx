@@ -58,12 +58,12 @@ export function ItemShell(props: ItemShellProps) {
           <Menu.Item
             onClick={() => {
               toggle();
-              router.push('/reagentes');
+              router.push('/definicoes');
             }}
           >
             <Group>
               <IconTable size={20} />
-              <Text size="md">Reagentes</Text>
+              <Text size="md">Definições</Text>
             </Group>
           </Menu.Item>
         </Menu>

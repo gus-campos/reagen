@@ -63,6 +63,22 @@ export function ItemShow(props: ItemShowProps) {
           </Text>
           <Text fw={500}>{props.item.outDate ? formattedDate(props.item.outDate) : '--'}</Text>
         </Grid.Col>
+
+        {/* ------------------------------------------------ */}
+
+        <Grid.Col span={{ base: 12, md: 6 }}>
+          <Text size="sm" c="dimmed">
+            Marca
+          </Text>
+          <Text fw={500}>{props.item.brand ?? '--'}</Text>
+        </Grid.Col>
+
+        <Grid.Col span={{ base: 12, md: 6 }}>
+          <Text size="sm" c="dimmed">
+            Orgão de controle
+          </Text>
+          <Text fw={500}>{props.item.controlAgency ?? '--'}</Text>
+        </Grid.Col>
       </Grid>
     </Stack>
   );

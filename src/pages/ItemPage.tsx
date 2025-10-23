@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { CiViewList } from 'react-icons/ci';
+import { IoMdAdd } from 'react-icons/io';
 import { Box, Button, Drawer, Grid, LoadingOverlay, Modal, Tabs } from '@mantine/core';
 import { Reagent } from '@/src/models/reagent';
 import { uploadAddReagent } from '@/src/services/reagentsDB';
@@ -26,8 +27,6 @@ const initialFilter: ItemsFilter = {
   minAmount: null,
   maxAmount: null,
 };
-
-// FIXME: Quando acaba de adicionar, aparece ND no reagente, dependendo
 
 export function ItemsPage() {
   const { items, loadingItems, itemsError, getReagentById } = useData();
@@ -109,7 +108,8 @@ export function ItemsPage() {
 
   return (
     <>
-      <h1>Itens</h1>
+      <h1>Estoque</h1>
+
       <Grid>
         <Grid.Col span={{ base: 3 }}>
           <FilterOptions filter={filter} onFilterChange={handleFilterChange} reagent={reagent} />
@@ -142,10 +142,16 @@ export function ItemsPage() {
       </Grid>
 
       <Button
-        style={{ position: 'fixed', bottom: '30px', right: '30px' }}
+        style={{
+          position: 'fixed',
+          bottom: '30px',
+          right: '30px',
+          borderRadius: '30px',
+          height: '50px',
+        }}
         onClick={handleBeginItemAddition}
       >
-        +
+        <IoMdAdd size="20px" /> Adicionar ao estoque
       </Button>
 
       <Drawer

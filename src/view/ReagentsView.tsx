@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useMemo, useState } from 'react';
-import { Box, Button, LoadingOverlay, Modal } from '@mantine/core';
+import { Box, Button, LoadingOverlay, Modal, Pill } from '@mantine/core';
 import { Reagent } from '@/src/models/reagent';
 import { uploadAddReagent, uploadDeleteReagent } from '@/src/services/reagentsDB';
 import { CrudOperations, TableView } from '../components/Crud/Table/TableView';
@@ -11,7 +11,7 @@ import { formattedSize } from '../utils/formatted-amount';
 
 // FIXME: Quando acaba de adicionar, aparece ND no reagente, dependendo
 
-export function ReagentsPage() {
+export function ReagentsView() {
   const { reagents, loadingReagents, reagentsError, getReagentById } = useData();
 
   const initialCollumns = [
@@ -31,7 +31,8 @@ export function ReagentsPage() {
     },
     {
       name: 'Tamanhos',
-      accessor: (reagent: Reagent) => reagent.sizes.map((size) => formattedSize(size)).join(', '),
+      accessor: (reagent: Reagent) =>
+        reagent.sizes.map((size, index) => <Pill key={index}>{formattedSize(size)}</Pill>),
       fixed: false,
       sortingPriority: null,
     },
@@ -144,7 +145,7 @@ export function ReagentsPage() {
           onAddReagent={handleAddReagent}
           itemModalOpened={mode === 'edit'}
           onEditReagent={handleEditReagent}
-          onExit={handleExitEdit}
+          onClose={handleExitEdit}
         />
       </Modal>
     </>

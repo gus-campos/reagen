@@ -27,8 +27,8 @@ export const itemConverter: FirestoreDataConverter<Item> = {
       ...data,
       id: snapshot.id,
       inDate: data.inDate?.toDate(),
-      outDate: data.outDate?.toDate(),
-      expireDate: data.expireDate?.toDate() ?? null,
+      expireDate: data.expireDate?.toDate(),
+      outDate: data.outDate?.toDate() ?? null,
     } as Item;
   },
 };

@@ -2,8 +2,8 @@ import { Item } from '../models/item';
 import { DimensionDefaultUnit, UnitDimension, UnitMultiplier } from '../models/unit';
 
 export function normalizedAmount(item: Item): number {
-  const defaultMultiplier = UnitMultiplier[DimensionDefaultUnit[UnitDimension[item.unit]]];
-  const itemMultiplier = UnitMultiplier[item.unit];
+  const defaultMultiplier = UnitMultiplier[DimensionDefaultUnit[UnitDimension[item.size.unit]]];
+  const itemMultiplier = UnitMultiplier[item.size.unit];
 
-  return (item.amount * itemMultiplier) / defaultMultiplier;
+  return (item.size.amount * itemMultiplier) / defaultMultiplier;
 }

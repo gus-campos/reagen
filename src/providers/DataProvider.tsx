@@ -10,6 +10,8 @@ import { itemConverter, itemsDocName } from '@/src/services/itemsDB';
 import { reagentConverter, reagentsDocName } from '@/src/services/reagentsDB';
 import { db } from '@/src/utils/firebase';
 import { sortKeys } from '@/src/utils/sortKeys';
+import { Brand } from '../models/brand';
+import { brandConverter, brandsDocName } from '../services/brandsDB';
 
 const DataContext = createContext<{
   items?: Item[];
@@ -42,6 +44,10 @@ export const DataProvider = (props: DataProviderProps) => {
 
   const [items, loadingItems, itemsError] = useCollectionData<Item>(
     collection(db, itemsDocName).withConverter(itemConverter)
+  );
+
+  const [brands, loadingBrands, brandsError] = useCollectionData<Brand>(
+    collection(db, brandsDocName).withConverter(brandConverter)
   );
 
   const getReagentById = (id: string) => {

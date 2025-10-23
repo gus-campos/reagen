@@ -19,7 +19,18 @@ export function TableRow<T>(props: TableRowProps<T>) {
       {props.collumns
         .filter((collumn) => !props.hiddenColunms.includes(collumn.name))
         .map((collumn, index) => (
-          <Table.Td key={index} onClick={props.handleClick} style={{ cursor: 'pointer' }}>
+          <Table.Td
+            key={index}
+            onClick={props.handleClick}
+            // FIXME: Limitar tamanho
+            style={{
+              cursor: props.handleClick ? 'pointer' : 'unset',
+              // whiteSpace: 'nowrap',
+              // overflow: 'hidden',
+              // textOverflow: 'ellipsis',
+              // maxWidth: 120,
+            }}
+          >
             {collumn.accessor(props.data)}
           </Table.Td>
         ))}

@@ -1,5 +1,4 @@
 import { Size } from './size';
-import Unit from './unit';
 
 export interface Item {
   id: string;
@@ -9,4 +8,6 @@ export interface Item {
   inDate: Date;
   expireDate: Date;
   outDate: Date | null;
+  controlAgency: string | null;
+  brand: string | null;
 }

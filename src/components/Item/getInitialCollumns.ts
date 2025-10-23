@@ -1,6 +1,6 @@
 import { Item } from '@/src/models/item';
 import { Reagent } from '@/src/models/reagent';
-import { formattedAmount } from '@/src/utils/formatted-amount';
+import { formattedSize } from '@/src/utils/formatted-amount';
 import { formattedDate } from '@/src/utils/formatted-date';
 import { normalizedAmount } from '@/src/utils/normalized-amount';
 import { TableCollumn } from '../Crud/Table/TableView';
@@ -20,10 +20,13 @@ export function getInitialCollumns(
       sortingPriority: 0,
     },
     {
-      name: 'Quantidade',
-      accessor: (item: Item) => formattedAmount(item),
+      name: 'Tamanho',
+      accessor: (item: Item) => formattedSize(item.size),
       fixed: false,
-      sorter: (a: Item, b: Item) => normalizedAmount(a) - normalizedAmount(b),
+      sorter: (a: Item, b: Item) => {
+        const unitsDiff = a.size.unit.trim().localeCompare(b.size.unit.trim());
+        return unitsDiff === 0 ? normalizedAmount(a) - normalizedAmount(b) : unitsDiff;
+      },
       sortingPriority: null,
     },
     {

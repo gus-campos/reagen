@@ -1,10 +1,11 @@
 'use client';
 
+import { ReactNode } from 'react';
 import { DataTable } from '@/src/components/Crud/Table/DataTable';
 
 export type TableCollumn<T> = {
   name: string;
-  accessor: (data: T) => string;
+  accessor: (data: T) => ReactNode;
   fixed?: boolean;
   sorter?: (a: T, b: T) => number;
   sortingPriority?: number | null;
