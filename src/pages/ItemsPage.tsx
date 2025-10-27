@@ -14,23 +14,29 @@ import { ItemEdit } from '../components/Item/ItemEdit';
 import { ItemShow } from '../components/Item/ItemShow';
 import { ReagentShow } from '../components/Reagents/ReagentShow';
 import { Item } from '../models/item';
-import ItemsFilter from '../models/items-filter';
+import { ItemsFilter } from '../models/items-filter';
 import { useData } from '../providers/DataProvider';
 import { uploadAddItem, uploadDeleteItem, uploadEditItem } from '../services/itemsDB';
 import { filteredItem } from '../utils/filtered-item';
 
 const initialFilter: ItemsFilter = {
-  expired: null,
-  minExpire: null,
+  controlled: 'all',
+  expired: 'all',
   maxExpire: null,
-  dimension: null,
-  minAmount: null,
-  maxAmount: null,
+  minExpire: null,
+  controlAgencyId: null,
 };
 
 export function ItemsPage() {
-  const { items, loadingItems, itemsError, getReagentById, getBrandById, getControlAgencyById } =
-    useData();
+  const {
+    items,
+    loadingItems,
+    itemsError,
+    loadingControlAgencies,
+    getReagentById,
+    getBrandById,
+    getControlAgencyById,
+  } = useData();
 
   const initialCollumns = getInitialCollumns(getReagentById, getBrandById, getControlAgencyById);
 
@@ -40,6 +46,7 @@ export function ItemsPage() {
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState<ItemsFilter>(initialFilter);
+  // FIXME: Como pode estar funcionando?
   const [reagent, setFilteredReagent] = useState<Reagent | null>(null);
 
   // HANDLERS
@@ -107,13 +114,18 @@ export function ItemsPage() {
     ? getReagentById(selectedItem?.reagentId)
     : null;
 
+  console.log('page filter', filter);
+
   return (
     <>
       <h1>Estoque</h1>
 
       <Grid>
         <Grid.Col span={{ base: 3 }}>
-          <FilterOptions filter={filter} onFilterChange={handleFilterChange} reagent={reagent} />
+          {/* FIXME: E se não carregar? */}
+          {!loadingControlAgencies && (
+            <FilterOptions filter={filter} onFilterChange={handleFilterChange} />
+          )}
         </Grid.Col>
 
         <Grid.Col span={{ base: 9 }}>
@@ -134,7 +146,7 @@ export function ItemsPage() {
                 initialCollumns={initialCollumns}
                 search={search}
                 searched={(item: Item) => getReagentById(item.reagentId)?.name ?? ''}
-                dataFilter={(item: Item) => filteredItem(item, filter)}
+                dataFilter={(item: Item) => filteredItem(item, getReagentById, filter)}
                 crudOperations={crudOperations}
               />
             )}
@@ -152,7 +164,7 @@ export function ItemsPage() {
         }}
         onClick={handleBeginItemAddition}
       >
-        <IoMdAdd size="20px" /> Adicionar ao estoque
+        <IoMdAdd size="20px" /> Cadastrar no estoque
       </Button>
 
       <Drawer

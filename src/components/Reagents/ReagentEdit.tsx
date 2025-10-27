@@ -23,16 +23,21 @@ export function ReagentEdit(props: ItemModalProps) {
   const [unsavedSizes, setUnsavedSizes] = useState<Size[]>(props.selectedReagent?.sizes ?? []);
   const [warning, setWarning] = useState<string | null>(null);
 
-  const { items } = useData();
+  const { items, controlAgencies } = useData();
 
   const reagentForm = useForm<Reagent>({
     initialValues: props.selectedReagent ?? {
-      id: '[NULL]',
+      id: '',
       name: '',
       dimension: Dimension.MASS,
       itemsId: [],
       sizes: [],
+      controlAgencyId: null,
     },
+    transformValues: (values: Reagent) => ({
+      ...values,
+      controlAgencyId: values.controlAgencyId !== '' ? values.controlAgencyId : null,
+    }),
     validate: {
       name: (value) => (!value.trim() ? 'Inserir nome' : null),
     },
@@ -42,9 +47,7 @@ export function ReagentEdit(props: ItemModalProps) {
   // Alerta: Excluir reagente
   // Exibir mensagem, retornar confirmação
 
-  const reagentWithSizes = props.selectedReagent
-    ? { ...props.selectedReagent, sizes: unsavedSizes }
-    : { ...reagentForm.values, sizes: unsavedSizes };
+  const reagentWithSizes = { ...reagentForm.values, sizes: unsavedSizes };
 
   const handleAddSize = (size: Size) => {
     setUnsavedSizes([...unsavedSizes, size]);
@@ -75,7 +78,7 @@ export function ReagentEdit(props: ItemModalProps) {
       const relatedItems = findItemsOfReagentSizes(props.selectedReagent, removedSizes, items!);
 
       if (relatedItems.length > 0) {
-        // Criar warning (modal de confirmação reage)
+        // Criar warning (modal de confirmação)
         const message = `Excluir o(s) tamanhos: ${removedSizes.map((size) => formattedSize(size)).join(', ')}
           \nCausará a exclusão dos seguintes itens:
           \n${relatedItems.map((item) => item.id).join('\n')}
@@ -91,6 +94,8 @@ export function ReagentEdit(props: ItemModalProps) {
       handleClose();
     }
   });
+
+  console.log('form', reagentForm.values);
 
   return (
     <>
@@ -159,6 +164,22 @@ export function ReagentEdit(props: ItemModalProps) {
             </Grid.Col>
           </Grid>
         )}
+
+        <form onSubmit={handleSubmit}>
+          <Grid>
+            <Grid.Col span={{ base: 12 }}>
+              <Select
+                clearable
+                label="Orgão de controle"
+                placeholder="Escolha o orgão de controle"
+                data={controlAgencies!.map((c) => {
+                  return { value: c.id, label: c.name };
+                })}
+                {...reagentForm.getInputProps('controlAgencyId')}
+              />
+            </Grid.Col>
+          </Grid>
+        </form>
 
         <form onSubmit={handleSubmit}>
           <Box>

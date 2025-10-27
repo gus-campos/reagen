@@ -16,7 +16,7 @@ export interface ItemsFilter {
   maxExpire: Date | null;
 
   expired: 'expired' | 'not-expired' | 'all';
-  controled: 'controled' | 'not-controled' | 'all';
-}
+  controlled: 'controlled' | 'not-controlled' | 'all';
 
-export default ItemsFilter;
+  controlAgencyId: string | null;
+}

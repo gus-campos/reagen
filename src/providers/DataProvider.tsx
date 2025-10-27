@@ -80,21 +80,16 @@ export const DataProvider = (props: DataProviderProps) => {
     return brands?.find((op) => op.id === id) ?? null;
   };
 
-  const getControlAgenciesById = (id: string) => {
+  const getControlAgencyById = (id: string) => {
     return controlAgencies?.find((op) => op.id === id) ?? null;
   };
 
-  console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
-
-  console.log(
-    'items: ',
-    items?.map((r) => sortKeys(r))
-  );
-
-  console.log(
-    'reagents: ',
-    reagents?.map((op) => sortKeys(op))
-  );
+  console.log('useData', {
+    items: items?.map((r) => sortKeys(r)),
+    reagents: reagents?.map((op) => sortKeys(op)),
+    brands: brands?.map((b) => sortKeys(b)),
+    controlAgency: controlAgencies?.map((c) => sortKeys(c)),
+  });
 
   console.log('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<');
 
@@ -119,7 +114,7 @@ export const DataProvider = (props: DataProviderProps) => {
         getReagentById,
         getItemById,
         getBrandById,
-        getControlAgencyById: getControlAgenciesById,
+        getControlAgencyById,
       }}
     >
       {props.children}

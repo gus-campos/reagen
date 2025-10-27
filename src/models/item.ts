@@ -9,6 +9,5 @@ export interface Item {
   outDate: Date | null;
   // Associações
   reagentId: string;
-  controlAgencyId: string | null;
   brandId: string | null;
 }

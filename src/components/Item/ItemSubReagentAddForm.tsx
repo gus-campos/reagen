@@ -13,7 +13,7 @@ type ItemSubReagentAddFormProps = {
 };
 
 export function ItemSubReagentAddForm(props: ItemSubReagentAddFormProps) {
-  const { reagents } = useData();
+  const { reagents, controlAgencies } = useData();
 
   const reagentForm = useForm<Reagent>({
     initialValues: {
@@ -22,6 +22,7 @@ export function ItemSubReagentAddForm(props: ItemSubReagentAddFormProps) {
       dimension: Dimension.MASS,
       itemsId: [],
       sizes: [],
+      controlAgencyId: '[NULL]',
     },
     validate: {
       name: (value) =>
@@ -76,6 +77,18 @@ export function ItemSubReagentAddForm(props: ItemSubReagentAddFormProps) {
                 label="Dimensão"
                 {...reagentForm.getInputProps('dimension')}
                 data={Object.values(Dimension)}
+              />
+            </Grid.Col>
+
+            <Grid.Col span={{ base: 12 }}>
+              <Select
+                clearable
+                label="Orgão de controle"
+                placeholder="Escolha o orgão de controle"
+                data={controlAgencies!.map((c) => {
+                  return { value: c.id, label: c.name };
+                })}
+                {...reagentForm.getInputProps('controlAgencyId')}
               />
             </Grid.Col>
           </Grid>

@@ -48,8 +48,6 @@ export function DataTable<T>(props: TableProps<T>) {
     setSortedBy(newSortedBy);
   };
 
-  console.log('datas', props.datas);
-
   const sortedDatas = props.datas.sort((a, b) => {
     const sortByCollumn = props.columns.find((collum) => collum.name === sortedBy) ?? null;
     const defaultSortingCollumn = props.columns[0];

@@ -57,7 +57,6 @@ export function ItemEdit(props: ItemModalProps) {
       id: '[NULL]',
       reagentId: '[NULL]',
       brandId: '[NULL]',
-      controlAgencyId: '[NULL]',
     },
 
     transformValues: (values: Item) => ({
@@ -67,7 +66,6 @@ export function ItemEdit(props: ItemModalProps) {
       outDate: toNullableLocalDate(values.outDate),
       // Começa como string vazia indicadora de null, e converte pra null se necessário
       brandId: values.brandId !== '[NULL]' ? values.brandId : null,
-      controlAgencyId: values.controlAgencyId !== '[NULL]' ? values.controlAgencyId : null,
     }),
 
     validate: {
@@ -260,39 +258,6 @@ export function ItemEdit(props: ItemModalProps) {
           </Grid.Col>
 
           <Grid.Col span={{ base: 6 }}>
-            <DatePickerInput
-              disabled={reagentAddMode || sizeAddMode}
-              clearable
-              valueFormat="DD/MM/YYYY"
-              label="Vencimento"
-              placeholder="Selecione data"
-              {...itemForm.getInputProps('expireDate')}
-            />
-          </Grid.Col>
-
-          <Grid.Col span={{ base: 6 }}>
-            <DatePickerInput
-              disabled={reagentAddMode || sizeAddMode}
-              clearable
-              valueFormat="DD/MM/YYYY"
-              label="Entrada"
-              placeholder="Selecione data"
-              {...itemForm.getInputProps('inDate')}
-            />
-          </Grid.Col>
-
-          <Grid.Col span={{ base: 6 }}>
-            <DatePickerInput
-              disabled={reagentAddMode || sizeAddMode}
-              clearable
-              valueFormat="DD/MM/YYYY"
-              label="Saída"
-              placeholder="Selecione data"
-              {...itemForm.getInputProps('outDate')}
-            />
-          </Grid.Col>
-
-          <Grid.Col span={{ base: 6 }}>
             <Select
               label="Marca"
               placeholder="Nome da marca"
@@ -307,18 +272,36 @@ export function ItemEdit(props: ItemModalProps) {
             />
           </Grid.Col>
 
-          <Grid.Col span={{ base: 6 }}>
-            <Select
-              label="Orgão de controle"
-              placeholder="Nome do orgão"
-              unselectable="off"
-              data={controlAgencies!.map((c) => {
-                return { value: c.id, label: c.name };
-              })}
-              onChange={(value) => {
-                const controlAgency = getControlAgenciesById(value!);
-                itemForm.setValues({ controlAgencyId: controlAgency?.id ?? '' });
-              }}
+          <Grid.Col span={{ base: 4 }}>
+            <DatePickerInput
+              disabled={reagentAddMode || sizeAddMode}
+              clearable
+              valueFormat="DD/MM/YYYY"
+              label="Entrada"
+              placeholder="Selecione data"
+              {...itemForm.getInputProps('inDate')}
+            />
+          </Grid.Col>
+
+          <Grid.Col span={{ base: 4 }}>
+            <DatePickerInput
+              disabled={reagentAddMode || sizeAddMode}
+              clearable
+              valueFormat="DD/MM/YYYY"
+              label="Vencimento"
+              placeholder="Selecione data"
+              {...itemForm.getInputProps('expireDate')}
+            />
+          </Grid.Col>
+
+          <Grid.Col span={{ base: 4 }}>
+            <DatePickerInput
+              disabled={reagentAddMode || sizeAddMode}
+              clearable
+              valueFormat="DD/MM/YYYY"
+              label="Saída"
+              placeholder="Selecione data"
+              {...itemForm.getInputProps('outDate')}
             />
           </Grid.Col>
         </Grid>

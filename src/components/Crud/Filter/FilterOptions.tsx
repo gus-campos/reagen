@@ -1,18 +1,19 @@
 import { useEffect } from 'react';
-import { Accordion, Box, Checkbox, Grid, Group, Paper, Radio, Title } from '@mantine/core';
+import { Accordion, Box, Checkbox, Grid, Group, Paper, Radio, Select, Title } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
-import ItemsFilter from '@/src/models/items-filter';
-import { Reagent } from '@/src/models/reagent';
+import { ItemsFilter } from '@/src/models/items-filter';
+import { useData } from '@/src/providers/DataProvider';
 import { toNullableLocalDate } from '@/src/utils/date';
 
 type FilterOptionsProps = {
   filter: ItemsFilter;
   onFilterChange: (filter: ItemsFilter) => void;
-  reagent: Reagent | null;
 };
 
 export function FilterOptions(props: FilterOptionsProps) {
+  const { controlAgencies } = useData();
+
   const form = useForm<ItemsFilter>({
     initialValues: props.filter,
     transformValues: (values) => ({
@@ -24,9 +25,7 @@ export function FilterOptions(props: FilterOptionsProps) {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (form.isTouched()) {
-        props.onFilterChange(form.getTransformedValues());
-      }
+      props.onFilterChange(form.getTransformedValues());
     }, 500);
 
     return () => clearTimeout(timer);
@@ -41,17 +40,8 @@ export function FilterOptions(props: FilterOptionsProps) {
           </Title>
 
           <form>
-            <Accordion
-              variant="default"
-              styles={{
-                control: {
-                  padding: '4px 8px',
-                  height: '32px',
-                  fontSize: '0.9rem',
-                },
-              }}
-            >
-              <Accordion.Item value="expireDate">
+            <Accordion variant="default">
+              <Accordion.Item value="expire-date">
                 <Accordion.Control>Por vencimento</Accordion.Control>
                 <Accordion.Panel>
                   <Grid>
@@ -93,7 +83,7 @@ export function FilterOptions(props: FilterOptionsProps) {
                 </Accordion.Panel>
               </Accordion.Item>
 
-              <Accordion.Item value="controlAgency">
+              <Accordion.Item value="controlled">
                 <Accordion.Control>Por controle</Accordion.Control>
                 <Accordion.Panel>
                   <Radio.Group
@@ -107,6 +97,23 @@ export function FilterOptions(props: FilterOptionsProps) {
                   </Radio.Group>
                 </Accordion.Panel>
               </Accordion.Item>
+
+              <Accordion.Item value="control-agency">
+                <Accordion.Control>Por orgão de controle</Accordion.Control>
+                <Accordion.Panel>
+                  <Select
+                    clearable
+                    label="Orgão de controle"
+                    placeholder="Escolha o orgão de controle"
+                    data={controlAgencies!.map((c) => {
+                      return { value: c.id, label: c.name };
+                    })}
+                    onChange={(value) => {
+                      form.setValues({ controlAgencyId: value ? value : null });
+                    }}
+                  />
+                </Accordion.Panel>
+              </Accordion.Item>
             </Accordion>
           </form>
 
@@ -114,16 +121,8 @@ export function FilterOptions(props: FilterOptionsProps) {
             Opções
           </Title>
 
-          <Accordion
-            styles={{
-              control: {
-                padding: '4px 8px',
-                height: '32px',
-                fontSize: '0.9rem',
-              },
-            }}
-          >
-            <Accordion.Item value="viewMode">
+          <Accordion>
+            <Accordion.Item value="view-mode">
               <Accordion.Control>Modo de visualização</Accordion.Control>
               <Accordion.Panel>
                 <Radio.Group defaultValue="byItem" defaultChecked unselectable="off">

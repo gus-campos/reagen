@@ -12,6 +12,14 @@ export function getInitialCollumns(
   getBrandById: (id: string) => Brand | null,
   getControlAgencyById: (id: string) => ControlAgency | null
 ): TableCollumn<Item>[] {
+  const getAgencyName = (item: Item) => {
+    const reagent = getReagentById(item.reagentId)!;
+    const controlAgency = reagent.controlAgencyId
+      ? getControlAgencyById(reagent.controlAgencyId)!
+      : null;
+    return controlAgency?.name ?? '--';
+  };
+
   return [
     {
       name: 'Reagente',
@@ -52,13 +60,9 @@ export function getInitialCollumns(
     },
     {
       name: 'Orgão de controle',
-      accessor: (item: Item) =>
-        item.controlAgencyId ? getControlAgencyById(item.controlAgencyId)!.name : '--',
+      accessor: (item: Item) => getAgencyName(item),
       fixed: true,
-      sorter: (a: Item, b: Item) =>
-        (a.controlAgencyId ? getControlAgencyById(a.controlAgencyId)!.name : '--')
-          .trim()
-          .localeCompare(b.controlAgencyId ? getControlAgencyById(b.controlAgencyId)!.name : '--'),
+      sorter: (a: Item, b: Item) => getAgencyName(a).trim().localeCompare(getAgencyName(b)),
       sortingPriority: 0,
     },
     {

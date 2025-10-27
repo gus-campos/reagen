@@ -1,28 +1,40 @@
 import { Item } from '../models/item';
-import ItemsFilter from '../models/items-filter';
+import { ItemsFilter } from '../models/items-filter';
+import { Reagent } from '../models/reagent';
 
-export function filteredItem(item: Item, filter: ItemsFilter): boolean {
+export function filteredItem(
+  item: Item,
+  getReagentById: (reagentId: string) => Reagent | null,
+  filter: ItemsFilter
+): boolean {
   const matchesExpiredFilter =
     // Filtro não ativado
-    filter.expired === null ||
+    filter.expired === 'all' ||
     // Deve estar vencido e está vencido
-    (filter.expired && isExpired(item)) ||
+    (filter.expired === 'expired' && isExpired(item)) ||
     // Não deve estar vencido e não está vencido
-    (!filter.expired && !isExpired(item));
+    (filter.expired === 'not-expired' && !isExpired(item));
 
-  const itemIsControlled = item.controlAgencyId !== null;
+  const macthesExpireRangeFilter = insideDateRange(item, filter.minExpire, filter.maxExpire);
+
+  const itemControlAgencyId = getReagentById(item.reagentId)!.id;
+  const itemIsControlled = itemControlAgencyId !== null;
   const matchesControlledFilter =
     // Filtro não ativado
-    filter.controled === null ||
+    filter.controlled === 'all' ||
     // Deve ser controlado e é controlaod
-    (filter.controled && itemIsControlled) ||
+    (filter.controlled === 'controlled' && itemIsControlled) ||
     // Não deve ser controlado e não é controlado
-    (!filter.controled && !itemIsControlled);
+    (filter.controlled === 'not-controlled' && !itemIsControlled);
+
+  const matchesControlAgencyFilter =
+    filter.controlAgencyId === null || filter.controlAgencyId === itemControlAgencyId;
 
   return (
-    matchesControlledFilter &&
     matchesExpiredFilter &&
-    insideDateRange(item, filter.minExpire, filter.maxExpire)
+    macthesExpireRangeFilter &&
+    matchesControlledFilter &&
+    matchesControlAgencyFilter
   );
 }
 

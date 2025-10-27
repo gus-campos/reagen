@@ -13,6 +13,9 @@ export function ItemShow(props: ItemShowProps) {
 
   /* TODO: Incluir botão de edição? */
 
+  const controlAgencyId = getReagentById(props.item.reagentId)!.controlAgencyId;
+  const controlAgency = controlAgencyId ? getControlAgenciesById(controlAgencyId) : null;
+
   return (
     <Stack p="md">
       <Grid>
@@ -77,11 +80,7 @@ export function ItemShow(props: ItemShowProps) {
           <Text size="sm" c="dimmed">
             Orgão de controle
           </Text>
-          <Text fw={500}>
-            {props.item.controlAgencyId
-              ? getControlAgenciesById(props.item.controlAgencyId)!.name
-              : '--'}
-          </Text>
+          <Text fw={500}>{controlAgency?.name ?? '--'}</Text>
         </Grid.Col>
       </Grid>
     </Stack>

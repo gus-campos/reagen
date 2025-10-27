@@ -3,7 +3,11 @@
 import React, { useMemo, useState } from 'react';
 import { Box, Button, LoadingOverlay, Modal, Pill } from '@mantine/core';
 import { Reagent } from '@/src/models/reagent';
-import { uploadAddReagent, uploadDeleteReagent } from '@/src/services/reagentsDB';
+import {
+  uploadAddReagent,
+  uploadDeleteReagent,
+  uploadEditReagent,
+} from '@/src/services/reagentsDB';
 import { SearchBar } from '../components/Crud/Filter/SearchBar';
 import { CrudOperations, TableView } from '../components/Crud/Table/TableView';
 import { ReagentEdit } from '../components/Reagents/ReagentEdit';
@@ -13,7 +17,12 @@ import { formattedSize } from '../utils/formatted-amount';
 // FIXME: Quando acaba de adicionar, aparece ND no reagente, dependendo
 
 export function ReagentsView() {
-  const { reagents, loadingReagents, reagentsError, getReagentById } = useData();
+  const { reagents, loadingReagents, reagentsError, getReagentById, getControlAgencyById } =
+    useData();
+
+  const getAgencyName = (reagent: Reagent) => {
+    return reagent.controlAgencyId ? getControlAgencyById(reagent.controlAgencyId)!.name : '--';
+  };
 
   const initialCollumns = [
     {
@@ -35,6 +44,14 @@ export function ReagentsView() {
       accessor: (reagent: Reagent) =>
         reagent.sizes.map((size, index) => <Pill key={index}>{formattedSize(size)}</Pill>),
       fixed: false,
+      sortingPriority: null,
+    },
+    {
+      name: 'Orgão de Controle',
+      accessor: (reagent: Reagent) => getAgencyName(reagent),
+      fixed: false,
+      sorter: (a: Reagent, b: Reagent) =>
+        getAgencyName(a).trim().localeCompare(getAgencyName(b).trim()),
       sortingPriority: null,
     },
   ];
@@ -76,7 +93,7 @@ export function ReagentsView() {
   };
 
   const handleEditReagent = (reagent: Reagent) => {
-    uploadAddReagent(reagent);
+    uploadEditReagent(reagent);
     setSelectedReagentId(null);
   };
 
