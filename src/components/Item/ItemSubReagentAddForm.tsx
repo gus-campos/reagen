@@ -4,7 +4,7 @@ import { Reagent } from '@/src/models/reagent';
 import { Dimension } from '@/src/models/unit';
 import { useData } from '@/src/providers/DataProvider';
 
-type ReagentAddFormProps = {
+type ItemSubReagentAddFormProps = {
   loadingAddReagent: boolean;
   onAddReagent: (reagent: Reagent) => void;
   setReagentAddMode: (active: boolean) => void;
@@ -12,7 +12,7 @@ type ReagentAddFormProps = {
   setLoadingAddReagent: (loading: boolean) => void;
 };
 
-export function ReagentAddForm(props: ReagentAddFormProps) {
+export function ItemSubReagentAddForm(props: ItemSubReagentAddFormProps) {
   const { reagents } = useData();
 
   const reagentForm = useForm<Reagent>({
@@ -66,7 +66,7 @@ export function ReagentAddForm(props: ReagentAddFormProps) {
                 label="Nome"
                 placeholder="Insira o nome do reagente"
                 {...reagentForm.getInputProps('name')}
-               />
+              />
             </Grid.Col>
 
             <Grid.Col span={{ base: 6 }}>
@@ -76,7 +76,7 @@ export function ReagentAddForm(props: ReagentAddFormProps) {
                 label="Dimensão"
                 {...reagentForm.getInputProps('dimension')}
                 data={Object.values(Dimension)}
-               />
+              />
             </Grid.Col>
           </Grid>
         )}

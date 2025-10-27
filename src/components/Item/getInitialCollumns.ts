@@ -1,3 +1,5 @@
+import { Brand } from '@/src/models/brand';
+import { ControlAgency } from '@/src/models/control-agency';
 import { Item } from '@/src/models/item';
 import { Reagent } from '@/src/models/reagent';
 import { formattedSize } from '@/src/utils/formatted-amount';
@@ -6,7 +8,9 @@ import { normalizedAmount } from '@/src/utils/normalized-amount';
 import { TableCollumn } from '../Crud/Table/TableView';
 
 export function getInitialCollumns(
-  getReagentById: (id: string) => Reagent | null
+  getReagentById: (id: string) => Reagent | null,
+  getBrandById: (id: string) => Brand | null,
+  getControlAgencyById: (id: string) => ControlAgency | null
 ): TableCollumn<Item>[] {
   return [
     {
@@ -35,6 +39,27 @@ export function getInitialCollumns(
       fixed: false,
       sorter: (a: Item, b: Item) => a.purity - b.purity,
       sortingPriority: null,
+    },
+    {
+      name: 'Marca',
+      accessor: (item: Item) => (item.brandId ? getBrandById(item.brandId)!.name : '--'),
+      fixed: true,
+      sorter: (a: Item, b: Item) =>
+        (a.brandId ? getBrandById(a.brandId)!.name : '--')
+          .trim()
+          .localeCompare(b.brandId ? getBrandById(b.brandId)!.name : '--'),
+      sortingPriority: 0,
+    },
+    {
+      name: 'Orgão de controle',
+      accessor: (item: Item) =>
+        item.controlAgencyId ? getControlAgencyById(item.controlAgencyId)!.name : '--',
+      fixed: true,
+      sorter: (a: Item, b: Item) =>
+        (a.controlAgencyId ? getControlAgencyById(a.controlAgencyId)!.name : '--')
+          .trim()
+          .localeCompare(b.controlAgencyId ? getControlAgencyById(b.controlAgencyId)!.name : '--'),
+      sortingPriority: 0,
     },
     {
       name: 'Vencimeto',

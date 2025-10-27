@@ -4,6 +4,7 @@ import React, { useMemo, useState } from 'react';
 import { Box, Button, LoadingOverlay, Modal, Pill } from '@mantine/core';
 import { Reagent } from '@/src/models/reagent';
 import { uploadAddReagent, uploadDeleteReagent } from '@/src/services/reagentsDB';
+import { SearchBar } from '../components/Crud/Filter/SearchBar';
 import { CrudOperations, TableView } from '../components/Crud/Table/TableView';
 import { ReagentEdit } from '../components/Reagents/ReagentEdit';
 import { useData } from '../providers/DataProvider';
@@ -42,8 +43,7 @@ export function ReagentsView() {
 
   const [mode, setMode] = useState<'show' | 'edit' | 'table'>('table');
   const [selectedReagentId, setSelectedReagentId] = useState<string | null>(null);
-  // const [search, setSearch] = useState('');
-  // const [reagent, setFilteredReagent] = useState<Reagent | null>(null);
+  const [search, setSearch] = useState('');
 
   const selectedReagent = useMemo(() => {
     return selectedReagentId ? getReagentById(selectedReagentId) : null;
@@ -51,13 +51,9 @@ export function ReagentsView() {
 
   // HANDLERS
 
-  // const handleChangeFilteredReagent = (reagent: Reagent | null) => {
-  //   setFilteredReagent(reagent);
-  // };
-
-  // const handleSearchChange = (search: string) => {
-  //   setSearch(search);
-  // };
+  const handleSearchChange = (search: string) => {
+    setSearch(search);
+  };
 
   const handleBeginReagentAddition = () => {
     setSelectedReagentId(null);
@@ -102,16 +98,15 @@ export function ReagentsView() {
   // EFFECTS
 
   return (
-    <>
-      <h1>Itens</h1>
+    <span style={{ position: 'relative' }}>
+      <h1>Reagentes</h1>
 
-      {/* <SearchBar
+      <SearchBar
         search={search}
         placeholder="Busque por nome de reagentes..."
         onChangeSearch={handleSearchChange}
-        onChangeReagent={handleChangeFilteredReagent}
-      /> */}
-      <Box>
+      />
+      <Box pb="80px">
         {reagentsError ? (
           <p>ERRO</p>
         ) : loadingReagents ? (
@@ -120,7 +115,7 @@ export function ReagentsView() {
           <TableView
             datas={reagents!}
             initialCollumns={initialCollumns}
-            // search={search}
+            search={search}
             searched={(reagent: Reagent) => reagent.name}
             crudOperations={crudOperations}
           />
@@ -128,10 +123,16 @@ export function ReagentsView() {
       </Box>
 
       <Button
-        style={{ position: 'fixed', bottom: '30px', right: '30px' }}
+        style={{
+          position: 'absolute',
+          bottom: '5px',
+          right: '30px',
+          height: '40px',
+          borderRadius: '50px',
+        }}
         onClick={handleBeginReagentAddition}
       >
-        +
+        + Adicionar reagente
       </Button>
 
       {/* FIXME: Dados são apagados por fechamento "clicar fora" */}
@@ -148,6 +149,6 @@ export function ReagentsView() {
           onClose={handleExitEdit}
         />
       </Modal>
-    </>
+    </span>
   );
 }

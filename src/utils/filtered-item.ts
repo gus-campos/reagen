@@ -1,43 +1,46 @@
 import { Item } from '../models/item';
 import ItemsFilter from '../models/items-filter';
-import { UnitDimension } from '../models/unit';
-import { normalizedAmount } from './normalized-amount';
 
 export function filteredItem(item: Item, filter: ItemsFilter): boolean {
-  return filteredDate(item, filter) && filteredAmount(item, filter);
+  const matchesExpiredFilter =
+    // Filtro não ativado
+    filter.expired === null ||
+    // Deve estar vencido e está vencido
+    (filter.expired && isExpired(item)) ||
+    // Não deve estar vencido e não está vencido
+    (!filter.expired && !isExpired(item));
+
+  const itemIsControlled = item.controlAgencyId !== null;
+  const matchesControlledFilter =
+    // Filtro não ativado
+    filter.controled === null ||
+    // Deve ser controlado e é controlaod
+    (filter.controled && itemIsControlled) ||
+    // Não deve ser controlado e não é controlado
+    (!filter.controled && !itemIsControlled);
+
+  return (
+    matchesControlledFilter &&
+    matchesExpiredFilter &&
+    insideDateRange(item, filter.minExpire, filter.maxExpire)
+  );
 }
 
-function filteredDate(item: Item, filter: ItemsFilter): boolean {
+function insideDateRange(item: Item, minExpire: Date | null, maxExpire: Date | null): boolean {
   if (!item.expireDate) {
     return false;
   }
 
-  if (filter.minDate && item.expireDate < filter.minDate) {
+  if (minExpire && item.expireDate < minExpire) {
     return false;
   }
-  if (filter.maxDate && item.expireDate > filter.maxDate) {
+  if (maxExpire && item.expireDate > maxExpire) {
     return false;
   }
 
   return true;
 }
 
-function filteredAmount(item: Item, filter: ItemsFilter): boolean {
-  if (!filter.dimension) {
-    return true;
-  }
-
-  const itemDimension = UnitDimension[item.size.unit];
-  if (itemDimension !== filter.dimension) {
-    return false;
-  }
-
-  if (filter.minAmount && normalizedAmount(item) < filter.minAmount) {
-    return false;
-  }
-  if (filter.maxAmount && normalizedAmount(item) > filter.maxAmount) {
-    return false;
-  }
-
-  return true;
+function isExpired(item: Item): boolean {
+  return item.expireDate < new Date();
 }

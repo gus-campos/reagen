@@ -1,5 +1,6 @@
+import { Brand } from './brand';
 import { Size } from './size';
-import Unit, { Dimension } from './unit';
+import { Dimension } from './unit';
 
 export type Reagent = {
   id: string;

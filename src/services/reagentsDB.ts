@@ -36,9 +36,6 @@ export const reagentConverter: FirestoreDataConverter<Reagent> = {
 
 export async function uploadDeleteReagent(reagent: Reagent) {
   const docRef = doc(db, reagentsDocName, reagent.id);
-
-  // Deletar todo os items relacionados
-  // TODO: Testar
   deleteRelatedItemsToReagent(reagent.id);
 
   await deleteDoc(docRef);
@@ -57,8 +54,6 @@ export async function uploadEditReagent(reagent: Reagent) {
     console.error('ID do documento não encontrado');
     return;
   }
-
-  // TODO: Testar
 
   // 1. Buscar estado atual do reagente
   const docRef = doc(db, reagentsDocName, reagent.id);

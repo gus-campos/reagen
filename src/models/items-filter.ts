@@ -11,17 +11,12 @@
 // (x)Massa ()Volume ()Mols
 // De 10g até 2Kg
 
-import { Dimension } from './unit';
-
 export interface ItemsFilter {
-  expired: boolean | null; // TODO
+  minExpire: Date | null;
+  maxExpire: Date | null;
 
-  minDate: Date | null;
-  maxDate: Date | null;
-
-  dimension: Dimension | null;
-  minAmount: number | null;
-  maxAmount: number | null;
+  expired: 'expired' | 'not-expired' | 'all';
+  controled: 'controled' | 'not-controled' | 'all';
 }
 
 export default ItemsFilter;

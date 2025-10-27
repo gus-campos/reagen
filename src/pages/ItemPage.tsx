@@ -12,7 +12,7 @@ import { CrudOperations, TableView } from '../components/Crud/Table/TableView';
 import { getInitialCollumns } from '../components/Item/getInitialCollumns';
 import { ItemEdit } from '../components/Item/ItemEdit';
 import { ItemShow } from '../components/Item/ItemShow';
-import { ReagentShow } from '../components/Item/ReagentShow';
+import { ReagentShow } from '../components/Reagents/ReagentShow';
 import { Item } from '../models/item';
 import ItemsFilter from '../models/items-filter';
 import { useData } from '../providers/DataProvider';
@@ -21,17 +21,18 @@ import { filteredItem } from '../utils/filtered-item';
 
 const initialFilter: ItemsFilter = {
   expired: null,
-  minDate: null,
-  maxDate: null,
+  minExpire: null,
+  maxExpire: null,
   dimension: null,
   minAmount: null,
   maxAmount: null,
 };
 
 export function ItemsPage() {
-  const { items, loadingItems, itemsError, getReagentById } = useData();
+  const { items, loadingItems, itemsError, getReagentById, getBrandById, getControlAgencyById } =
+    useData();
 
-  const initialCollumns = getInitialCollumns(getReagentById);
+  const initialCollumns = getInitialCollumns(getReagentById, getBrandById, getControlAgencyById);
 
   // STATES
 

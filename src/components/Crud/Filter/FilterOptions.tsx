@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Accordion, Box, Grid, Group, Paper, Radio, Title } from '@mantine/core';
+import { Accordion, Box, Checkbox, Grid, Group, Paper, Radio, Title } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
 import ItemsFilter from '@/src/models/items-filter';
@@ -17,8 +17,8 @@ export function FilterOptions(props: FilterOptionsProps) {
     initialValues: props.filter,
     transformValues: (values) => ({
       ...values,
-      minDate: toNullableLocalDate(values.minDate),
-      maxDate: toNullableLocalDate(values.maxDate),
+      minExpire: toNullableLocalDate(values.minExpire),
+      maxExpire: toNullableLocalDate(values.maxExpire),
     }),
   });
 
@@ -61,7 +61,7 @@ export function FilterOptions(props: FilterOptionsProps) {
                         valueFormat="DD/MM/YYYY"
                         label="A partir de"
                         placeholder="Selecione"
-                        {...form.getInputProps('minDate')}
+                        {...form.getInputProps('minExpire')}
                       />
                     </Grid.Col>
 
@@ -71,10 +71,40 @@ export function FilterOptions(props: FilterOptionsProps) {
                         valueFormat="DD/MM/YYYY"
                         label="Até"
                         placeholder="Selecione"
-                        {...form.getInputProps('maxDate')}
+                        {...form.getInputProps('maxExpire')}
                       />
                     </Grid.Col>
                   </Grid>
+                </Accordion.Panel>
+              </Accordion.Item>
+
+              <Accordion.Item value="expired">
+                <Accordion.Control>Por vencidos</Accordion.Control>
+                <Accordion.Panel>
+                  <Radio.Group
+                    label="Mostrar"
+                    defaultValue="all"
+                    {...form.getInputProps('expired')}
+                  >
+                    <Radio label="Todos" value="all"></Radio>
+                    <Radio label="Apenas vencidos" value="expired"></Radio>
+                    <Radio label="Apenas não vencidos" value="not-expired"></Radio>
+                  </Radio.Group>
+                </Accordion.Panel>
+              </Accordion.Item>
+
+              <Accordion.Item value="controlAgency">
+                <Accordion.Control>Por controle</Accordion.Control>
+                <Accordion.Panel>
+                  <Radio.Group
+                    label="Mostrar"
+                    defaultValue="all"
+                    {...form.getInputProps('controlled')}
+                  >
+                    <Radio label="Todos" value="all"></Radio>
+                    <Radio label="Apenas controlados" value="controlled"></Radio>
+                    <Radio label="Apenas não controlados" value="not-controlled"></Radio>
+                  </Radio.Group>
                 </Accordion.Panel>
               </Accordion.Item>
             </Accordion>

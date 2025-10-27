@@ -11,17 +11,30 @@ import { reagentConverter, reagentsDocName } from '@/src/services/reagentsDB';
 import { db } from '@/src/utils/firebase';
 import { sortKeys } from '@/src/utils/sortKeys';
 import { Brand } from '../models/brand';
+import { ControlAgency } from '../models/control-agency';
 import { brandConverter, brandsDocName } from '../services/brandsDB';
+import { controlAgenciesDocName, controlAgencyConverter } from '../services/controlAgenciesDB';
 
 const DataContext = createContext<{
   items?: Item[];
-  loadingItems: boolean;
-  itemsError?: FirebaseError;
   reagents?: Reagent[];
+  brands?: Brand[];
+  controlAgencies?: ControlAgency[];
+  //
   loadingReagents: boolean;
+  loadingItems: boolean;
+  loadingBrands: boolean;
+  loadingControlAgencies: boolean;
+  //
+  itemsError?: FirebaseError;
   reagentsError?: FirebaseError;
+  brandsError?: FirebaseError;
+  controlAgenciesError?: FirebaseError;
+  //
   getReagentById: (id: string) => Reagent | null;
   getItemById: (id: string) => Item | null;
+  getBrandById: (id: string) => Brand | null;
+  getControlAgencyById: (id: string) => ControlAgency | null;
 } | null>(null);
 
 export function useData() {
@@ -50,12 +63,25 @@ export const DataProvider = (props: DataProviderProps) => {
     collection(db, brandsDocName).withConverter(brandConverter)
   );
 
+  const [controlAgencies, loadingControlAgencies, controlAgenciesError] =
+    useCollectionData<ControlAgency>(
+      collection(db, controlAgenciesDocName).withConverter(controlAgencyConverter)
+    );
+
   const getReagentById = (id: string) => {
     return reagents?.find((op) => op.id === id) ?? null;
   };
 
   const getItemById = (id: string) => {
     return items?.find((op) => op.id === id) ?? null;
+  };
+
+  const getBrandById = (id: string) => {
+    return brands?.find((op) => op.id === id) ?? null;
+  };
+
+  const getControlAgenciesById = (id: string) => {
+    return controlAgencies?.find((op) => op.id === id) ?? null;
   };
 
   console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
@@ -75,14 +101,25 @@ export const DataProvider = (props: DataProviderProps) => {
   return (
     <DataContext.Provider
       value={{
-        reagents,
-        loadingReagents,
-        reagentsError,
-        loadingItems,
-        itemsError,
         items,
+        reagents,
+        brands,
+        controlAgencies,
+        //
+        loadingReagents,
+        loadingItems,
+        loadingBrands,
+        loadingControlAgencies,
+        //
+        reagentsError,
+        itemsError,
+        brandsError,
+        controlAgenciesError,
+        //
         getReagentById,
         getItemById,
+        getBrandById,
+        getControlAgencyById: getControlAgenciesById,
       }}
     >
       {props.children}

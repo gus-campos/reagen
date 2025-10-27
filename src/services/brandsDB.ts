@@ -5,16 +5,15 @@ import {
   doc,
   FirestoreDataConverter,
   getDocs,
+  query,
   updateDoc,
+  where,
 } from 'firebase/firestore';
 import { db } from '@/src/utils/firebase';
+import { Brand } from '../models/brand';
+import { itemConverter, itemsDocName, uploadDeleteItem } from './itemsDB';
 
 export const brandsDocName = 'brands';
-
-export type Brand = {
-  id: string;
-  name: string;
-};
 
 export const brandConverter: FirestoreDataConverter<Brand> = {
   toFirestore(brand: Brand) {
@@ -52,6 +51,7 @@ export async function uploadEditBrand(brand: Brand) {
 export async function uploadDeleteBrand(brand: Brand) {
   if (!brand.id) return;
   const docRef = doc(db, brandsDocName, brand.id);
+  deleteRelatedItemsToBrand(brand.id);
   await deleteDoc(docRef);
 }
 
@@ -64,4 +64,13 @@ export async function getBrands(): Promise<Brand[]> {
         id: d.id,
       }) as Brand
   );
+}
+
+async function deleteRelatedItemsToBrand(brandId: string) {
+  const itemsRef = collection(db, itemsDocName);
+  const q = query(itemsRef, where('brandId', '==', brandId));
+  const snapshot = await getDocs(q);
+  const deletePromises = snapshot.docs.map((d) => uploadDeleteItem(itemConverter.fromFirestore(d)));
+
+  await Promise.all(deletePromises);
 }

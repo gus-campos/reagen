@@ -9,7 +9,7 @@ type ItemShowProps = {
 };
 
 export function ItemShow(props: ItemShowProps) {
-  const { getReagentById } = useData();
+  const { getReagentById, getBrandById, getControlAgencyById: getControlAgenciesById } = useData();
 
   /* TODO: Incluir botão de edição? */
 
@@ -70,14 +70,18 @@ export function ItemShow(props: ItemShowProps) {
           <Text size="sm" c="dimmed">
             Marca
           </Text>
-          <Text fw={500}>{props.item.brand ?? '--'}</Text>
+          <Text fw={500}>{props.item.brandId ? getBrandById(props.item.brandId)!.name : '--'}</Text>
         </Grid.Col>
 
         <Grid.Col span={{ base: 12, md: 6 }}>
           <Text size="sm" c="dimmed">
             Orgão de controle
           </Text>
-          <Text fw={500}>{props.item.controlAgency ?? '--'}</Text>
+          <Text fw={500}>
+            {props.item.controlAgencyId
+              ? getControlAgenciesById(props.item.controlAgencyId)!.name
+              : '--'}
+          </Text>
         </Grid.Col>
       </Grid>
     </Stack>

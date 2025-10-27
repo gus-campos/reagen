@@ -7,8 +7,8 @@ import { useData } from '@/src/providers/DataProvider';
 import { formattedSize } from '@/src/utils/formatted-amount';
 import { findItemsOfReagentSizes, findRemovedSizes } from '@/src/utils/misc';
 import { Dimension } from '../../models/unit';
-import { SizeAddForm } from '../Item/SizeAddForm';
 import { ConfirmModal } from '../Util/ConfirmModal';
+import { SizeAddForm } from './SizeAddForm';
 
 type ItemModalProps = {
   selectedReagent: Reagent | null;

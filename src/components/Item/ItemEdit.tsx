@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Box, Button, Grid, Group, NumberInput, Select, TextInput } from '@mantine/core';
+import { Box, Button, Grid, Group, NumberInput, Select } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
 import { Reagent } from '@/src/models/reagent';
@@ -10,8 +10,8 @@ import { formattedSize } from '@/src/utils/formatted-amount';
 import { Item } from '../../models/item';
 import Unit from '../../models/unit';
 import { toNullableLocalDate, validateDate } from '../../utils/date';
-import { ReagentAddForm } from './ReagentAddForm';
-import { SizeAddForm } from './SizeAddForm';
+import { SizeAddForm } from '../Reagents/SizeAddForm';
+import { ItemSubReagentAddForm } from './ItemSubReagentAddForm';
 
 type ItemModalProps = {
   selectedItem: Item | null;
@@ -24,7 +24,14 @@ type ItemModalProps = {
 };
 
 export function ItemEdit(props: ItemModalProps) {
-  const { reagents, getReagentById } = useData();
+  const {
+    reagents,
+    brands,
+    controlAgencies,
+    getReagentById,
+    getBrandById,
+    getControlAgencyById: getControlAgenciesById,
+  } = useData();
 
   // Adição de reagente
 
@@ -42,15 +49,15 @@ export function ItemEdit(props: ItemModalProps) {
 
   const itemForm = useForm<Item>({
     initialValues: props.selectedItem ?? {
-      id: '[NULL]',
-      reagentId: '[NULL]',
       inDate: new Date(),
       expireDate: new Date(),
       outDate: null,
       size: { amount: 0, unit: Unit.GRAM },
       purity: 0,
-      brand: '',
-      controlAgency: '',
+      id: '[NULL]',
+      reagentId: '[NULL]',
+      brandId: '[NULL]',
+      controlAgencyId: '[NULL]',
     },
 
     transformValues: (values: Item) => ({
@@ -58,15 +65,16 @@ export function ItemEdit(props: ItemModalProps) {
       expireDate: toNullableLocalDate(values.expireDate)!,
       inDate: toNullableLocalDate(values.inDate)!,
       outDate: toNullableLocalDate(values.outDate),
-      // Começa como string vazia, e converte pra null se necessário
-      // controlAgency: values.controlAgency!.trim() !== '' ? values.controlAgency!.trim() : null,
-      // brand: values.brand!.trim() !== '' ? values.brand!.trim() : null,
+      // Começa como string vazia indicadora de null, e converte pra null se necessário
+      brandId: values.brandId !== '[NULL]' ? values.brandId : null,
+      controlAgencyId: values.controlAgencyId !== '[NULL]' ? values.controlAgencyId : null,
     }),
 
     validate: {
       reagentId: (id) => (id !== '[NULL]' || reagentAddMode ? null : 'Inserir um reagente'),
       purity: (value) => (value >= 1 && value <= 100 ? null : 'Insira uma pureza entre 1 e 100 %'),
-      size: (value) => (value.amount !== 0 ? null : 'Selecione um tamanho'),
+      size: (value, values) =>
+        values.reagentId !== '[NULL]' && value.amount === 0 ? 'Selecione um tamanho' : null,
       expireDate: (date: Date | null) => validateDate(date, false),
       inDate: (date: Date | null) => validateDate(date, false),
     },
@@ -77,6 +85,8 @@ export function ItemEdit(props: ItemModalProps) {
   // ================= Define e atualiza as opções de unidade
 
   // EFFECTS
+
+  console.log('SIZE', itemForm.values.size);
 
   // Conclui a adição do reagente
   useEffect(() => {
@@ -139,7 +149,7 @@ export function ItemEdit(props: ItemModalProps) {
   return (
     <Box>
       {reagentAddMode && (
-        <ReagentAddForm
+        <ItemSubReagentAddForm
           onAddReagent={props.onAddReagent}
           loadingAddReagent={loadingAddReagent}
           setCreatedReagentName={setCreatedReagentName}
@@ -221,6 +231,7 @@ export function ItemEdit(props: ItemModalProps) {
                     })
                   }
                   value={formattedSize(itemForm.values.size)}
+                  error={itemForm.errors.size}
                 />
                 <Button
                   disabled={!selectedReagent || reagentAddMode}
@@ -282,25 +293,31 @@ export function ItemEdit(props: ItemModalProps) {
           </Grid.Col>
 
           <Grid.Col span={{ base: 6 }}>
-            <TextInput
-              label="Orgão de controle"
-              placeholder="Nome do orgão"
-              value={itemForm.values.controlAgency ?? ''}
-              onChange={(e) => {
-                const value = e.currentTarget.value.trim();
-                itemForm.setValues({ controlAgency: value !== '' ? value : '' });
+            <Select
+              label="Marca"
+              placeholder="Nome da marca"
+              unselectable="off"
+              data={brands!.map((b) => {
+                return { value: b.id, label: b.name };
+              })}
+              onChange={(value) => {
+                const brand = getBrandById(value!);
+                itemForm.setValues({ brandId: brand?.id ?? '' });
               }}
             />
           </Grid.Col>
 
           <Grid.Col span={{ base: 6 }}>
-            <TextInput
-              label="Marca"
-              placeholder="Nome da marca"
-              value={itemForm.values.brand ?? ''}
-              onChange={(e) => {
-                const value = e.currentTarget.value.trim();
-                itemForm.setValues({ brand: value !== '' ? value : '' });
+            <Select
+              label="Orgão de controle"
+              placeholder="Nome do orgão"
+              unselectable="off"
+              data={controlAgencies!.map((c) => {
+                return { value: c.id, label: c.name };
+              })}
+              onChange={(value) => {
+                const controlAgency = getControlAgenciesById(value!);
+                itemForm.setValues({ controlAgencyId: controlAgency?.id ?? '' });
               }}
             />
           </Grid.Col>
