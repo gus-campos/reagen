@@ -2,7 +2,8 @@ import { Box, Button, Flex, Grid, Group, Loader, Select, Text, TextInput } from 
 import { useForm } from '@mantine/form';
 import { Reagent } from '@/src/models/reagent';
 import { Dimension } from '@/src/models/unit';
-import { useData } from '@/src/providers/DataProvider';
+import { useAppData } from '@/src/providers/DataProvider';
+import { selectFilter } from '@/src/utils/selectFilter';
 
 type ItemSubReagentAddFormProps = {
   loadingAddReagent: boolean;
@@ -13,16 +14,15 @@ type ItemSubReagentAddFormProps = {
 };
 
 export function ItemSubReagentAddForm(props: ItemSubReagentAddFormProps) {
-  const { reagents, controlAgencies } = useData();
+  const { reagents, controlAgencies } = useAppData();
 
   const reagentForm = useForm<Reagent>({
     initialValues: {
       name: '',
-      id: '[NULL]',
+      id: '',
       dimension: Dimension.MASS,
-      itemsId: [],
       sizes: [],
-      controlAgencyId: '[NULL]',
+      controlAgencyId: null,
     },
     validate: {
       name: (value) =>
@@ -72,6 +72,7 @@ export function ItemSubReagentAddForm(props: ItemSubReagentAddFormProps) {
 
             <Grid.Col span={{ base: 6 }}>
               <Select
+                filter={selectFilter}
                 placeholder="Insira a dimensão"
                 allowDeselect={false}
                 label="Dimensão"
@@ -82,6 +83,7 @@ export function ItemSubReagentAddForm(props: ItemSubReagentAddFormProps) {
 
             <Grid.Col span={{ base: 12 }}>
               <Select
+                filter={selectFilter}
                 clearable
                 label="Orgão de controle"
                 placeholder="Escolha o orgão de controle"

@@ -1,6 +1,6 @@
 import { Grid, Stack, Text } from '@mantine/core';
 import { Reagent } from '@/src/models/reagent';
-import { useData } from '@/src/providers/DataProvider';
+import { useAppData } from '@/src/providers/DataProvider';
 
 type ItemShowProps = {
   reagent: Reagent;
@@ -9,7 +9,7 @@ type ItemShowProps = {
 export function ReagentShow(props: ItemShowProps) {
   /* TODO: Incluir botão de edição do nome */
 
-  const { getControlAgencyById } = useData();
+  const { getControlAgencyById } = useAppData();
 
   const controlAgency = props.reagent.controlAgencyId
     ? getControlAgencyById(props.reagent.controlAgencyId)

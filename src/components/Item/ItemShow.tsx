@@ -1,6 +1,6 @@
 import { Flex, Grid, NumberInput, Select, Stack, Text } from '@mantine/core';
 import { Item } from '@/src/models/item';
-import { useData } from '@/src/providers/DataProvider';
+import { useAppData } from '@/src/providers/DataProvider';
 import { formattedAmount } from '@/src/utils/formatted-amount';
 import { formattedDate } from '@/src/utils/formatted-date';
 
@@ -9,11 +9,15 @@ type ItemShowProps = {
 };
 
 export function ItemShow(props: ItemShowProps) {
-  const { getReagentById, getBrandById, getControlAgencyById: getControlAgenciesById } = useData();
+  const {
+    getReagentById,
+    getBrandById,
+    getControlAgencyById: getControlAgenciesById,
+  } = useAppData();
 
   /* TODO: Incluir botão de edição? */
 
-  const controlAgencyId = getReagentById(props.item.reagentId)!.controlAgencyId;
+  const controlAgencyId = getReagentById(props.item.reagentId).controlAgencyId;
   const controlAgency = controlAgencyId ? getControlAgenciesById(controlAgencyId) : null;
 
   return (
@@ -25,7 +29,7 @@ export function ItemShow(props: ItemShowProps) {
           <Text size="sm" c="dimmed">
             Reagente
           </Text>
-          <Text fw={500}>{getReagentById(props.item.reagentId)?.name}</Text>
+          <Text fw={500}>{getReagentById(props.item.reagentId).name}</Text>
         </Grid.Col>
 
         <Grid.Col span={{ base: 12, md: 6 }}>
@@ -73,7 +77,7 @@ export function ItemShow(props: ItemShowProps) {
           <Text size="sm" c="dimmed">
             Marca
           </Text>
-          <Text fw={500}>{props.item.brandId ? getBrandById(props.item.brandId)!.name : '--'}</Text>
+          <Text fw={500}>{props.item.brandId ? getBrandById(props.item.brandId).name : '--'}</Text>
         </Grid.Col>
 
         <Grid.Col span={{ base: 12, md: 6 }}>

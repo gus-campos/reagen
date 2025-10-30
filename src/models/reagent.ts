@@ -5,7 +5,6 @@ export type Reagent = {
   id: string;
   name: string;
   dimension: Dimension;
-  itemsId: string[];
   sizes: Size[];
   controlAgencyId: string | null;
 };

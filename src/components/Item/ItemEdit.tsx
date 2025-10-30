@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
-import { Box, Button, Grid, Group, NumberInput, Select } from '@mantine/core';
+import { Box, Button, Grid, Group, NumberInput, Select, Text } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
 import { Reagent } from '@/src/models/reagent';
 import { Size } from '@/src/models/size';
-import { useData } from '@/src/providers/DataProvider';
-import { uploadEditReagent } from '@/src/services/reagentsDB';
+import { useAppData } from '@/src/providers/DataProvider';
+import { ReagentService } from '@/src/services/ReagentService';
 import { formattedSize } from '@/src/utils/formatted-amount';
+import { selectFilter } from '@/src/utils/selectFilter';
 import { Item } from '../../models/item';
 import Unit from '../../models/unit';
 import { toNullableLocalDate, validateDate } from '../../utils/date';
@@ -31,7 +32,7 @@ export function ItemEdit(props: ItemModalProps) {
     getReagentById,
     getBrandById,
     getControlAgencyById: getControlAgenciesById,
-  } = useData();
+  } = useAppData();
 
   // Adição de reagente
 
@@ -54,9 +55,9 @@ export function ItemEdit(props: ItemModalProps) {
       outDate: null,
       size: { amount: 0, unit: Unit.GRAM },
       purity: 0,
-      id: '[NULL]',
-      reagentId: '[NULL]',
-      brandId: '[NULL]',
+      id: '',
+      reagentId: '',
+      brandId: '',
     },
 
     transformValues: (values: Item) => ({
@@ -65,26 +66,25 @@ export function ItemEdit(props: ItemModalProps) {
       inDate: toNullableLocalDate(values.inDate)!,
       outDate: toNullableLocalDate(values.outDate),
       // Começa como string vazia indicadora de null, e converte pra null se necessário
-      brandId: values.brandId !== '[NULL]' ? values.brandId : null,
+      brandId: values.brandId !== '' ? values.brandId : null,
     }),
 
     validate: {
-      reagentId: (id) => (id !== '[NULL]' || reagentAddMode ? null : 'Inserir um reagente'),
+      reagentId: (id) => (id !== '' || reagentAddMode ? null : 'Inserir um reagente'),
       purity: (value) => (value >= 1 && value <= 100 ? null : 'Insira uma pureza entre 1 e 100 %'),
       size: (value, values) =>
-        values.reagentId !== '[NULL]' && value.amount === 0 ? 'Selecione um tamanho' : null,
+        values.reagentId !== '' && value.amount === 0 ? 'Selecione um tamanho' : null,
       expireDate: (date: Date | null) => validateDate(date, false),
       inDate: (date: Date | null) => validateDate(date, false),
     },
   });
 
-  const selectedReagent = getReagentById(itemForm.values.reagentId) ?? null;
+  const selectedReagent =
+    itemForm.values.reagentId !== '' ? getReagentById(itemForm.values.reagentId) : null;
 
   // ================= Define e atualiza as opções de unidade
 
   // EFFECTS
-
-  console.log('SIZE', itemForm.values.size);
 
   // Conclui a adição do reagente
   useEffect(() => {
@@ -130,7 +130,8 @@ export function ItemEdit(props: ItemModalProps) {
   // HANDLES
 
   const handleAddSize = (size: Size) => {
-    uploadEditReagent({ ...selectedReagent!, sizes: [...selectedReagent!.sizes, size] });
+    const newReagent = { ...selectedReagent!, sizes: [...selectedReagent!.sizes, size] };
+    ReagentService.instance.update(selectedReagent!.id, newReagent);
     setAddedSize(size);
     setLoadingAddedSize(true);
   };
@@ -167,8 +168,9 @@ export function ItemEdit(props: ItemModalProps) {
             <Grid.Col span={{ base: 12 }}>
               <Group justify="space-between" align="end">
                 <Select
+                  filter={selectFilter}
                   placeholder="Selecione ou adicione o reagente"
-                  disabled={sizeAddMode}
+                  disabled={sizeAddMode || !!props.selectedItem}
                   style={{ flex: 1 }}
                   label="Reagente"
                   data={
@@ -181,15 +183,17 @@ export function ItemEdit(props: ItemModalProps) {
                   allowDeselect={false}
                   {...itemForm.getInputProps('reagentId')}
                 />
-                <Button
-                  disabled={sizeAddMode}
-                  variant="outline"
-                  onClick={() => {
-                    setReagentAddMode(true);
-                  }}
-                >
-                  +
-                </Button>
+                {!props.selectedItem && (
+                  <Button
+                    disabled={sizeAddMode}
+                    variant="outline"
+                    onClick={() => {
+                      setReagentAddMode(true);
+                    }}
+                  >
+                    +
+                  </Button>
+                )}
               </Group>
             </Grid.Col>
           </Grid>
@@ -216,6 +220,7 @@ export function ItemEdit(props: ItemModalProps) {
             <Grid.Col span={{ base: 12 }}>
               <Group justify="space-between" align="end">
                 <Select
+                  filter={selectFilter}
                   placeholder="Selecione ou adicione o tamanho"
                   style={{ flex: 1 }}
                   allowDeselect={false}
@@ -259,6 +264,7 @@ export function ItemEdit(props: ItemModalProps) {
 
           <Grid.Col span={{ base: 6 }}>
             <Select
+              filter={selectFilter}
               label="Marca"
               placeholder="Nome da marca"
               unselectable="off"

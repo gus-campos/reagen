@@ -1,14 +1,13 @@
 import { Item } from '../models/item';
-import { itemConverter, itemsDocName } from '../services/itemsDB';
-import { migrateFirebaseData } from './fireBaseMigration';
+import { ItemService } from '../services/ItemService';
+import { migrateDB } from './migrateDB';
 
 const migrator = (item: Item) => {
   const migrated: Item = {
     ...item,
-    brand: item.brand ?? null,
-    controlAgency: item.controlAgency ?? null,
+    brandId: item.brandId ?? null,
   };
   return migrated;
 };
 
-migrateFirebaseData<Item>(itemsDocName, itemConverter, migrator);
+migrateDB<Item>(ItemService.instance, migrator);

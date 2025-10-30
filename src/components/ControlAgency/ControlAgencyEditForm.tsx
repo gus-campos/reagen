@@ -27,9 +27,6 @@ export function ControlAgencyEditForm(props: ControlAgencyEditForm) {
       )}
     >
       <Box>
-        <Text fw="bold" mb="md">
-          Nova marca
-        </Text>
         <TextInput
           label="Nome"
           placeholder="Insria o nome"

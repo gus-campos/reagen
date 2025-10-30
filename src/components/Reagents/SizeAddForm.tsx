@@ -14,6 +14,7 @@ import { useForm } from '@mantine/form';
 import { Reagent } from '@/src/models/reagent';
 import { Size } from '@/src/models/size';
 import Unit, { Dimension, DimensionDefaultUnit, UnitDimension } from '@/src/models/unit';
+import { selectFilter } from '@/src/utils/selectFilter';
 
 type SizeAddForm = {
   selectedReagent: Reagent;
@@ -85,6 +86,8 @@ export function SizeAddForm(props: SizeAddForm) {
       ]
     : [];
 
+  console.log('select opt', unitSelectOptions);
+
   return (
     <form
       onSubmit={sizeForm.onSubmit((size) => {
@@ -121,6 +124,7 @@ export function SizeAddForm(props: SizeAddForm) {
 
             <Grid.Col span={{ base: 6 }}>
               <Select
+                filter={selectFilter}
                 allowDeselect={false}
                 label="Unidade"
                 data={unitSelectOptions}

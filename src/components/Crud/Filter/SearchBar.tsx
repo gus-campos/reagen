@@ -1,7 +1,7 @@
 import { FaMagnifyingGlass } from 'react-icons/fa6';
 import { Autocomplete, Box } from '@mantine/core';
 import { Reagent } from '@/src/models/reagent';
-import { useData } from '@/src/providers/DataProvider';
+import { useAppData } from '@/src/providers/DataProvider';
 
 type SearchBarProps = {
   search: string;
@@ -11,7 +11,7 @@ type SearchBarProps = {
 };
 
 export function SearchBar(props: SearchBarProps) {
-  const { reagents } = useData();
+  const { reagents } = useAppData();
 
   const sortedReagents = reagents?.sort((a, b) => a.name.trim().localeCompare(b.name.trim())) ?? [];
   const options = sortedReagents.map((reag) => ({ value: reag.id, label: reag.name }));

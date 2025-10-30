@@ -7,32 +7,27 @@ export function DefinitionsPage() {
   return (
     <>
       <Title order={1}>Definições</Title>
+      <Paper radius="md" withBorder shadow="sm" my="md" px="md">
+        <Tabs defaultValue="reagents" my="lg">
+          <Tabs.List defaultValue="reagents">
+            <Tabs.Tab value="reagents">Reagentes</Tabs.Tab>
+            <Tabs.Tab value="control-agencies">Orgãos de Controle</Tabs.Tab>
+            <Tabs.Tab value="brands">Marcas</Tabs.Tab>
+          </Tabs.List>
 
-      <Tabs defaultValue="reagents" my="lg">
-        <Tabs.List defaultValue="reagents">
-          <Tabs.Tab value="reagents">Reagentes</Tabs.Tab>
-          <Tabs.Tab value="control-agencies">Orgãos de Controle</Tabs.Tab>
-          <Tabs.Tab value="brands">Marcas</Tabs.Tab>
-        </Tabs.List>
-
-        <Tabs.Panel value="reagents">
-          <Paper radius="md" withBorder shadow="sm" py="xl" px="lg">
+          <Tabs.Panel value="reagents">
             <ReagentsView />
-          </Paper>
-        </Tabs.Panel>
+          </Tabs.Panel>
 
-        <Tabs.Panel value="control-agencies">
-          <Paper radius="md" withBorder shadow="sm" py="xl" px="lg">
+          <Tabs.Panel value="control-agencies">
             <ControlAgenciesView />
-          </Paper>
-        </Tabs.Panel>
+          </Tabs.Panel>
 
-        <Tabs.Panel value="brands">
-          <Paper radius="md" withBorder shadow="sm" py="xl" px="lg">
+          <Tabs.Panel value="brands">
             <BrandsView />
-          </Paper>
-        </Tabs.Panel>
-      </Tabs>
+          </Tabs.Panel>
+        </Tabs>
+      </Paper>
     </>
   );
 }

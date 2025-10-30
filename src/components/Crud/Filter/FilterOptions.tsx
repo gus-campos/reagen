@@ -1,10 +1,24 @@
 import { useEffect } from 'react';
-import { Accordion, Box, Checkbox, Grid, Group, Paper, Radio, Select, Title } from '@mantine/core';
+import {
+  Accordion,
+  Box,
+  Checkbox,
+  ComboboxItem,
+  ComboboxParsedItem,
+  Grid,
+  Group,
+  Paper,
+  Radio,
+  Select,
+  Title,
+} from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
 import { ItemsFilter } from '@/src/models/items-filter';
-import { useData } from '@/src/providers/DataProvider';
+import { useAppData } from '@/src/providers/DataProvider';
 import { toNullableLocalDate } from '@/src/utils/date';
+import { selectFilter } from '@/src/utils/selectFilter';
+import { normalizeString } from '../Table/DataTable';
 
 type FilterOptionsProps = {
   filter: ItemsFilter;
@@ -12,7 +26,7 @@ type FilterOptionsProps = {
 };
 
 export function FilterOptions(props: FilterOptionsProps) {
-  const { controlAgencies } = useData();
+  const { controlAgencies } = useAppData();
 
   const form = useForm<ItemsFilter>({
     initialValues: props.filter,
@@ -34,17 +48,30 @@ export function FilterOptions(props: FilterOptionsProps) {
   return (
     <>
       <Box>
-        <Paper radius="sm" withBorder style={{ padding: '10px' }}>
+        <Paper radius="sm" withBorder py="md" px="sm">
           <Title order={4} mb="sm">
             Filtros
           </Title>
 
           <form>
             <Accordion variant="default">
+              {/* Vencimento */}
               <Accordion.Item value="expire-date">
                 <Accordion.Control>Por vencimento</Accordion.Control>
                 <Accordion.Panel>
-                  <Grid>
+                  {/* Por range de data */}
+
+                  {/* O que mostrar */}
+                  <Radio.Group
+                    label="Por tipo"
+                    defaultValue="all"
+                    {...form.getInputProps('expired')}
+                  >
+                    <Radio label="Todos" value="all"></Radio>
+                    <Radio label="Apenas não vencidos" value="not-expired"></Radio>
+                    <Radio label="Apenas vencidos" value="expired"></Radio>
+                  </Radio.Group>
+                  <Grid mt="md">
                     <Grid.Col span={{ base: 6 }}>
                       <DatePickerInput
                         clearable
@@ -68,21 +95,6 @@ export function FilterOptions(props: FilterOptionsProps) {
                 </Accordion.Panel>
               </Accordion.Item>
 
-              <Accordion.Item value="expired">
-                <Accordion.Control>Por vencidos</Accordion.Control>
-                <Accordion.Panel>
-                  <Radio.Group
-                    label="Mostrar"
-                    defaultValue="all"
-                    {...form.getInputProps('expired')}
-                  >
-                    <Radio label="Todos" value="all"></Radio>
-                    <Radio label="Apenas vencidos" value="expired"></Radio>
-                    <Radio label="Apenas não vencidos" value="not-expired"></Radio>
-                  </Radio.Group>
-                </Accordion.Panel>
-              </Accordion.Item>
-
               <Accordion.Item value="controlled">
                 <Accordion.Control>Por controle</Accordion.Control>
                 <Accordion.Panel>
@@ -95,14 +107,10 @@ export function FilterOptions(props: FilterOptionsProps) {
                     <Radio label="Apenas controlados" value="controlled"></Radio>
                     <Radio label="Apenas não controlados" value="not-controlled"></Radio>
                   </Radio.Group>
-                </Accordion.Panel>
-              </Accordion.Item>
 
-              <Accordion.Item value="control-agency">
-                <Accordion.Control>Por orgão de controle</Accordion.Control>
-                <Accordion.Panel>
                   <Select
                     clearable
+                    mt="md"
                     label="Orgão de controle"
                     placeholder="Escolha o orgão de controle"
                     data={controlAgencies!.map((c) => {
@@ -111,6 +119,7 @@ export function FilterOptions(props: FilterOptionsProps) {
                     onChange={(value) => {
                       form.setValues({ controlAgencyId: value ? value : null });
                     }}
+                    filter={selectFilter}
                   />
                 </Accordion.Panel>
               </Accordion.Item>

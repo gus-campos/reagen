@@ -5,17 +5,17 @@ import { Box, Button, LoadingOverlay, Modal } from '@mantine/core';
 import { BrandEditForm } from '../components/Brand/BrandEditForm';
 import { CrudOperations, TableView } from '../components/Crud/Table/TableView';
 import { Brand } from '../models/brand';
-import { useData } from '../providers/DataProvider';
-import { uploadAddBrand, uploadDeleteBrand, uploadEditBrand } from '../services/brandsDB';
+import { useAppData } from '../providers/DataProvider';
+import { BrandService } from '../services/BrandService';
 
 // FIXME: Quando acaba de adicionar, aparece ND no reagente, dependendo
 
 export function BrandsView() {
-  const { brands, loadingReagents, reagentsError, getBrandById } = useData();
+  const { brands, loadingReagents, reagentsError, getBrandById } = useAppData();
 
   const initialCollumns = [
     {
-      name: 'Marca',
+      name: 'Nome',
       accessor: (brand: Brand) => brand.name,
       fixed: true,
       sorter: (a: Brand, b: Brand) => a.name.trim().localeCompare(b.name.trim()),
@@ -42,19 +42,19 @@ export function BrandsView() {
   };
 
   const handleAddBrand = (brand: Brand) => {
-    uploadAddBrand(brand);
+    BrandService.instance.add(brand);
     setSelectedBrandId(null);
     setMode('table');
   };
 
   const handleEditBrand = (brand: Brand) => {
-    uploadEditBrand(brand);
+    BrandService.instance.update(brand.id, brand);
     setSelectedBrandId(null);
     setMode('table');
   };
 
   const handleDeleteReagent = (brand: Brand) => {
-    uploadDeleteBrand(brand);
+    BrandService.instance.delete(brand.id);
   };
 
   const handleExitEdit = () => {
@@ -69,6 +69,8 @@ export function BrandsView() {
   };
 
   // EFFECTS
+
+  // FIXME: Adicionar aviso de exclusão encadeada
 
   return (
     <span style={{ position: 'relative' }}>
@@ -98,7 +100,7 @@ export function BrandsView() {
         }}
         onClick={handleBeginBrandAddition}
       >
-        + Adicionar reagente
+        + Adicionar marca
       </Button>
 
       {/* FIXME: Dados são apagados por fechamento "clicar fora" */}

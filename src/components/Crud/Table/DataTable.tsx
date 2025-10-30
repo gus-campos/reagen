@@ -5,7 +5,7 @@ import { TableRow } from './TableRow';
 import { TableThead } from './TableThead';
 
 // Função auxiliar da busca
-const normalizeString = (str: string) => {
+export const normalizeString = (str: string) => {
   return str
     .trim()
     .normalize('NFD')

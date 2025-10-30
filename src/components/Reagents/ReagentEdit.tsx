@@ -1,11 +1,13 @@
-import { useState } from 'react';
-import { Box, Button, Grid, Group, InputBase, Modal, Pill, Select, TextInput } from '@mantine/core';
+import { useEffect, useState } from 'react';
+import { Box, Button, Grid, Group, InputBase, Pill, Select, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
+import { Item } from '@/src/models/item';
 import { Reagent } from '@/src/models/reagent';
 import { Size } from '@/src/models/size';
-import { useData } from '@/src/providers/DataProvider';
+import { useAppData } from '@/src/providers/DataProvider';
 import { formattedSize } from '@/src/utils/formatted-amount';
 import { findItemsOfReagentSizes, findRemovedSizes } from '@/src/utils/misc';
+import { selectFilter } from '@/src/utils/selectFilter';
 import { Dimension } from '../../models/unit';
 import { ConfirmModal } from '../Util/ConfirmModal';
 import { SizeAddForm } from './SizeAddForm';
@@ -23,21 +25,16 @@ export function ReagentEdit(props: ItemModalProps) {
   const [unsavedSizes, setUnsavedSizes] = useState<Size[]>(props.selectedReagent?.sizes ?? []);
   const [warning, setWarning] = useState<string | null>(null);
 
-  const { items, controlAgencies } = useData();
+  const { items, controlAgencies } = useAppData();
 
   const reagentForm = useForm<Reagent>({
     initialValues: props.selectedReagent ?? {
       id: '',
       name: '',
       dimension: Dimension.MASS,
-      itemsId: [],
       sizes: [],
       controlAgencyId: null,
     },
-    transformValues: (values: Reagent) => ({
-      ...values,
-      controlAgencyId: values.controlAgencyId !== '' ? values.controlAgencyId : null,
-    }),
     validate: {
       name: (value) => (!value.trim() ? 'Inserir nome' : null),
     },
@@ -69,21 +66,20 @@ export function ReagentEdit(props: ItemModalProps) {
     handleClose();
   };
 
+  const getConfirmationMessage = (removedSizes: Size[], relatedItems: Item[]) => {
+    return `Excluir os tamanhos: ${removedSizes.map((size) => formattedSize(size)).join(', ')}
+    Causará a exclusão dos seguintes itens:
+    ${relatedItems.map((item) => `* ${item.id}`).join('\n')}
+    `;
+  };
+
   const handleSubmit = reagentForm.onSubmit((values) => {
     if (props.selectedReagent) {
-      // Gerando mensagem de confirmação e chamando confirmação
-
-      const removedSizes = findRemovedSizes(reagentWithSizes.sizes, values.sizes);
-
-      const relatedItems = findItemsOfReagentSizes(props.selectedReagent, removedSizes, items!);
+      const removedSizes = findRemovedSizes(values.sizes, reagentWithSizes.sizes);
+      const relatedItems = findItemsOfReagentSizes(props.selectedReagent!, removedSizes, items!);
 
       if (relatedItems.length > 0) {
-        // Criar warning (modal de confirmação)
-        const message = `Excluir o(s) tamanhos: ${removedSizes.map((size) => formattedSize(size)).join(', ')}
-          \nCausará a exclusão dos seguintes itens:
-          \n${relatedItems.map((item) => item.id).join('\n')}
-          `;
-
+        const message = getConfirmationMessage(removedSizes, relatedItems);
         setWarning(message);
       } else {
         handleConfirmEdit();
@@ -95,7 +91,14 @@ export function ReagentEdit(props: ItemModalProps) {
     }
   });
 
-  console.log('form', reagentForm.values);
+  // Reseta tamanho quando muda dimensão
+  useEffect(() => {
+    setUnsavedSizes([]);
+  }, [reagentForm.values.dimension]);
+
+  useEffect(() => {
+    if (props.selectedReagent) setUnsavedSizes(props.selectedReagent?.sizes);
+  }, [props.selectedReagent]);
 
   return (
     <>
@@ -113,7 +116,9 @@ export function ReagentEdit(props: ItemModalProps) {
             {!props.selectedReagent && (
               <Grid.Col span={{ base: 12 }}>
                 <Select
+                  filter={selectFilter}
                   label="Dimensão"
+                  allowDeselect={false}
                   data={Object.values(Dimension)}
                   {...reagentForm.getInputProps('dimension')}
                   disabled={sizeAddMode}
@@ -123,6 +128,7 @@ export function ReagentEdit(props: ItemModalProps) {
 
             <Grid.Col span={{ base: 12 }}>
               <Group justify="space-between" align="end">
+                {/* FIXME: Resetar tamanho quando mudar dimensão */}
                 <InputBase
                   label="Tamanhos"
                   component="div"
@@ -169,9 +175,11 @@ export function ReagentEdit(props: ItemModalProps) {
           <Grid>
             <Grid.Col span={{ base: 12 }}>
               <Select
+                filter={selectFilter}
                 clearable
                 label="Orgão de controle"
                 placeholder="Escolha o orgão de controle"
+                disabled={sizeAddMode}
                 data={controlAgencies!.map((c) => {
                   return { value: c.id, label: c.name };
                 })}

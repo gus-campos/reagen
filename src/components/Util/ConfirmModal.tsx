@@ -10,8 +10,8 @@ type ConfirmModalProps = {
 
 export function ConfirmModal(props: ConfirmModalProps) {
   return (
-    <Modal opened={props.opened} onClose={props.onClose} title="Confirmação" centered>
-      <Text>{props.children}</Text>
+    <Modal opened={props.opened} onClose={props.onClose} title="AVISO" centered>
+      <Text style={{ whiteSpace: 'pre-line' }}>{props.children}</Text>
       <Group mt="md" justify="end">
         <Button variant="default" onClick={props.onClose}>
           Cancelar

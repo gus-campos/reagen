@@ -1,19 +1,16 @@
 'use client';
 
-import React, { createContext, ReactNode, useCallback, useContext } from 'react';
-import { FirebaseError } from 'firebase/app';
-import { collection } from 'firebase/firestore';
-import { useCollectionData } from 'react-firebase-hooks/firestore';
+import React, { createContext, ReactNode, useContext } from 'react';
 import { Item } from '@/src/models/item';
 import { Reagent } from '@/src/models/reagent';
-import { itemConverter, itemsDocName } from '@/src/services/itemsDB';
-import { reagentConverter, reagentsDocName } from '@/src/services/reagentsDB';
-import { db } from '@/src/utils/firebase';
 import { sortKeys } from '@/src/utils/sortKeys';
+import { useCollectionData } from '../hooks/useCollectionData';
 import { Brand } from '../models/brand';
 import { ControlAgency } from '../models/control-agency';
-import { brandConverter, brandsDocName } from '../services/brandsDB';
-import { controlAgenciesDocName, controlAgencyConverter } from '../services/controlAgenciesDB';
+import { BrandService } from '../services/BrandService';
+import { ControlAgencyService } from '../services/ControlAgencyService';
+import { ItemService } from '../services/ItemService';
+import { ReagentService } from '../services/ReagentService';
 
 const DataContext = createContext<{
   items?: Item[];
@@ -26,18 +23,18 @@ const DataContext = createContext<{
   loadingBrands: boolean;
   loadingControlAgencies: boolean;
   //
-  itemsError?: FirebaseError;
-  reagentsError?: FirebaseError;
-  brandsError?: FirebaseError;
-  controlAgenciesError?: FirebaseError;
+  itemsError?: Error | null;
+  reagentsError?: Error | null;
+  brandsError?: Error | null;
+  controlAgenciesError?: Error | null;
   //
-  getReagentById: (id: string) => Reagent | null;
-  getItemById: (id: string) => Item | null;
-  getBrandById: (id: string) => Brand | null;
-  getControlAgencyById: (id: string) => ControlAgency | null;
+  getReagentById: (id: string) => Reagent;
+  getItemById: (id: string) => Item;
+  getBrandById: (id: string) => Brand;
+  getControlAgencyById: (id: string) => ControlAgency;
 } | null>(null);
 
-export function useData() {
+export function useAppData() {
   const context = useContext(DataContext);
   if (!context) {
     throw new Error('useData must be used within DataProvider');
@@ -50,39 +47,21 @@ type DataProviderProps = {
 };
 
 export const DataProvider = (props: DataProviderProps) => {
-  // Única ocorrência de nomes antigos, pois são o nome dos arquivos do firebase
-  const [reagents, loadingReagents, reagentsError] = useCollectionData<Reagent>(
-    collection(db, reagentsDocName).withConverter(reagentConverter)
+  const [brands, loadingBrands, brandsError, getBrandById] = useCollectionData<Brand, BrandService>(
+    BrandService.instance
   );
 
-  const [items, loadingItems, itemsError] = useCollectionData<Item>(
-    collection(db, itemsDocName).withConverter(itemConverter)
+  const [controlAgencies, loadingControlAgencies, controlAgenciesError, getControlAgencyById] =
+    useCollectionData<ControlAgency, ControlAgencyService>(ControlAgencyService.instance);
+
+  const [items, loadingItems, itemsError, getItemById] = useCollectionData<Item, ItemService>(
+    ItemService.instance
   );
 
-  const [brands, loadingBrands, brandsError] = useCollectionData<Brand>(
-    collection(db, brandsDocName).withConverter(brandConverter)
-  );
-
-  const [controlAgencies, loadingControlAgencies, controlAgenciesError] =
-    useCollectionData<ControlAgency>(
-      collection(db, controlAgenciesDocName).withConverter(controlAgencyConverter)
-    );
-
-  const getReagentById = (id: string) => {
-    return reagents?.find((op) => op.id === id) ?? null;
-  };
-
-  const getItemById = (id: string) => {
-    return items?.find((op) => op.id === id) ?? null;
-  };
-
-  const getBrandById = (id: string) => {
-    return brands?.find((op) => op.id === id) ?? null;
-  };
-
-  const getControlAgencyById = (id: string) => {
-    return controlAgencies?.find((op) => op.id === id) ?? null;
-  };
+  const [reagents, loadingReagents, reagentsError, getReagentById] = useCollectionData<
+    Reagent,
+    ReagentService
+  >(ReagentService.instance);
 
   console.log('useData', {
     items: items?.map((r) => sortKeys(r)),
@@ -90,7 +69,6 @@ export const DataProvider = (props: DataProviderProps) => {
     brands: brands?.map((b) => sortKeys(b)),
     controlAgency: controlAgencies?.map((c) => sortKeys(c)),
   });
-
   console.log('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<');
 
   return (

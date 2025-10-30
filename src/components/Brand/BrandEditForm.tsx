@@ -13,7 +13,7 @@ export function BrandEditForm(props: BrandEditFormProps) {
   const sizeForm = useForm<Brand>({
     initialValues: props.selectedBrand ?? {
       name: '',
-      id: '[NULL]',
+      id: '',
     },
     validate: {
       name: (value) => (value.trim() === '' ? 'Nome não deve ser vazio' : null),
@@ -23,10 +23,6 @@ export function BrandEditForm(props: BrandEditFormProps) {
   return (
     <form onSubmit={sizeForm.onSubmit(props.selectedBrand ? props.onEditBrand : props.onAddBrand)}>
       <Box>
-        <Text fw="bold" mb="md">
-          Nova marca
-        </Text>
-
         <TextInput label="Nome" placeholder="Insria o nome" {...sizeForm.getInputProps('name')} />
 
         <Group my="lg" justify="right">

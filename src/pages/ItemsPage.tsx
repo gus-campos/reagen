@@ -5,7 +5,6 @@ import { CiViewList } from 'react-icons/ci';
 import { IoMdAdd } from 'react-icons/io';
 import { Box, Button, Drawer, Grid, LoadingOverlay, Modal, Tabs } from '@mantine/core';
 import { Reagent } from '@/src/models/reagent';
-import { uploadAddReagent } from '@/src/services/reagentsDB';
 import { FilterOptions } from '../components/Crud/Filter/FilterOptions';
 import { SearchBar } from '../components/Crud/Filter/SearchBar';
 import { CrudOperations, TableView } from '../components/Crud/Table/TableView';
@@ -15,8 +14,9 @@ import { ItemShow } from '../components/Item/ItemShow';
 import { ReagentShow } from '../components/Reagents/ReagentShow';
 import { Item } from '../models/item';
 import { ItemsFilter } from '../models/items-filter';
-import { useData } from '../providers/DataProvider';
-import { uploadAddItem, uploadDeleteItem, uploadEditItem } from '../services/itemsDB';
+import { useAppData } from '../providers/DataProvider';
+import { ItemService } from '../services/ItemService';
+import { ReagentService } from '../services/ReagentService';
 import { filteredItem } from '../utils/filtered-item';
 
 const initialFilter: ItemsFilter = {
@@ -36,7 +36,7 @@ export function ItemsPage() {
     getReagentById,
     getBrandById,
     getControlAgencyById,
-  } = useData();
+  } = useAppData();
 
   const initialCollumns = getInitialCollumns(getReagentById, getBrandById, getControlAgencyById);
 
@@ -46,17 +46,11 @@ export function ItemsPage() {
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState<ItemsFilter>(initialFilter);
-  // FIXME: Como pode estar funcionando?
-  const [reagent, setFilteredReagent] = useState<Reagent | null>(null);
 
   // HANDLERS
 
-  const handleChangeFilteredReagent = (reagent: Reagent | null) => {
-    setFilteredReagent(reagent);
-  };
-
   const handleAddReagent = (reagent: Reagent) => {
-    uploadAddReagent(reagent);
+    ReagentService.instance.add(reagent);
   };
 
   const handleClickRow = (item: Item) => {
@@ -88,17 +82,17 @@ export function ItemsPage() {
   };
 
   const handleAddItem = (item: Item) => {
-    uploadAddItem(item);
+    ItemService.instance.add(item);
     setMode('table');
   };
 
   const handleEditItem = (item: Item) => {
-    uploadEditItem(item);
+    ItemService.instance.update(item.id, item);
     setMode('table');
   };
 
   const handleDeleteItem = (item: Item) => {
-    uploadDeleteItem(item);
+    ItemService.instance.delete(item.id);
   };
 
   const crudOperations: CrudOperations<Item> = {
@@ -110,11 +104,7 @@ export function ItemsPage() {
 
   // CONSTS
 
-  const selectedItemReagent = selectedItem?.reagentId
-    ? getReagentById(selectedItem?.reagentId)
-    : null;
-
-  console.log('page filter', filter);
+  const selectedItemReagent = selectedItem ? getReagentById(selectedItem.reagentId) : null;
 
   return (
     <>
@@ -133,7 +123,6 @@ export function ItemsPage() {
             search={search}
             placeholder="Busque por nome de reagentes..."
             onChangeSearch={handleSearchChange}
-            onChangeReagent={handleChangeFilteredReagent}
           />
           <Box>
             {itemsError ? (
@@ -145,7 +134,7 @@ export function ItemsPage() {
                 datas={items!}
                 initialCollumns={initialCollumns}
                 search={search}
-                searched={(item: Item) => getReagentById(item.reagentId)?.name ?? ''}
+                searched={(item: Item) => getReagentById(item.reagentId).name}
                 dataFilter={(item: Item) => filteredItem(item, getReagentById, filter)}
                 crudOperations={crudOperations}
               />

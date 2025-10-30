@@ -3,25 +3,21 @@
 import React, { useMemo, useState } from 'react';
 import { Box, Button, LoadingOverlay, Modal, Pill } from '@mantine/core';
 import { Reagent } from '@/src/models/reagent';
-import {
-  uploadAddReagent,
-  uploadDeleteReagent,
-  uploadEditReagent,
-} from '@/src/services/reagentsDB';
 import { SearchBar } from '../components/Crud/Filter/SearchBar';
 import { CrudOperations, TableView } from '../components/Crud/Table/TableView';
 import { ReagentEdit } from '../components/Reagents/ReagentEdit';
-import { useData } from '../providers/DataProvider';
+import { useAppData } from '../providers/DataProvider';
+import { ReagentService } from '../services/ReagentService';
 import { formattedSize } from '../utils/formatted-amount';
 
 // FIXME: Quando acaba de adicionar, aparece ND no reagente, dependendo
 
 export function ReagentsView() {
   const { reagents, loadingReagents, reagentsError, getReagentById, getControlAgencyById } =
-    useData();
+    useAppData();
 
   const getAgencyName = (reagent: Reagent) => {
-    return reagent.controlAgencyId ? getControlAgencyById(reagent.controlAgencyId)!.name : '--';
+    return reagent.controlAgencyId ? getControlAgencyById(reagent.controlAgencyId).name : '--';
   };
 
   const initialCollumns = [
@@ -88,17 +84,17 @@ export function ReagentsView() {
   };
 
   const handleAddReagent = (reagent: Reagent) => {
-    uploadAddReagent(reagent);
+    ReagentService.instance.add(reagent);
     setSelectedReagentId(null);
   };
 
   const handleEditReagent = (reagent: Reagent) => {
-    uploadEditReagent(reagent);
+    ReagentService.instance.update(reagent.id, reagent);
     setSelectedReagentId(null);
   };
 
   const handleDeleteReagent = (reagent: Reagent) => {
-    uploadDeleteReagent(reagent);
+    ReagentService.instance.delete(reagent.id);
   };
 
   const handleExitEdit = () => {

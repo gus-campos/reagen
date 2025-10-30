@@ -8,14 +8,14 @@ import { normalizedAmount } from '@/src/utils/normalized-amount';
 import { TableCollumn } from '../Crud/Table/TableView';
 
 export function getInitialCollumns(
-  getReagentById: (id: string) => Reagent | null,
-  getBrandById: (id: string) => Brand | null,
+  getReagentById: (id: string) => Reagent,
+  getBrandById: (id: string) => Brand,
   getControlAgencyById: (id: string) => ControlAgency | null
 ): TableCollumn<Item>[] {
   const getAgencyName = (item: Item) => {
-    const reagent = getReagentById(item.reagentId)!;
+    const reagent = getReagentById(item.reagentId);
     const controlAgency = reagent.controlAgencyId
-      ? getControlAgencyById(reagent.controlAgencyId)!
+      ? getControlAgencyById(reagent.controlAgencyId)
       : null;
     return controlAgency?.name ?? '--';
   };
@@ -50,12 +50,12 @@ export function getInitialCollumns(
     },
     {
       name: 'Marca',
-      accessor: (item: Item) => (item.brandId ? getBrandById(item.brandId)!.name : '--'),
+      accessor: (item: Item) => (item.brandId ? getBrandById(item.brandId).name : '--'),
       fixed: true,
       sorter: (a: Item, b: Item) =>
-        (a.brandId ? getBrandById(a.brandId)!.name : '--')
+        (a.brandId ? getBrandById(a.brandId).name : '--')
           .trim()
-          .localeCompare(b.brandId ? getBrandById(b.brandId)!.name : '--'),
+          .localeCompare(b.brandId ? getBrandById(b.brandId).name : '--'),
       sortingPriority: 0,
     },
     {

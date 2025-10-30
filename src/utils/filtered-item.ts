@@ -4,7 +4,7 @@ import { Reagent } from '../models/reagent';
 
 export function filteredItem(
   item: Item,
-  getReagentById: (reagentId: string) => Reagent | null,
+  getReagentById: (reagentId: string) => Reagent,
   filter: ItemsFilter
 ): boolean {
   const matchesExpiredFilter =
@@ -15,9 +15,9 @@ export function filteredItem(
     // Não deve estar vencido e não está vencido
     (filter.expired === 'not-expired' && !isExpired(item));
 
-  const macthesExpireRangeFilter = insideDateRange(item, filter.minExpire, filter.maxExpire);
+  const macthesExpireRangeFilter = isInsideDateRange(item, filter.minExpire, filter.maxExpire);
 
-  const itemControlAgencyId = getReagentById(item.reagentId)!.id;
+  const itemControlAgencyId = getReagentById(item.reagentId).controlAgencyId;
   const itemIsControlled = itemControlAgencyId !== null;
   const matchesControlledFilter =
     // Filtro não ativado
@@ -38,7 +38,7 @@ export function filteredItem(
   );
 }
 
-function insideDateRange(item: Item, minExpire: Date | null, maxExpire: Date | null): boolean {
+function isInsideDateRange(item: Item, minExpire: Date | null, maxExpire: Date | null): boolean {
   if (!item.expireDate) {
     return false;
   }

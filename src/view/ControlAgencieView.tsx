@@ -5,12 +5,8 @@ import { Box, Button, LoadingOverlay, Modal } from '@mantine/core';
 import { ControlAgencyEditForm } from '../components/ControlAgency/ControlAgencyEditForm';
 import { CrudOperations, TableView } from '../components/Crud/Table/TableView';
 import { ControlAgency } from '../models/control-agency';
-import { useData } from '../providers/DataProvider';
-import {
-  uploadAddControlAgency,
-  uploadDeleteControlAgency,
-  uploadEditControlAgency,
-} from '../services/controlAgenciesDB';
+import { useAppData } from '../providers/DataProvider';
+import { ControlAgencyService } from '../services/ControlAgencyService';
 
 // FIXME: Quando acaba de adicionar, aparece ND no reagente, dependendo
 
@@ -20,7 +16,7 @@ export function ControlAgenciesView() {
     loadingControlAgencies,
     controlAgenciesError,
     getControlAgencyById: getControlAgenciesById,
-  } = useData();
+  } = useAppData();
 
   const initialCollumns = [
     {
@@ -53,19 +49,19 @@ export function ControlAgenciesView() {
   };
 
   const handleAddControlAgency = (controlAgency: ControlAgency) => {
-    uploadAddControlAgency(controlAgency);
+    ControlAgencyService.instance.add(controlAgency);
     setSelectedControlAgencyId(null);
     setMode('table');
   };
 
   const handleEditControlAgency = (controlAgency: ControlAgency) => {
-    uploadEditControlAgency(controlAgency);
+    ControlAgencyService.instance.update(controlAgency.id, controlAgency);
     setSelectedControlAgencyId(null);
     setMode('table');
   };
 
   const handleDeleteReagent = (controlAgency: ControlAgency) => {
-    uploadDeleteControlAgency(controlAgency);
+    ControlAgencyService.instance.delete(controlAgency.id);
   };
 
   const handleExitEdit = () => {
@@ -80,6 +76,8 @@ export function ControlAgenciesView() {
   };
 
   // EFFECTS
+
+  // FIXME: Adicionar aviso de exclusão encadeada
 
   return (
     <span style={{ position: 'relative' }}>
@@ -109,7 +107,7 @@ export function ControlAgenciesView() {
         }}
         onClick={handleBeginControlAgencyAddition}
       >
-        + Adicionar reagente
+        + Adicionar orgão de controle
       </Button>
 
       {/* FIXME: Dados são apagados por fechamento "clicar fora" */}
