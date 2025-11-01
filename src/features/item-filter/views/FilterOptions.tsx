@@ -32,6 +32,8 @@ export function FilterOptions(props: FilterOptionsProps) {
     return () => clearTimeout(timer);
   }, [form.values]);
 
+  // TODO: Adicionar opções de filtro por laboratório, fornecedor
+
   return (
     <>
       <Box>

@@ -3,6 +3,7 @@ import { BrandsView } from '../features/brands/views/BrandsView';
 import { ControlAgenciesView } from '../features/control-agency/views/ControlAgencieView';
 import { LaboratoryView } from '../features/laboratory/views/LaboratoryView';
 import { ReagentsView } from '../features/reagents/views/ReagentsView';
+import { SupplierView } from '../features/supplier/views/SuppliersView';
 
 export function DefinitionsPage() {
   return (
@@ -15,6 +16,7 @@ export function DefinitionsPage() {
             <Tabs.Tab value="control-agencies">Orgãos de Controle</Tabs.Tab>
             <Tabs.Tab value="brands">Marcas</Tabs.Tab>
             <Tabs.Tab value="laboratories">Laboratórios</Tabs.Tab>
+            <Tabs.Tab value="suppliers">Fornecedores</Tabs.Tab>
           </Tabs.List>
 
           <Tabs.Panel value="reagents">
@@ -31,6 +33,10 @@ export function DefinitionsPage() {
 
           <Tabs.Panel value="laboratories">
             <LaboratoryView />
+          </Tabs.Panel>
+
+          <Tabs.Panel value="suppliers">
+            <SupplierView />
           </Tabs.Panel>
         </Tabs>
       </Paper>

@@ -30,7 +30,7 @@ export function SupplierView() {
     <NameDataView
       loadingData={loadingSuppliers}
       datas={suppliers}
-      dataName="Marca"
+      dataName="Fornecedores"
       dataService={SupplierService.instance}
       getDeleteWarning={getWarning}
     />

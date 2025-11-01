@@ -2,7 +2,7 @@ import { FirebaseBaseService } from '@/src/shared/services/FirebaseBaseService';
 import { ItemService } from '../../items/services/ItemService';
 import { Supplier } from '../types/supplier';
 
-const DOC_NAME = 'brands';
+const DOC_NAME = 'supplier';
 
 export class SupplierService extends FirebaseBaseService<Supplier> {
   private constructor() {
