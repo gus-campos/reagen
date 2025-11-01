@@ -1,7 +1,8 @@
 import { Divider, Grid, Paper, Tabs, Title } from '@mantine/core';
-import { BrandsView } from '../view/BrandsView';
-import { ControlAgenciesView } from '../view/ControlAgencieView';
-import { ReagentsView } from '../view/ReagentsView';
+import { BrandsView } from '../features/brands/views/BrandsView';
+import { ControlAgenciesView } from '../features/control-agency/views/ControlAgencieView';
+import { LaboratoryView } from '../features/laboratory/views/LaboratoryView';
+import { ReagentsView } from '../features/reagents/views/ReagentsView';
 
 export function DefinitionsPage() {
   return (
@@ -13,6 +14,7 @@ export function DefinitionsPage() {
             <Tabs.Tab value="reagents">Reagentes</Tabs.Tab>
             <Tabs.Tab value="control-agencies">Orgãos de Controle</Tabs.Tab>
             <Tabs.Tab value="brands">Marcas</Tabs.Tab>
+            <Tabs.Tab value="laboratories">Laboratórios</Tabs.Tab>
           </Tabs.List>
 
           <Tabs.Panel value="reagents">
@@ -25,6 +27,10 @@ export function DefinitionsPage() {
 
           <Tabs.Panel value="brands">
             <BrandsView />
+          </Tabs.Panel>
+
+          <Tabs.Panel value="laboratories">
+            <LaboratoryView />
           </Tabs.Panel>
         </Tabs>
       </Paper>

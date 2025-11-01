@@ -1,40 +1,46 @@
 'use client';
 
 import React, { createContext, ReactNode, useContext } from 'react';
-import { Item } from '@/src/models/item';
-import { Reagent } from '@/src/models/reagent';
-import { sortKeys } from '@/src/utils/sortKeys';
-import { useCollectionData } from '../hooks/useCollectionData';
-import { Brand } from '../models/brand';
-import { ControlAgency } from '../models/control-agency';
-import { BrandService } from '../services/BrandService';
-import { ControlAgencyService } from '../services/ControlAgencyService';
-import { ItemService } from '../services/ItemService';
-import { ReagentService } from '../services/ReagentService';
+import { BrandService } from '../features/brands/services/BrandService';
+import { Brand } from '../features/brands/types/brand';
+import { ControlAgencyService } from '../features/control-agency/services/ControlAgencyService';
+import { ControlAgency } from '../features/control-agency/types/control-agency';
+import { ItemService } from '../features/items/services/ItemService';
+import { Item } from '../features/items/types/item';
+import { LaboratoryService } from '../features/laboratory/services/LaboratoryService';
+import { Laboratory } from '../features/laboratory/types/laboratory';
+import { ReagentService } from '../features/reagents/services/ReagentService';
+import { Reagent } from '../features/reagents/types/reagent';
+import { sortKeys } from '../shared/utils/sort-keys';
+import { useCollectionData } from './useData';
 
 const DataContext = createContext<{
   items?: Item[];
   reagents?: Reagent[];
   brands?: Brand[];
   controlAgencies?: ControlAgency[];
+  laboratories?: Laboratory[];
   //
   loadingReagents: boolean;
   loadingItems: boolean;
   loadingBrands: boolean;
   loadingControlAgencies: boolean;
+  loadingLaboratories: boolean;
   //
   itemsError?: Error | null;
   reagentsError?: Error | null;
   brandsError?: Error | null;
   controlAgenciesError?: Error | null;
+  laboratoriesError?: Error | null;
   //
   getReagentById: (id: string) => Reagent;
   getItemById: (id: string) => Item;
   getBrandById: (id: string) => Brand;
   getControlAgencyById: (id: string) => ControlAgency;
+  getLaboratoryById: (id: string) => Laboratory;
 } | null>(null);
 
-export function useAppData() {
+export function useData() {
   const context = useContext(DataContext);
   if (!context) {
     throw new Error('useData must be used within DataProvider');
@@ -63,11 +69,15 @@ export const DataProvider = (props: DataProviderProps) => {
     ReagentService
   >(ReagentService.instance);
 
+  const [laboratories, loadingLaboratories, laboratoriesError, getLaboratoryById] =
+    useCollectionData<Laboratory, LaboratoryService>(LaboratoryService.instance);
+
   console.log('useData', {
     items: items?.map((r) => sortKeys(r)),
     reagents: reagents?.map((op) => sortKeys(op)),
     brands: brands?.map((b) => sortKeys(b)),
     controlAgency: controlAgencies?.map((c) => sortKeys(c)),
+    laboratories: laboratories?.map((l) => sortKeys(l)),
   });
   console.log('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<');
 
@@ -78,21 +88,25 @@ export const DataProvider = (props: DataProviderProps) => {
         reagents,
         brands,
         controlAgencies,
+        laboratories,
         //
         loadingReagents,
         loadingItems,
         loadingBrands,
         loadingControlAgencies,
+        loadingLaboratories,
         //
         reagentsError,
         itemsError,
         brandsError,
         controlAgenciesError,
+        laboratoriesError,
         //
         getReagentById,
         getItemById,
         getBrandById,
         getControlAgencyById,
+        getLaboratoryById,
       }}
     >
       {props.children}

@@ -4,8 +4,8 @@ import '@mantine/dates/styles.css';
 import React, { ReactNode } from 'react';
 import { ColorSchemeScript, mantineHtmlProps, MantineProvider } from '@mantine/core';
 import { theme } from '../../theme';
+import { ItemShell } from '../features/app-shell/views/AppShell';
 import { DataProvider } from '../providers/DataProvider';
-import { ItemShell } from '../view/AppShell';
 
 export const metadata = {
   title: 'Controle de Reagentes',
