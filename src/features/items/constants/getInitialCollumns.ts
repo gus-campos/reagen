@@ -7,12 +7,14 @@ import { normalizedAmount } from '@/src/features/reagents/utils/normalized-amoun
 import { formattedDate } from '@/src/shared/utils/formatted-date';
 import { TableCollumn } from '../../data-table/types/TableCollumn';
 import { Laboratory } from '../../laboratory/types/laboratory';
+import { Supplier } from '../../supplier/types/supplier';
 
 export function getInitialCollumns(
   getReagentById: (id: string) => Reagent,
   getBrandById: (id: string) => Brand,
   getControlAgencyById: (id: string) => ControlAgency,
-  getLaboratoryById: (id: string) => Laboratory
+  getLaboratoryById: (id: string) => Laboratory,
+  getSupplierById: (id: string) => Supplier
 ): TableCollumn<Item>[] {
   const getAgencyName = (item: Item) => {
     const reagent = getReagentById(item.reagentId);
@@ -24,6 +26,10 @@ export function getInitialCollumns(
 
   const getLaboratoryName = (item: Item) => {
     return item.laboratoryId ? getLaboratoryById(item.laboratoryId).name : '--';
+  };
+
+  const getSupplierName = (item: Item) => {
+    return item.supplierId ? getSupplierById(item.supplierId).name : '--';
   };
 
   // console.log('lab by id', getLaboratoryById('J8FAdboCepvhwTiuwf44'));
@@ -79,6 +85,14 @@ export function getInitialCollumns(
       fixed: true,
       sorter: (a: Item, b: Item) =>
         getLaboratoryName(a).trim().localeCompare(getLaboratoryName(a).trim()),
+      sortingPriority: 0,
+    },
+    {
+      name: 'Fornecedor',
+      accessor: (item: Item) => getSupplierName(item),
+      fixed: true,
+      sorter: (a: Item, b: Item) =>
+        getSupplierName(a).trim().localeCompare(getSupplierName(a).trim()),
       sortingPriority: 0,
     },
     {

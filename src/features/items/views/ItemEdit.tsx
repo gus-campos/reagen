@@ -25,8 +25,16 @@ type ItemModalProps = {
 };
 
 export function ItemEdit(props: ItemModalProps) {
-  const { reagents, brands, laboratories, getReagentById, getBrandById, getLaboratoryById } =
-    useData();
+  const {
+    reagents,
+    suppliers,
+    brands,
+    laboratories,
+    getReagentById,
+    getBrandById,
+    getLaboratoryById,
+    getSupplierById,
+  } = useData();
 
   // Adição de reagente
 
@@ -53,6 +61,7 @@ export function ItemEdit(props: ItemModalProps) {
       reagentId: '',
       brandId: '',
       laboratoryId: '',
+      supplierId: '',
     },
 
     // FIXME: tipagem
@@ -284,6 +293,21 @@ export function ItemEdit(props: ItemModalProps) {
               onChange={(value) => {
                 const laboratory = getLaboratoryById(value!);
                 itemForm.setValues({ laboratoryId: laboratory?.id ?? '' });
+              }}
+            />
+          </Grid.Col>
+
+          <Grid.Col span={{ base: 12 }}>
+            <Select
+              filter={portugueseSearchFilter}
+              label="Fornecedor"
+              placeholder="Nome do fornecedor"
+              data={suppliers!.map((s) => {
+                return { value: s.id, label: s.name };
+              })}
+              onChange={(value) => {
+                const supplier = getSupplierById(value!);
+                itemForm.setValues({ supplierId: supplier?.id ?? '' });
               }}
             />
           </Grid.Col>

@@ -3,6 +3,7 @@ import { ControlAgency as Laboratory } from '@/src/features/control-agency/types
 import { Item } from '@/src/features/items/types/item';
 import { Reagent } from '@/src/features/reagents/types/reagent';
 import { Size } from '@/src/features/reagents/types/size';
+import { Supplier } from '@/src/features/supplier/types/supplier';
 import { formattedSize } from '../../features/reagents/utils/formatted-amount';
 
 export function findRemovedSizes(before: Size[], after: Size[]) {
@@ -44,4 +45,8 @@ export function findReagentsOfControlAgency(controlAgency: Laboratory, reagents:
 
 export function findItemsOfBrand(brand: Brand, items: Item[]) {
   return items.filter((item) => item.brandId === brand.id);
+}
+
+export function findItemsOfSupplier(supplier: Supplier, items: Item[]) {
+  return items.filter((item) => item.supplierId === supplier.id);
 }

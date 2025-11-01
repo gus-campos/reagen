@@ -40,13 +40,15 @@ export function ItemsPage() {
     getBrandById,
     getControlAgencyById,
     getLaboratoryById,
+    getSupplierById,
   } = useData();
 
   const initialCollumns = getInitialCollumns(
     getReagentById,
     getBrandById,
     getControlAgencyById,
-    getLaboratoryById
+    getLaboratoryById,
+    getSupplierById
   );
 
   // STATES

@@ -1,18 +1,18 @@
 import { FirebaseBaseService } from '@/src/shared/services/FirebaseBaseService';
 import { ItemService } from '../../items/services/ItemService';
-import { Brand } from '../types/brand';
+import { Supplier } from '../types/supplier';
 
 const DOC_NAME = 'brands';
 
-export class BrandService extends FirebaseBaseService<Brand> {
+export class SupplierService extends FirebaseBaseService<Supplier> {
   private constructor() {
     super(DOC_NAME);
   }
 
-  private static _instance: BrandService | null = null;
+  private static _instance: SupplierService | null = null;
 
   static get instance() {
-    if (!this._instance) this._instance = new BrandService();
+    if (!this._instance) this._instance = new SupplierService();
     return this._instance;
   }
 
@@ -21,9 +21,9 @@ export class BrandService extends FirebaseBaseService<Brand> {
     await super.delete(id);
   }
 
-  private async deleteRelatedItems(brandId: string) {
+  private async deleteRelatedItems(supplierId: string) {
     const items = await ItemService.instance.getAll(); // TODO: Poderia ser query
-    const relatedItems = items.filter((i) => i.brandId === brandId);
+    const relatedItems = items.filter((i) => i.supplierId === supplierId);
     relatedItems.forEach((item) => ItemService.instance.delete(item.id));
   }
 }

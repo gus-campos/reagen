@@ -11,6 +11,8 @@ import { LaboratoryService } from '../features/laboratory/services/LaboratorySer
 import { Laboratory } from '../features/laboratory/types/laboratory';
 import { ReagentService } from '../features/reagents/services/ReagentService';
 import { Reagent } from '../features/reagents/types/reagent';
+import { SupplierService } from '../features/supplier/services/SupplierService';
+import { Supplier } from '../features/supplier/types/supplier';
 import { sortKeys } from '../shared/utils/sort-keys';
 import { useCollectionData } from './useData';
 
@@ -20,24 +22,28 @@ const DataContext = createContext<{
   brands?: Brand[];
   controlAgencies?: ControlAgency[];
   laboratories?: Laboratory[];
+  suppliers?: Supplier[];
   //
   loadingReagents: boolean;
   loadingItems: boolean;
   loadingBrands: boolean;
   loadingControlAgencies: boolean;
   loadingLaboratories: boolean;
+  loadingSuppliers: boolean;
   //
   itemsError?: Error | null;
   reagentsError?: Error | null;
   brandsError?: Error | null;
   controlAgenciesError?: Error | null;
   laboratoriesError?: Error | null;
+  suppliersError?: Error | null;
   //
   getReagentById: (id: string) => Reagent;
   getItemById: (id: string) => Item;
   getBrandById: (id: string) => Brand;
   getControlAgencyById: (id: string) => ControlAgency;
   getLaboratoryById: (id: string) => Laboratory;
+  getSupplierById: (id: string) => Laboratory;
 } | null>(null);
 
 export function useData() {
@@ -72,6 +78,11 @@ export const DataProvider = (props: DataProviderProps) => {
   const [laboratories, loadingLaboratories, laboratoriesError, getLaboratoryById] =
     useCollectionData<Laboratory, LaboratoryService>(LaboratoryService.instance);
 
+  const [suppliers, loadingSuppliers, suppliersError, getSupplierById] = useCollectionData<
+    Supplier,
+    SupplierService
+  >(SupplierService.instance);
+
   console.log('useData', {
     items: items?.map((r) => sortKeys(r)),
     reagents: reagents?.map((op) => sortKeys(op)),
@@ -89,24 +100,28 @@ export const DataProvider = (props: DataProviderProps) => {
         brands,
         controlAgencies,
         laboratories,
+        suppliers,
         //
         loadingReagents,
         loadingItems,
         loadingBrands,
         loadingControlAgencies,
         loadingLaboratories,
+        loadingSuppliers,
         //
         reagentsError,
         itemsError,
         brandsError,
         controlAgenciesError,
         laboratoriesError,
+        suppliersError,
         //
         getReagentById,
         getItemById,
         getBrandById,
         getControlAgencyById,
         getLaboratoryById,
+        getSupplierById,
       }}
     >
       {props.children}

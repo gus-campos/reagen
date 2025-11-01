@@ -11,4 +11,5 @@ export interface Item {
   reagentId: string;
   brandId: string | null;
   laboratoryId: string | null;
+  supplierId: string | null;
 }

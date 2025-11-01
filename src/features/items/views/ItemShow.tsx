@@ -1,4 +1,4 @@
-import { Flex, Grid, NumberInput, Select, Stack, Text } from '@mantine/core';
+import { Grid, Stack, Text } from '@mantine/core';
 import { Item } from '@/src/features/items/types/item';
 import { useData } from '@/src/providers/DataProvider';
 import { formattedDate } from '@/src/shared/utils/formatted-date';
@@ -13,6 +13,7 @@ export function ItemShow(props: ItemShowProps) {
     getReagentById,
     getBrandById,
     getLaboratoryById,
+    getSupplierById,
     getControlAgencyById: getControlAgenciesById,
   } = useData();
 
@@ -87,16 +88,27 @@ export function ItemShow(props: ItemShowProps) {
           </Text>
           <Text fw={500}>{controlAgency?.name ?? '--'}</Text>
         </Grid.Col>
-      </Grid>
 
-      <Grid.Col span={{ base: 12, md: 6 }}>
-        <Text size="sm" c="dimmed">
-          Laboratório
-        </Text>
-        <Text fw={500}>
-          {props.item.laboratoryId ? getLaboratoryById(props.item.laboratoryId).name : '--'}
-        </Text>
-      </Grid.Col>
+        {/* ------------------------------------------------ */}
+
+        <Grid.Col span={{ base: 12, md: 6 }}>
+          <Text size="sm" c="dimmed">
+            Laboratório
+          </Text>
+          <Text fw={500}>
+            {props.item.laboratoryId ? getLaboratoryById(props.item.laboratoryId).name : '--'}
+          </Text>
+        </Grid.Col>
+
+        <Grid.Col span={{ base: 12, md: 6 }}>
+          <Text size="sm" c="dimmed">
+            Fornecedor
+          </Text>
+          <Text fw={500}>
+            {props.item.supplierId ? getSupplierById(props.item.supplierId).name : '--'}
+          </Text>
+        </Grid.Col>
+      </Grid>
     </Stack>
   );
 }
