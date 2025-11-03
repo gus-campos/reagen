@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { ReactNode, useState } from 'react';
 import { Paper, Table } from '@mantine/core';
 import { TableCollumn } from '../types/TableCollumn';
 import { TableCrudOperations } from '../types/TableCrudOperations';
@@ -20,17 +20,20 @@ const searchMatch = (serched: string, searchTerm: string) => {
 
 type TableProps<T> = {
   datas: T[];
-  columns: TableCollumn<T>[];
+  collumns: TableCollumn<T>[];
   crudOperations?: TableCrudOperations<T>;
   search?: string;
   searched?: (data: T) => string;
   dataFilter?: (data: T) => boolean;
+  ExpandedComponent?: (data: T) => ReactNode;
 };
 
 export function DataTable<T>(props: TableProps<T>) {
   const [sortedBy, setSortedBy] = useState<string | null>(null);
   const [sortedAscending, setSortedAscending] = useState<boolean | null>(null);
   const [hiddenColumns, setHiddenColumns] = useState<string[]>([]);
+
+  const [expandedRow, setExpandedRow] = useState<number | null>(null);
 
   const handleHideCollumn = (collumnName: string) => {
     if (hiddenColumns.includes(collumnName)) return;
@@ -50,8 +53,8 @@ export function DataTable<T>(props: TableProps<T>) {
   };
 
   const sortedDatas = props.datas.sort((a, b) => {
-    const sortByCollumn = props.columns.find((collum) => collum.name === sortedBy) ?? null;
-    const defaultSortingCollumn = props.columns[0];
+    const sortByCollumn = props.collumns.find((collum) => collum.name === sortedBy) ?? null;
+    const defaultSortingCollumn = props.collumns[0];
 
     const sortByOrder = sortByCollumn ? sortByCollumn.sorter!(a, b) : 0;
     const defaultOrder = defaultSortingCollumn.sorter ? defaultSortingCollumn.sorter(a, b) : 0;
@@ -60,17 +63,26 @@ export function DataTable<T>(props: TableProps<T>) {
     return sortedAscending ? -absoluteOrder : absoluteOrder;
   });
 
+  const actionsCollumnsNeeded =
+    !!props.crudOperations?.handleBeginDataEdit || !!props.crudOperations?.handleDeleteData;
+
+  // Se não há ações disponíveis, e não será gerada coluna de ações, todas as colunas são fixas
+  const collumns = props.collumns.map((col) => {
+    return { ...col, fixed: true };
+  });
+
   return (
     <Paper radius="sm" withBorder style={{ overflow: 'hidden' }}>
-      <Table tabularNums striped highlightOnHover>
+      <Table tabularNums striped={expandedRow === null} highlightOnHover>
         <TableThead
-          collumns={props.columns}
+          collumns={collumns}
           hiddenColunms={hiddenColumns}
           sortedAscending={sortedAscending}
           sortedBy={sortedBy}
           onHideCollumn={handleHideCollumn}
           onShowCollumn={handleShowCollumn}
           onToggleSorting={handleToggleSorting}
+          actionsCollumnsNeeded={actionsCollumnsNeeded}
         />
 
         <Table.Tbody>
@@ -82,16 +94,17 @@ export function DataTable<T>(props: TableProps<T>) {
             )
             .filter((data) => (props.dataFilter ? props.dataFilter(data) : true))
             .map((data, index) => (
-              <TableRow
+              <TableRow<T>
                 key={index}
                 data={data}
                 hiddenColunms={hiddenColumns}
-                collumns={props.columns}
+                collumns={props.collumns}
                 crudOperations={props.crudOperations}
-                handleClick={
-                  props.crudOperations?.handleClickRow
-                    ? () => props.crudOperations?.handleClickRow!(data)
-                    : undefined
+                actionsCollumnsNeeded={actionsCollumnsNeeded}
+                isExpanded={expandedRow === index}
+                onExpandRow={() => setExpandedRow(index === expandedRow ? null : index)}
+                expandedComponent={
+                  props.ExpandedComponent ? () => props.ExpandedComponent!(data) : undefined
                 }
               />
             ))}

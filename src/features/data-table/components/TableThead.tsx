@@ -11,6 +11,7 @@ type ItemsTableTheadProps<T> = {
   onHideCollumn: (collumnName: string) => void;
   onShowCollumn: (collumnName: string) => void;
   onToggleSorting: (collumnName: string) => void;
+  actionsCollumnsNeeded: boolean;
 };
 
 export function TableThead<T>(props: ItemsTableTheadProps<T>) {
@@ -37,16 +38,18 @@ export function TableThead<T>(props: ItemsTableTheadProps<T>) {
               </Group>
             </Table.Th>
           ))}
-        <Table.Th>
-          <Group gap="5px" justify="center">
-            <Text fw="bold">Ações</Text>
-            <TableExtraOptions
-              collumns={props.collumns}
-              hiddenColunms={props.hiddenColunms}
-              onShowCollumn={props.onShowCollumn}
-            />
-          </Group>
-        </Table.Th>
+        {props.actionsCollumnsNeeded && (
+          <Table.Th>
+            <Group gap="5px" justify="center">
+              <Text fw="bold">Ações</Text>
+              <TableExtraOptions
+                collumns={props.collumns}
+                hiddenColunms={props.hiddenColunms}
+                onShowCollumn={props.onShowCollumn}
+              />
+            </Group>
+          </Table.Th>
+        )}
       </Table.Tr>
     </Table.Thead>
   );

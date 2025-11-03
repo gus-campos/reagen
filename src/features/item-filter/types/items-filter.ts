@@ -11,7 +11,7 @@
 // (x)Massa ()Volume ()Mols
 // De 10g até 2Kg
 
-export interface ItemsFilter {
+export interface ItemFilter {
   minExpire: Date | null;
   maxExpire: Date | null;
 
@@ -19,6 +19,7 @@ export interface ItemsFilter {
   controlled: 'controlled' | 'not-controlled' | 'all';
 
   controlAgencyId: string | null;
-
   brandId: string | null;
+  supplierId: string | null;
+  laboratoryId: string | null;
 }

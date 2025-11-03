@@ -9,40 +9,56 @@ import { TableCollumn } from '../../data-table/types/TableCollumn';
 import { Laboratory } from '../../laboratory/types/laboratory';
 import { Supplier } from '../../supplier/types/supplier';
 
+type ItemCollumGetters = {
+  getReagentById: (id: string) => Reagent;
+  getBrandById: (id: string) => Brand;
+  getControlAgencyById: (id: string) => ControlAgency;
+  getLaboratoryById: (id: string) => Laboratory;
+  getSupplierById: (id: string) => Supplier;
+};
+
 export function getInitialCollumns(
-  getReagentById: (id: string) => Reagent,
-  getBrandById: (id: string) => Brand,
-  getControlAgencyById: (id: string) => ControlAgency,
-  getLaboratoryById: (id: string) => Laboratory,
-  getSupplierById: (id: string) => Supplier
+  getters: ItemCollumGetters,
+  isGroupTableItems = false
 ): TableCollumn<Item>[] {
-  const getAgencyName = (item: Item) => {
-    const reagent = getReagentById(item.reagentId);
-    const controlAgency = reagent.controlAgencyId
-      ? getControlAgencyById(reagent.controlAgencyId)
-      : null;
-    return controlAgency?.name ?? '--';
-  };
+  /* Retorna as colunas da tabela de items. O parâmetro `isGroupTableItems` quando passado,
+  permite obter um subconjunto das colunas, especialmente para a sub tabela de items da 
+  visualização agrupada. */
+
+  // const getAgencyName = (item: Item) => {
+  //   const reagent = getters.getReagentById(item.reagentId);
+  //   const controlAgency = reagent.controlAgencyId
+  //     ? getters.getControlAgencyById(reagent.controlAgencyId)
+  //     : null;
+  //   return controlAgency?.name ?? '--';
+  // };
 
   const getLaboratoryName = (item: Item) => {
-    return item.laboratoryId ? getLaboratoryById(item.laboratoryId).name : '--';
+    return item.laboratoryId ? getters.getLaboratoryById(item.laboratoryId).name : '--';
   };
 
   const getSupplierName = (item: Item) => {
-    return item.supplierId ? getSupplierById(item.supplierId).name : '--';
+    return item.supplierId ? getters.getSupplierById(item.supplierId).name : '--';
   };
 
-  // console.log('lab by id', getLaboratoryById('J8FAdboCepvhwTiuwf44'));
+  const groupTableItemsCollums = [
+    'Pureza',
+    'Marca',
+    'Orgão de controle',
+    'Laboratório',
+    'Fornecedor',
+    'Vencimeto',
+  ];
 
-  return [
+  const allCollumns = [
     {
       name: 'Reagente',
-      accessor: (item: Item) => getReagentById(item.reagentId)?.name ?? 'ND',
+      accessor: (item: Item) => getters.getReagentById(item.reagentId)?.name ?? 'ND',
       fixed: true,
       sorter: (a: Item, b: Item) =>
-        (getReagentById(a.reagentId)?.name ?? '')
+        (getters.getReagentById(a.reagentId)?.name ?? '')
           .trim()
-          .localeCompare((getReagentById(b.reagentId)?.name ?? '').trim()),
+          .localeCompare((getters.getReagentById(b.reagentId)?.name ?? '').trim()),
       sortingPriority: 0,
     },
     {
@@ -64,25 +80,25 @@ export function getInitialCollumns(
     },
     {
       name: 'Marca',
-      accessor: (item: Item) => (item.brandId ? getBrandById(item.brandId).name : '--'),
-      fixed: true,
+      accessor: (item: Item) => (item.brandId ? getters.getBrandById(item.brandId).name : '--'),
+      fixed: false,
       sorter: (a: Item, b: Item) =>
-        (a.brandId ? getBrandById(a.brandId).name : '--')
+        (a.brandId ? getters.getBrandById(a.brandId).name : '--')
           .trim()
-          .localeCompare(b.brandId ? getBrandById(b.brandId).name : '--'),
+          .localeCompare(b.brandId ? getters.getBrandById(b.brandId).name : '--'),
       sortingPriority: 0,
     },
-    {
-      name: 'Orgão de controle',
-      accessor: (item: Item) => getAgencyName(item),
-      fixed: true,
-      sorter: (a: Item, b: Item) => getAgencyName(a).trim().localeCompare(getAgencyName(b)),
-      sortingPriority: 0,
-    },
+    // {
+    //   name: 'Orgão de controle',
+    //   accessor: (item: Item) => getAgencyName(item),
+    //   fixed: false,
+    //   sorter: (a: Item, b: Item) => getAgencyName(a).trim().localeCompare(getAgencyName(b)),
+    //   sortingPriority: 0,
+    // },
     {
       name: 'Laboratório',
       accessor: (item: Item) => getLaboratoryName(item),
-      fixed: true,
+      fixed: false,
       sorter: (a: Item, b: Item) =>
         getLaboratoryName(a).trim().localeCompare(getLaboratoryName(a).trim()),
       sortingPriority: 0,
@@ -90,7 +106,7 @@ export function getInitialCollumns(
     {
       name: 'Fornecedor',
       accessor: (item: Item) => getSupplierName(item),
-      fixed: true,
+      fixed: false,
       sorter: (a: Item, b: Item) =>
         getSupplierName(a).trim().localeCompare(getSupplierName(a).trim()),
       sortingPriority: 0,
@@ -104,4 +120,8 @@ export function getInitialCollumns(
       sortingPriority: null,
     },
   ];
+
+  return isGroupTableItems
+    ? allCollumns.filter((collumn) => groupTableItemsCollums.includes(collumn.name))
+    : allCollumns;
 }

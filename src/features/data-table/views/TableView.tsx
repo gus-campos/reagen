@@ -15,17 +15,13 @@ type TableViewProps<T> = {
 
 export function TableView<T>(props: TableViewProps<T>) {
   return (
-    <>
-      {/* Table */}
-
-      <DataTable
-        datas={props.datas}
-        columns={props.initialCollumns}
-        crudOperations={props.crudOperations}
-        search={props.search}
-        searched={props.searched}
-        dataFilter={props.dataFilter}
-      />
-    </>
+    <DataTable
+      datas={props.datas}
+      collumns={props.initialCollumns}
+      crudOperations={props.crudOperations}
+      search={props.search}
+      searched={props.searched}
+      dataFilter={props.dataFilter}
+    />
   );
 }

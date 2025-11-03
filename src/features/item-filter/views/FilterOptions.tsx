@@ -1,21 +1,24 @@
 import { useEffect } from 'react';
-import { Accordion, Box, Grid, Group, Paper, Radio, Select, Title } from '@mantine/core';
+import { Accordion, Box, Grid, Group, Paper, Radio, Select, Switch, Title } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
-import { ItemsFilter } from '@/src/features/items/types/items-filter';
+import { ItemFilter } from '@/src/features/item-filter/types/items-filter';
+import { ViewMode } from '@/src/pages/StockPage';
 import { useData } from '@/src/providers/DataProvider';
 import { toNullableLocalDate } from '@/src/shared/utils/date';
 import { portugueseSearchFilter } from '@/src/shared/utils/portuguese-search-filter';
 
 type FilterOptionsProps = {
-  filter: ItemsFilter;
-  onFilterChange: (filter: ItemsFilter) => void;
+  filter: ItemFilter;
+  viewMode: ViewMode;
+  onFilterChange: (filter: ItemFilter) => void;
+  onViewModeChange: (viewMode: ViewMode) => void;
 };
 
 export function FilterOptions(props: FilterOptionsProps) {
-  const { controlAgencies, brands } = useData();
+  const { controlAgencies, brands, suppliers, laboratories } = useData();
 
-  const form = useForm<ItemsFilter>({
+  const form = useForm<ItemFilter>({
     initialValues: props.filter,
     transformValues: (values) => ({
       ...values,
@@ -38,6 +41,20 @@ export function FilterOptions(props: FilterOptionsProps) {
     <>
       <Box>
         <Paper withBorder radius="sm" py="md" px="md">
+          <Title order={4} mb="sm">
+            Modo de visualização
+          </Title>
+
+          <Switch
+            label="Ativar visualização agrupada"
+            mt="md"
+            mb="lg"
+            onChange={(e) => {
+              const groupedViewActive = e.currentTarget.checked;
+              props.onViewModeChange(groupedViewActive ? 'grouped' : 'simple');
+            }}
+          />
+
           <Title order={4} mb="sm">
             Filtros
           </Title>
@@ -128,26 +145,46 @@ export function FilterOptions(props: FilterOptionsProps) {
                   />
                 </Accordion.Panel>
               </Accordion.Item>
+
+              <Accordion.Item value="byLaboratory">
+                <Accordion.Control>Por laboratório</Accordion.Control>
+                <Accordion.Panel>
+                  <Select
+                    clearable
+                    mt="md"
+                    label="Laboratório"
+                    placeholder="Escolha o laboratório"
+                    data={laboratories!.map((l) => {
+                      return { value: l.id, label: l.name };
+                    })}
+                    onChange={(value) => {
+                      form.setValues({ laboratoryId: value ? value : null });
+                    }}
+                    filter={portugueseSearchFilter}
+                  />
+                </Accordion.Panel>
+              </Accordion.Item>
+
+              <Accordion.Item value="bySupplier">
+                <Accordion.Control>Por fornecedor</Accordion.Control>
+                <Accordion.Panel>
+                  <Select
+                    clearable
+                    mt="md"
+                    label="Fornecedor"
+                    placeholder="Escolha o fornecedor"
+                    data={suppliers!.map((s) => {
+                      return { value: s.id, label: s.name };
+                    })}
+                    onChange={(value) => {
+                      form.setValues({ supplierId: value ? value : null });
+                    }}
+                    filter={portugueseSearchFilter}
+                  />
+                </Accordion.Panel>
+              </Accordion.Item>
             </Accordion>
           </form>
-
-          <Title order={4} mb="sm" mt="md">
-            Opções
-          </Title>
-
-          <Accordion>
-            <Accordion.Item value="view-mode">
-              <Accordion.Control>Modo de visualização</Accordion.Control>
-              <Accordion.Panel>
-                <Radio.Group defaultValue="byItem" defaultChecked unselectable="off">
-                  <Group>
-                    <Radio label="Por itens" value="byItem" />
-                    <Radio label="Agrupado" value="grouped" />
-                  </Group>
-                </Radio.Group>
-              </Accordion.Panel>
-            </Accordion.Item>
-          </Accordion>
         </Paper>
       </Box>
     </>

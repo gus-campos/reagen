@@ -1,11 +1,11 @@
 import { Item } from '../../items/types/item';
-import { ItemsFilter } from '../../items/types/items-filter';
 import { Reagent } from '../../reagents/types/reagent';
+import { ItemFilter } from '../types/items-filter';
 
 export function filteredItem(
   item: Item,
   getReagentById: (reagentId: string) => Reagent,
-  filter: ItemsFilter
+  filter: ItemFilter
 ): boolean {
   const matchesExpiredFilter =
     // Filtro não ativado
@@ -32,12 +32,15 @@ export function filteredItem(
 
   const matchesBrandFilter = filter.brandId === null || filter.brandId === item.brandId;
 
+  const macthesSupplierFilter = filter.supplierId === null || filter.supplierId === item.supplierId;
+
   return (
     matchesExpiredFilter &&
     macthesExpireRangeFilter &&
     matchesControlledFilter &&
     matchesControlAgencyFilter &&
-    matchesBrandFilter
+    matchesBrandFilter &&
+    macthesSupplierFilter
   );
 }
 

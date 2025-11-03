@@ -14,13 +14,13 @@ export function ItemShow(props: ItemShowProps) {
     getBrandById,
     getLaboratoryById,
     getSupplierById,
-    getControlAgencyById: getControlAgenciesById,
+    // getControlAgencyById,
   } = useData();
 
   /* TODO: Incluir botão de edição? */
 
-  const controlAgencyId = getReagentById(props.item.reagentId).controlAgencyId;
-  const controlAgency = controlAgencyId ? getControlAgenciesById(controlAgencyId) : null;
+  // const controlAgencyId = getReagentById(props.item.reagentId).controlAgencyId;
+  // const controlAgency = controlAgencyId ? getControlAgencyById(controlAgencyId) : null;
 
   return (
     <Stack p="md">
@@ -80,13 +80,6 @@ export function ItemShow(props: ItemShowProps) {
             Marca
           </Text>
           <Text fw={500}>{props.item.brandId ? getBrandById(props.item.brandId).name : '--'}</Text>
-        </Grid.Col>
-
-        <Grid.Col span={{ base: 12, md: 6 }}>
-          <Text size="sm" c="dimmed">
-            Orgão de controle
-          </Text>
-          <Text fw={500}>{controlAgency?.name ?? '--'}</Text>
         </Grid.Col>
 
         {/* ------------------------------------------------ */}

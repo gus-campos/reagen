@@ -92,7 +92,6 @@ export function NameDataView<T extends NameData>(props: NameDataViewProps<T>) {
   };
 
   const crudOperations: TableCrudOperations<T> = {
-    handleShowData: () => {},
     handleBeginDataEdit: handleBeginDataEdit,
     handleDeleteData: handleDeleteData,
   };

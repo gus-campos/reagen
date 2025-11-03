@@ -124,7 +124,7 @@ export function ReagentsView() {
   };
 
   const crudOperations: TableCrudOperations<Reagent> = {
-    handleShowData: handleShowReagent,
+    handleClickRow: handleShowReagent,
     handleBeginDataEdit: handleBeginReagentEdit,
     handleDeleteData: handleDeleteReagent,
   };
