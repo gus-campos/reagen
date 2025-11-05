@@ -71,14 +71,14 @@ export function ItemGroupView(props: ItemGroupViewProps) {
   const groupedItems = groupItems(filteredItems);
 
   const ExpandedComponent = (group: ItemGroup) => {
-    console.log(group);
-
     return (
       <Paper p="sm" style={{ backgroundColor: '#eee' }}>
         <ItemView filter={props.filter} group={group} />
       </Paper>
     );
   };
+
+  // FIXME: Botão de adicionar item só aparece quando grupo está aberto
 
   return (
     <DataTable<ItemGroup>

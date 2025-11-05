@@ -14,8 +14,8 @@ import {
 import { DatePickerInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
 import { ItemFilter } from '@/src/features/item-filter/types/items-filter';
-import { ViewMode } from '@/src/pages/StockPage';
 import { useData } from '@/src/providers/DataProvider';
+import { ViewMode } from '@/src/shared/pages/StockPage';
 import { toNullableLocalDate } from '@/src/shared/utils/date';
 import { portugueseSearchFilter } from '@/src/shared/utils/portuguese-search-filter';
 

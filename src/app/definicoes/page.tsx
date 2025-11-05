@@ -1,5 +1,5 @@
 'use client';
 
-import DefinitionsPage from '@/src/pages/DefinitionsPage';
+import DefinitionsPage from '@/src/shared/pages/DefinitionsPage';
 
 export default DefinitionsPage;
