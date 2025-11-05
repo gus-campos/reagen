@@ -1,5 +1,16 @@
 import { useEffect } from 'react';
-import { Accordion, Box, Grid, Group, Paper, Radio, Select, Switch, Title } from '@mantine/core';
+import {
+  Accordion,
+  Badge,
+  Box,
+  Grid,
+  Group,
+  Paper,
+  Radio,
+  Select,
+  Switch,
+  Title,
+} from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
 import { ItemFilter } from '@/src/features/item-filter/types/items-filter';
@@ -14,6 +25,15 @@ type FilterOptionsProps = {
   onFilterChange: (filter: ItemFilter) => void;
   onViewModeChange: (viewMode: ViewMode) => void;
 };
+
+function TouchedBadge(props: { text: string; active: boolean }) {
+  return (
+    <Group gap="xs">
+      {props.text}
+      {props.active && <Badge circle size="10px" color="cyan" />}
+    </Group>
+  );
+}
 
 export function FilterOptions(props: FilterOptionsProps) {
   const { controlAgencies, brands, suppliers, laboratories } = useData();
@@ -39,6 +59,8 @@ export function FilterOptions(props: FilterOptionsProps) {
 
   // FIXME: selo indicando opção não nula de filtro
 
+  console.log(form.values);
+
   return (
     <Paper withBorder radius="sm" py="md" px="md">
       <Title order={4} mb="sm">
@@ -63,9 +85,20 @@ export function FilterOptions(props: FilterOptionsProps) {
         <Accordion variant="default">
           {/* Vencimento */}
           <Accordion.Item value="expire-date">
-            <Accordion.Control>Por vencimento</Accordion.Control>
+            <Accordion.Control>
+              <Group>
+                <TouchedBadge
+                  active={
+                    form.values.expired !== 'all' ||
+                    !!form.values.minExpire ||
+                    !!form.values.maxExpire
+                  }
+                  text="Por vencimento"
+                />
+              </Group>
+            </Accordion.Control>
             <Accordion.Panel>
-              {/* Por range de data */}
+              {/* Range de data */}
               <Radio.Group label="Mostrar" defaultValue="all" {...form.getInputProps('expired')}>
                 <Radio label="Todos" value="all"></Radio>
                 <Radio label="Apenas vencidos" value="expired"></Radio>
@@ -96,7 +129,12 @@ export function FilterOptions(props: FilterOptionsProps) {
           </Accordion.Item>
 
           <Accordion.Item value="controlled">
-            <Accordion.Control>Por controle</Accordion.Control>
+            <Accordion.Control>
+              <TouchedBadge
+                active={form.values.controlled !== 'all' || !!form.values.controlAgencyId}
+                text="Por controle"
+              />
+            </Accordion.Control>
             <Accordion.Panel>
               <Radio.Group label="Mostrar" defaultValue="all" {...form.getInputProps('controlled')}>
                 <Radio label="Todos" value="all"></Radio>
@@ -120,7 +158,9 @@ export function FilterOptions(props: FilterOptionsProps) {
             </Accordion.Panel>
           </Accordion.Item>
           <Accordion.Item value="byBrand">
-            <Accordion.Control>Por marca</Accordion.Control>
+            <Accordion.Control>
+              <TouchedBadge active={form.values.brandId !== null} text="Por marca" />
+            </Accordion.Control>
             <Accordion.Panel>
               <Select
                 clearable
@@ -139,7 +179,9 @@ export function FilterOptions(props: FilterOptionsProps) {
           </Accordion.Item>
 
           <Accordion.Item value="byLaboratory">
-            <Accordion.Control>Por laboratório</Accordion.Control>
+            <Accordion.Control>
+              <TouchedBadge active={form.values.laboratoryId !== null} text="Por laboratório" />
+            </Accordion.Control>
             <Accordion.Panel>
               <Select
                 clearable
@@ -158,7 +200,9 @@ export function FilterOptions(props: FilterOptionsProps) {
           </Accordion.Item>
 
           <Accordion.Item value="bySupplier">
-            <Accordion.Control>Por fornecedor</Accordion.Control>
+            <Accordion.Control>
+              <TouchedBadge active={form.values.supplierId !== null} text="Por fornecedor" />
+            </Accordion.Control>
             <Accordion.Panel>
               <Select
                 clearable
