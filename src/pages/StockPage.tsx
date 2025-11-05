@@ -23,7 +23,7 @@ const initialFilter: ItemFilter = {
 
 export type ViewMode = 'simple' | 'grouped';
 
-export function StockPage() {
+export default function StockPage() {
   const { loadingItems, itemsError, controlAgenciesError, loadingControlAgencies, getReagentById } =
     useData();
 

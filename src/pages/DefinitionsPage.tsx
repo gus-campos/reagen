@@ -5,7 +5,7 @@ import { LaboratoryView } from '../features/laboratory/views/LaboratoryView';
 import { ReagentsView } from '../features/reagents/views/ReagentsView';
 import { SupplierView } from '../features/supplier/views/SuppliersView';
 
-export function DefinitionsPage() {
+export default function DefinitionsPage() {
   return (
     <>
       <Title order={1}>Definições</Title>
