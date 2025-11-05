@@ -77,12 +77,7 @@ export function StockPage() {
                 {viewMode === 'simple' ? (
                   <ItemView filter={filter} search={search} />
                 ) : (
-                  <>
-                    <ItemGroupView
-                      search={search}
-                      // filter={filter}
-                    />
-                  </>
+                  <ItemGroupView search={search} filter={filter} />
                 )}
               </Box>
             </Grid.Col>

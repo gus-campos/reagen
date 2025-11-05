@@ -5,8 +5,8 @@ import { Box, Button, LoadingOverlay, Modal, Pill } from '@mantine/core';
 import { findItemsOfReagent } from '@/src/shared/utils/misc';
 import { useData } from '../../../providers/DataProvider';
 import { ConfirmModal } from '../../../shared/components/ConfirmModal';
+import { DataTable } from '../../data-table/components/DataTable';
 import { TableCrudOperations } from '../../data-table/types/TableCrudOperations';
-import { TableView } from '../../data-table/views/TableView';
 import { SearchBar } from '../../item-filter/views/SearchBar';
 import { Item } from '../../items/types/item';
 import { ReagentService } from '../services/ReagentService';
@@ -154,9 +154,9 @@ export function ReagentsView() {
           ) : loadingReagents ? (
             <LoadingOverlay visible />
           ) : (
-            <TableView
+            <DataTable<Reagent>
               datas={reagents!}
-              initialCollumns={initialCollumns}
+              collumns={initialCollumns}
               search={search}
               searched={(reagent: Reagent) => reagent.name}
               crudOperations={crudOperations}

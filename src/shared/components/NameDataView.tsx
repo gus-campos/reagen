@@ -2,8 +2,8 @@
 
 import React, { useState } from 'react';
 import { Box, Button, LoadingOverlay, Modal } from '@mantine/core';
+import { DataTable } from '@/src/features/data-table/components/DataTable';
 import { TableCrudOperations } from '@/src/features/data-table/types/TableCrudOperations';
-import { TableView } from '@/src/features/data-table/views/TableView';
 import { DataService } from '../services/DataService';
 import { NameData } from '../types/name-data';
 import { ConfirmModal } from './ConfirmModal';
@@ -106,9 +106,9 @@ export function NameDataView<T extends NameData>(props: NameDataViewProps<T>) {
             <h1>Marcas</h1>
 
             <Box pb="80px">
-              <TableView
+              <DataTable<T>
                 datas={props.datas!}
-                initialCollumns={initialCollumns}
+                collumns={initialCollumns}
                 crudOperations={crudOperations}
               />
             </Box>

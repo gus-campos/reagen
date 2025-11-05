@@ -13,9 +13,17 @@ type ActionsCollumnButtonsProps = {
 
 export function ActionsCollumnButtons(props: ActionsCollumnButtonsProps) {
   const theme = useMantineTheme();
-  const blue = theme.colors[theme.primaryColor][theme.primaryShade as number];
-
   const { hovered, ref } = useHover();
+
+  const primaryColor = theme.colors[theme.primaryColor][theme.primaryShade as number];
+
+  // Hide
+  const hideOptionOpacity = hovered ? 1 : 0;
+  const sortOptionOpacity = props.ascending !== null ? 1 : hovered ? 1 : 0;
+
+  // Direção da ordenação
+  const ascendingColor = props.ascending === false ? primaryColor : 'grey';
+  const descendingColor = props.ascending === true ? primaryColor : 'grey';
 
   return (
     <Group gap="3px" ref={ref}>
@@ -23,18 +31,18 @@ export function ActionsCollumnButtons(props: ActionsCollumnButtonsProps) {
         <ActionIcon
           style={{ '--ai-size': '20px' }}
           variant="transparent"
-          opacity={props.ascending !== null ? 1 : hovered ? 1 : 0}
+          opacity={sortOptionOpacity}
           onClick={props.onToggleSorting}
         >
-          <FaArrowDownLong color={props.ascending === false ? blue : 'grey'} size="17px" />
-          <FaArrowUpLong color={props.ascending === true ? blue : 'grey'} size="17px" />
+          <FaArrowDownLong color={ascendingColor} size="17px" />
+          <FaArrowUpLong color={descendingColor} size="17px" />
         </ActionIcon>
       )}
       {!props.fixed && (
         <ActionIcon
           style={{ '--ai-size': '20px' }}
           variant="transparent"
-          opacity={hovered ? 1 : 0}
+          opacity={hideOptionOpacity}
           onClick={props.onHandleHideCollumn}
         >
           <IconEyeOff color="gray" size="20px" />

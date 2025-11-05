@@ -1,22 +1,11 @@
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import { Paper, Table } from '@mantine/core';
+import { DataTableContext, DataTableContextType } from '../providers/DataTableContext';
 import { TableCollumn } from '../types/TableCollumn';
 import { TableCrudOperations } from '../types/TableCrudOperations';
+import { searchMatch } from '../utils/search';
 import { TableRow } from './TableRow';
 import { TableThead } from './TableThead';
-
-// Função auxiliar da busca
-export const normalizeString = (str: string) => {
-  return str
-    .trim()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase();
-};
-
-const searchMatch = (serched: string, searchTerm: string) => {
-  return normalizeString(serched).includes(normalizeString(searchTerm));
-};
 
 type TableProps<T> = {
   datas: T[];
@@ -26,13 +15,13 @@ type TableProps<T> = {
   searched?: (data: T) => string;
   dataFilter?: (data: T) => boolean;
   ExpandedComponent?: (data: T) => ReactNode;
+  smallHeading?: boolean;
 };
 
 export function DataTable<T>(props: TableProps<T>) {
   const [sortedBy, setSortedBy] = useState<string | null>(null);
   const [sortedAscending, setSortedAscending] = useState<boolean | null>(null);
   const [hiddenColumns, setHiddenColumns] = useState<string[]>([]);
-
   const [expandedRow, setExpandedRow] = useState<number | null>(null);
 
   const handleHideCollumn = (collumnName: string) => {
@@ -63,53 +52,72 @@ export function DataTable<T>(props: TableProps<T>) {
     return sortedAscending ? -absoluteOrder : absoluteOrder;
   });
 
-  const actionsCollumnsNeeded =
-    !!props.crudOperations?.handleBeginDataEdit || !!props.crudOperations?.handleDeleteData;
+  // Só é necessário haver coluna de ação se houver algum handle de ação definido
 
-  // Se não há ações disponíveis, e não será gerada coluna de ações, todas as colunas são fixas
+  // Se não há ações disponíveis, e pontanto não será gerada coluna de ações,
+  // todas as colunas devem ser fixas
   const collumns = props.collumns.map((col) => {
     return { ...col, fixed: true };
   });
 
-  return (
-    <Paper radius="sm" withBorder style={{ overflow: 'hidden' }}>
-      <Table tabularNums striped={expandedRow === null} highlightOnHover>
-        <TableThead
-          collumns={collumns}
-          hiddenColunms={hiddenColumns}
-          sortedAscending={sortedAscending}
-          sortedBy={sortedBy}
-          onHideCollumn={handleHideCollumn}
-          onShowCollumn={handleShowCollumn}
-          onToggleSorting={handleToggleSorting}
-          actionsCollumnsNeeded={actionsCollumnsNeeded}
-        />
+  // As colunas devem ter padrão de listra somente quando não houver sub tabela expandida
+  const shouldBeStriped = !props.ExpandedComponent || expandedRow === null;
 
-        <Table.Tbody>
-          {sortedDatas
-            .filter((data) =>
-              props.search && props.searched
-                ? searchMatch(props.searched(data), props.search)
-                : true
-            )
-            .filter((data) => (props.dataFilter ? props.dataFilter(data) : true))
-            .map((data, index) => (
-              <TableRow<T>
-                key={index}
-                data={data}
-                hiddenColunms={hiddenColumns}
-                collumns={props.collumns}
-                crudOperations={props.crudOperations}
-                actionsCollumnsNeeded={actionsCollumnsNeeded}
-                isExpanded={expandedRow === index}
-                onExpandRow={() => setExpandedRow(index === expandedRow ? null : index)}
-                expandedComponent={
-                  props.ExpandedComponent ? () => props.ExpandedComponent!(data) : undefined
-                }
-              />
-            ))}
-        </Table.Tbody>
-      </Table>
-    </Paper>
+  const dataFilter = props.dataFilter ?? ((_: T) => true);
+
+  const isSearched = (data: T) =>
+    props.searched && props.search ? searchMatch(props.searched(data), props.search) : () => true;
+
+  const handleExpandRow = (index: number) => setExpandedRow(index === expandedRow ? null : index);
+
+  const isCollumnExpanded = (index: number) => expandedRow === index;
+
+  useEffect(() => {
+    setExpandedRow(null);
+  }, [props.datas]);
+
+  const actionsCollumnsNeeded = [
+    props.crudOperations?.handleBeginDataEdit,
+    props.crudOperations?.handleDeleteData,
+  ].some((action) => !!action);
+
+  // Valores pro provider
+  const dataTableContextValues: DataTableContextType = {
+    collumns: props.collumns,
+    hiddenCollumns: hiddenColumns,
+    crudOperations: props.crudOperations,
+    onHideCollumn: handleHideCollumn,
+    onShowCollumn: handleShowCollumn,
+    onToggleSorting: handleToggleSorting,
+    getExpandedComponent: props.ExpandedComponent,
+    actionsCollumnNeeded: actionsCollumnsNeeded,
+  } as DataTableContextType;
+
+  return (
+    <DataTableContext.Provider value={dataTableContextValues}>
+      <Paper radius="sm" withBorder style={{ overflow: 'hidden' }}>
+        <Table tabularNums striped={shouldBeStriped} highlightOnHover>
+          <TableThead
+            sortedAscending={sortedAscending}
+            sortedBy={sortedBy}
+            smallHeding={props.smallHeading}
+          />
+
+          <Table.Tbody>
+            {sortedDatas
+              .filter((data) => isSearched(data))
+              .filter((data) => dataFilter(data))
+              .map((data, index) => (
+                <TableRow<T>
+                  key={index}
+                  data={data}
+                  isExpanded={isCollumnExpanded(index)}
+                  onExpandRow={() => handleExpandRow(index)}
+                />
+              ))}
+          </Table.Tbody>
+        </Table>
+      </Paper>
+    </DataTableContext.Provider>
   );
 }

@@ -34,13 +34,17 @@ export function filteredItem(
 
   const macthesSupplierFilter = filter.supplierId === null || filter.supplierId === item.supplierId;
 
+  const matchesLaboratoryFilter =
+    filter.laboratoryId === null || filter.laboratoryId === item.laboratoryId;
+
   return (
     matchesExpiredFilter &&
     macthesExpireRangeFilter &&
     matchesControlledFilter &&
     matchesControlAgencyFilter &&
     matchesBrandFilter &&
-    macthesSupplierFilter
+    macthesSupplierFilter &&
+    matchesLaboratoryFilter
   );
 }
 

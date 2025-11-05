@@ -9,24 +9,34 @@ type ActionsRowButtonsProps<T> = {
 };
 
 export function ActionsRowButtons<T>(props: ActionsRowButtonsProps<T>) {
+  const handleBeginDataEdit = () =>
+    props.crudOperations?.handleBeginDataEdit
+      ? props.crudOperations.handleBeginDataEdit(props.data)
+      : undefined;
+
+  const handleDeleteData = () =>
+    props.crudOperations?.handleDeleteData
+      ? props.crudOperations.handleDeleteData(props.data)
+      : undefined;
+
   return (
     <>
       <Group gap="xs" justify="center">
-        {props.crudOperations?.handleBeginDataEdit && (
+        {handleBeginDataEdit && (
           <ActionIcon
             variant="transparent"
             color={props.ishovered ? 'blue' : 'lightgrey'}
-            onClick={() => props.crudOperations!.handleBeginDataEdit!(props.data)}
+            onClick={handleBeginDataEdit}
             size="20px"
           >
             <IconEdit />
           </ActionIcon>
         )}
-        {props.crudOperations?.handleDeleteData && (
+        {handleDeleteData && (
           <ActionIcon
             variant="transparent"
             color={props.ishovered ? 'red' : 'lightgrey'}
-            onClick={() => props.crudOperations!.handleDeleteData!(props.data)}
+            onClick={handleDeleteData}
             size="20px"
           >
             <IconTrash />

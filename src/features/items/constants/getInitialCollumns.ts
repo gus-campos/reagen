@@ -9,7 +9,7 @@ import { TableCollumn } from '../../data-table/types/TableCollumn';
 import { Laboratory } from '../../laboratory/types/laboratory';
 import { Supplier } from '../../supplier/types/supplier';
 
-type ItemCollumGetters = {
+export type ItemCollumGetters = {
   getReagentById: (id: string) => Reagent;
   getBrandById: (id: string) => Brand;
   getControlAgencyById: (id: string) => ControlAgency;
@@ -17,10 +17,7 @@ type ItemCollumGetters = {
   getSupplierById: (id: string) => Supplier;
 };
 
-export function getInitialCollumns(
-  getters: ItemCollumGetters,
-  isGroupTableItems = false
-): TableCollumn<Item>[] {
+export function getInitialCollumns(getters: ItemCollumGetters): TableCollumn<Item>[] {
   /* Retorna as colunas da tabela de items. O parâmetro `isGroupTableItems` quando passado,
   permite obter um subconjunto das colunas, especialmente para a sub tabela de items da 
   visualização agrupada. */
@@ -41,15 +38,7 @@ export function getInitialCollumns(
     return item.supplierId ? getters.getSupplierById(item.supplierId).name : '--';
   };
 
-  const groupTableItemsCollums = [
-    'Pureza',
-    'Marca',
-    'Orgão de controle',
-    'Laboratório',
-    'Fornecedor',
-    'Vencimeto',
-  ];
-
+  // FIXME: defaultSortedCollum: true
   const allCollumns = [
     {
       name: 'Reagente',
@@ -121,7 +110,19 @@ export function getInitialCollumns(
     },
   ];
 
-  return isGroupTableItems
-    ? allCollumns.filter((collumn) => groupTableItemsCollums.includes(collumn.name))
-    : allCollumns;
+  return allCollumns;
+}
+
+export function getSubGroupInitialCollumns(getters: ItemCollumGetters): TableCollumn<Item>[] {
+  const allowedCollumnNames = [
+    'Tamanho',
+    'Pureza',
+    'Marca',
+    'Laboratório',
+    'Fornecedor',
+    'Vencimeto',
+  ];
+
+  const allCollumns = getInitialCollumns(getters);
+  return allowedCollumnNames.map((name) => allCollumns.find((col) => col.name === name)!);
 }

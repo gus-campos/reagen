@@ -13,6 +13,10 @@ export function TableExtraOptions<T>(props: TableExtraOptionsProps<T>) {
     props.hiddenColunms.includes(collumn.name)
   );
 
+  const handleShowCollumn = (collumn: TableCollumn<T>) => () => props.onShowCollumn(collumn.name);
+
+  const filterCollumn = () => (collumn: TableCollumn<T>) => hiddenCollumns.includes(collumn);
+
   return (
     <>
       {hiddenCollumns.length > 0 && (
@@ -26,13 +30,11 @@ export function TableExtraOptions<T>(props: TableExtraOptionsProps<T>) {
           </Menu.Target>
           <Menu.Dropdown>
             <Menu.Label>Reexibir coluna</Menu.Label>
-            {props.collumns
-              .filter((collumn) => hiddenCollumns.includes(collumn))
-              .map((collumn, index) => (
-                <Menu.Item key={index} onClick={() => props.onShowCollumn(collumn.name)}>
-                  {collumn.name}
-                </Menu.Item>
-              ))}
+            {props.collumns.filter(filterCollumn).map((collumn, index) => (
+              <Menu.Item key={index} onClick={() => handleShowCollumn(collumn)}>
+                {collumn.name}
+              </Menu.Item>
+            ))}
           </Menu.Dropdown>
         </Menu>
       )}

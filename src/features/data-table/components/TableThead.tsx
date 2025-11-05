@@ -1,51 +1,63 @@
 import { Group, Table, Text } from '@mantine/core';
+import { DataTableRealContextType, useDataTableContext } from '../providers/DataTableContext';
 import { TableCollumn } from '../types/TableCollumn';
 import { ActionsCollumnButtons } from './ActionsCollumnButtons';
 import { TableExtraOptions } from './TableExtraOptions';
 
 type ItemsTableTheadProps<T> = {
-  collumns: TableCollumn<T>[];
   sortedAscending: boolean | null;
   sortedBy: string | null;
-  hiddenColunms: string[];
-  onHideCollumn: (collumnName: string) => void;
-  onShowCollumn: (collumnName: string) => void;
-  onToggleSorting: (collumnName: string) => void;
-  actionsCollumnsNeeded: boolean;
+  smallHeding?: boolean;
 };
 
 export function TableThead<T>(props: ItemsTableTheadProps<T>) {
+  const {
+    collumns,
+    hiddenCollumns,
+    actionsCollumnNeeded,
+    onHideCollumn,
+    onToggleSorting,
+    onShowCollumn,
+  } = useDataTableContext() as DataTableRealContextType<T>;
+
+  const fontSize = props.smallHeding ? 'sm' : 'md';
+
+  const isColumnFixed = (collumn: TableCollumn<T>) => collumn?.fixed ?? true;
+
+  const ascending = (collumn: TableCollumn<T>) =>
+    props.sortedBy === collumn.name ? (props.sortedAscending ? true : false) : null;
+
   return (
     <Table.Thead>
       <Table.Tr>
-        {props.collumns
-          .filter((column) => !props.hiddenColunms.includes(column.name))
+        {collumns
+          .filter((column) => !hiddenCollumns.includes(column.name))
           .map((collumn, index) => (
             <Table.Th key={index}>
               <Group gap="5px" justify="flex-start">
-                <Text size="md" fw="bold">
+                <Text size={fontSize} fw="bold">
                   {collumn.name}
                 </Text>
                 <ActionsCollumnButtons
-                  fixed={collumn.fixed !== null ? !!collumn.fixed : true}
+                  fixed={isColumnFixed(collumn)}
                   sortable={!!collumn.sorter}
-                  ascending={
-                    props.sortedBy === collumn.name ? (props.sortedAscending ? true : false) : null
-                  }
-                  onHandleHideCollumn={() => props.onHideCollumn(collumn.name)}
-                  onToggleSorting={() => props.onToggleSorting(collumn.name)}
+                  ascending={ascending(collumn)}
+                  onHandleHideCollumn={() => onHideCollumn(collumn.name)}
+                  onToggleSorting={() => onToggleSorting(collumn.name)}
                 />
               </Group>
             </Table.Th>
           ))}
-        {props.actionsCollumnsNeeded && (
+        {actionsCollumnNeeded && (
           <Table.Th>
             <Group gap="5px" justify="center">
-              <Text fw="bold">Ações</Text>
+              <Text size={fontSize} fw="bold">
+                Ações
+              </Text>
               <TableExtraOptions
-                collumns={props.collumns}
-                hiddenColunms={props.hiddenColunms}
-                onShowCollumn={props.onShowCollumn}
+                collumns={collumns}
+                hiddenColunms={hiddenCollumns}
+                onShowCollumn={onShowCollumn}
               />
             </Group>
           </Table.Th>

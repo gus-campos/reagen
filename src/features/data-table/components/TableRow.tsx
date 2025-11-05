@@ -1,36 +1,30 @@
 import { ReactNode } from 'react';
-import { Box, Group, Table } from '@mantine/core';
+import { Box, Table } from '@mantine/core';
 import { useHover } from '@mantine/hooks';
-import { TableCollumn } from '../types/TableCollumn';
-import { TableCrudOperations } from '../types/TableCrudOperations';
+import { DataTableRealContextType, useDataTableContext } from '../providers/DataTableContext';
 import { ActionsRowButtons } from './ActionsRowButtons';
-import { DataTable } from './DataTable';
 
 type TableRowProps<T> = {
   data: T;
-  hiddenColunms: string[];
-  collumns: TableCollumn<T>[];
-  crudOperations?: TableCrudOperations<T>;
-  actionsCollumnsNeeded: boolean;
   isExpanded: boolean;
   onExpandRow?: () => void;
-  expandedComponent?: () => ReactNode;
 };
 
 export function TableRow<T>(props: TableRowProps<T>) {
+  const { collumns, hiddenCollumns, crudOperations, actionsCollumnNeeded, getExpandedComponent } =
+    useDataTableContext() as DataTableRealContextType<T>;
+
   const { hovered, ref } = useHover();
 
-  const handleClick = props.crudOperations?.handleClickRow
-    ? () => props.crudOperations!.handleClickRow!(props.data)
+  const defaultHandleClick = crudOperations?.handleClickRow
+    ? () => crudOperations!.handleClickRow!(props.data)
     : undefined;
 
-  const visibleCollumns = props.collumns.filter(
-    (collumn) => !props.hiddenColunms.includes(collumn.name)
-  );
+  const handleClick = getExpandedComponent ? props.onExpandRow : defaultHandleClick;
 
-  const totalCollumns = visibleCollumns.length + (props.actionsCollumnsNeeded ? 1 : 0);
+  const visibleCollumns = collumns.filter((collumn) => !hiddenCollumns.includes(collumn.name));
 
-  // const totalCollumns =
+  const totalCollumns = visibleCollumns.length + (actionsCollumnNeeded ? 1 : 0);
 
   return (
     <>
@@ -38,7 +32,7 @@ export function TableRow<T>(props: TableRowProps<T>) {
         {visibleCollumns.map((collumn, index) => (
           <Table.Td
             key={index}
-            onClick={props.expandedComponent ? props.onExpandRow : handleClick}
+            onClick={handleClick}
             style={{
               cursor: handleClick ? 'pointer' : 'unset',
             }}
@@ -46,22 +40,20 @@ export function TableRow<T>(props: TableRowProps<T>) {
             {collumn.accessor(props.data)}
           </Table.Td>
         ))}
-        {props.actionsCollumnsNeeded && (
+        {actionsCollumnNeeded && (
           <Table.Td>
             <ActionsRowButtons
               ishovered={hovered}
               data={props.data}
-              crudOperations={props.crudOperations}
+              crudOperations={crudOperations}
             />
           </Table.Td>
         )}
       </Table.Tr>
-      {props.isExpanded && props.expandedComponent && (
+      {getExpandedComponent && props.isExpanded && (
         <Table.Tr>
           <Table.Td colSpan={totalCollumns} style={{ padding: 0 }}>
-            <Box>
-              <props.expandedComponent />
-            </Box>
+            <Box>{getExpandedComponent(props.data)}</Box>
           </Table.Td>
         </Table.Tr>
       )}
