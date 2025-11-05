@@ -1,17 +1,15 @@
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
 
-//import './globals.css';
-
 import React, { ReactNode } from 'react';
 import { ColorSchemeScript, mantineHtmlProps, MantineProvider } from '@mantine/core';
 import { theme } from '../../theme';
+import { ItemShell } from '../features/app-shell/views/AppShell';
 import { DataProvider } from '../providers/DataProvider';
-import { ReagentShell } from '../view/AppShell';
 
 export const metadata = {
-  title: 'Mantine Next.js template',
-  description: 'I am using Mantine with Next.js!',
+  title: 'Controle de Reagentes',
+  description: 'Controle fácil de reagentes químicos!',
 };
 
 type RootLayoutProps = {
@@ -30,9 +28,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
         />
       </head>
       <body>
-        <MantineProvider theme={theme}>
+        <MantineProvider theme={theme} defaultColorScheme="light">
           <DataProvider>
-            <ReagentShell>{children}</ReagentShell>
+            <ItemShell>{children}</ItemShell>
           </DataProvider>
         </MantineProvider>
       </body>
