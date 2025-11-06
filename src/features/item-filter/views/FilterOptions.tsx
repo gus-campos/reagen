@@ -59,8 +59,6 @@ export function FilterOptions(props: FilterOptionsProps) {
 
   // FIXME: selo indicando opção não nula de filtro
 
-  console.log(form.values);
-
   return (
     <Paper withBorder radius="sm" py="md" px="md">
       <Title order={4} mb="sm">

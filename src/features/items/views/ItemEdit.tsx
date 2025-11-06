@@ -20,9 +20,12 @@ type ItemModalProps = {
   onCloseItemModal: () => void;
   onAddItem: (item: Item) => void;
   onEditItem: (selectedItem: Item) => void;
-  onBeginShownItemEdit: () => void;
+  onBeginShownItemEdit?: () => void;
   onAddReagent: (reagent: Reagent) => void;
+  preFilledItemData?: Partial<Item>;
 };
+
+// FIXME: Melhorar, reduzir
 
 export function ItemEdit(props: ItemModalProps) {
   const {
@@ -62,6 +65,9 @@ export function ItemEdit(props: ItemModalProps) {
       brandId: '',
       laboratoryId: '',
       supplierId: '',
+
+      // Sobrescrevendo campos pré definidos
+      ...props.preFilledItemData,
     },
 
     // FIXME: tipagem

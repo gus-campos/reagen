@@ -14,9 +14,11 @@ type TableProps<T> = {
   search?: string;
   searched?: (data: T) => string;
   dataFilter?: (data: T) => boolean;
-  ExpandedComponent?: (data: T) => ReactNode;
+  getExpandedComponent?: (data: T) => ReactNode;
   smallHeading?: boolean;
 };
+
+// FIXME: Está enorme. Pode ser melhorado.
 
 export function DataTable<T>(props: TableProps<T>) {
   const [sortedBy, setSortedBy] = useState<string | null>(null);
@@ -61,19 +63,31 @@ export function DataTable<T>(props: TableProps<T>) {
   });
 
   // As colunas devem ter padrão de listra somente quando não houver sub tabela expandida
-  const shouldBeStriped = !props.ExpandedComponent || expandedRow === null;
+  const shouldBeStriped = !props.getExpandedComponent || expandedRow === null;
 
   const dataFilter = props.dataFilter ?? ((_: T) => true);
 
   const isSearched = (data: T) =>
     props.searched && props.search ? searchMatch(props.searched(data), props.search) : () => true;
 
-  const handleExpandRow = (index: number) => setExpandedRow(index === expandedRow ? null : index);
+  const handleExpandRow = (index: number) => {
+    const isRowExpanded = index === expandedRow;
+    const newExpandedRow = isRowExpanded ? null : index;
+
+    if (props.crudOperations?.onChangeExpandedData) {
+      const expandedData = newExpandedRow !== null ? props.datas[newExpandedRow] : null;
+      props.crudOperations.onChangeExpandedData(expandedData);
+    }
+    setExpandedRow(newExpandedRow);
+  };
 
   const isCollumnExpanded = (index: number) => expandedRow === index;
 
   useEffect(() => {
     setExpandedRow(null);
+    if (props.crudOperations?.onChangeExpandedData) {
+      props.crudOperations.onChangeExpandedData(null);
+    }
   }, [props.datas]);
 
   const actionsCollumnsNeeded = [
@@ -89,7 +103,7 @@ export function DataTable<T>(props: TableProps<T>) {
     onHideCollumn: handleHideCollumn,
     onShowCollumn: handleShowCollumn,
     onToggleSorting: handleToggleSorting,
-    getExpandedComponent: props.ExpandedComponent,
+    getExpandedComponent: props.getExpandedComponent,
     actionsCollumnNeeded: actionsCollumnsNeeded,
   } as DataTableContextType;
 
