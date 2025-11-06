@@ -3,7 +3,6 @@
 import { useData } from '@/src/providers/DataProvider';
 import { NameDataView } from '@/src/shared/components/NameDataView';
 import { findItemsOfLaboratory } from '@/src/shared/utils/misc';
-import { ControlAgencyService } from '../../control-agency/services/ControlAgencyService';
 import { Item } from '../../items/types/item';
 import { LaboratoryService } from '../services/LaboratoryService';
 import { Laboratory } from '../types/laboratory';

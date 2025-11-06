@@ -10,7 +10,6 @@ export function groupItems(items: Item[]) {
       if (group) {
         return acc.map((group) => {
           if (itemBelongsToGroup(item, group)) {
-            console.log('group', group);
             return { ...group, items: [...group.items, item] };
           } else return group;
         });

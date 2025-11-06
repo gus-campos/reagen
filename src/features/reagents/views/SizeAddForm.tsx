@@ -91,8 +91,6 @@ export function SizeAddForm(props: SizeAddForm) {
       ]
     : [];
 
-  console.log('select opt', unitSelectOptions);
-
   return (
     <form
       onSubmit={sizeForm.onSubmit((size) => {

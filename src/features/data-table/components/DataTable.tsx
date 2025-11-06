@@ -14,9 +14,11 @@ type TableProps<T> = {
   search?: string;
   searched?: (data: T) => string;
   dataFilter?: (data: T) => boolean;
-  ExpandedComponent?: (data: T) => ReactNode;
+  getExpandedComponent?: (data: T) => ReactNode;
   smallHeading?: boolean;
 };
+
+// FIXME: Está enorme. Pode ser melhorado.
 
 export function DataTable<T>(props: TableProps<T>) {
   const [sortedBy, setSortedBy] = useState<string | null>(null);
@@ -34,7 +36,21 @@ export function DataTable<T>(props: TableProps<T>) {
   };
 
   const handleToggleSorting = (collumnName: string) => {
-    const newSortedAscending = sortedAscending === null ? false : !sortedAscending ? true : null;
+    let newSortedAscending;
+    switch (sortedAscending) {
+      // Se não está ordenado, passar para descending
+      case null:
+        newSortedAscending = false;
+        break;
+      // Se está descending, passar pra ascending
+      case false:
+        newSortedAscending = true;
+        break;
+      // Se está ascending, passar para não ordenado
+      case true:
+        newSortedAscending = null;
+    }
+
     const newSortedBy = newSortedAscending === null ? null : collumnName;
 
     setSortedAscending(newSortedAscending);
@@ -52,44 +68,59 @@ export function DataTable<T>(props: TableProps<T>) {
     return sortedAscending ? -absoluteOrder : absoluteOrder;
   });
 
-  // Só é necessário haver coluna de ação se houver algum handle de ação definido
-
-  // Se não há ações disponíveis, e pontanto não será gerada coluna de ações,
-  // todas as colunas devem ser fixas
-  const collumns = props.collumns.map((col) => {
-    return { ...col, fixed: true };
-  });
-
   // As colunas devem ter padrão de listra somente quando não houver sub tabela expandida
-  const shouldBeStriped = !props.ExpandedComponent || expandedRow === null;
+  const shouldBeStriped = !props.getExpandedComponent || expandedRow === null;
 
   const dataFilter = props.dataFilter ?? ((_: T) => true);
 
   const isSearched = (data: T) =>
     props.searched && props.search ? searchMatch(props.searched(data), props.search) : () => true;
 
-  const handleExpandRow = (index: number) => setExpandedRow(index === expandedRow ? null : index);
+  const handleExpandRow = (index: number) => {
+    const isRowExpanded = index === expandedRow;
+    const newExpandedRow = isRowExpanded ? null : index;
+
+    if (props.crudOperations?.onChangeExpandedData) {
+      const expandedData = newExpandedRow !== null ? props.datas[newExpandedRow] : null;
+      props.crudOperations.onChangeExpandedData(expandedData);
+    }
+    setExpandedRow(newExpandedRow);
+  };
 
   const isCollumnExpanded = (index: number) => expandedRow === index;
 
   useEffect(() => {
     setExpandedRow(null);
+    if (props.crudOperations?.onChangeExpandedData) {
+      props.crudOperations.onChangeExpandedData(null);
+    }
   }, [props.datas]);
 
+  // Só é necessário haver coluna de ação se houver algum handle de ação definido
   const actionsCollumnsNeeded = [
     props.crudOperations?.handleBeginDataEdit,
     props.crudOperations?.handleDeleteData,
   ].some((action) => !!action);
 
+  // Se não há ações disponíveis, e pontanto não será gerada coluna de ações,
+  // todas as colunas devem ser fixas
+  const collumns = actionsCollumnsNeeded
+    ? props.collumns
+    : props.collumns.map((col) => {
+        return { ...col, fixed: true };
+      });
+
+  // TODO: Olha mostra como se todas colunas tivessem ocultas, e não consegue desocultar
+
   // Valores pro provider
   const dataTableContextValues: DataTableContextType = {
-    collumns: props.collumns,
+    collumns: collumns,
     hiddenCollumns: hiddenColumns,
     crudOperations: props.crudOperations,
     onHideCollumn: handleHideCollumn,
     onShowCollumn: handleShowCollumn,
     onToggleSorting: handleToggleSorting,
-    getExpandedComponent: props.ExpandedComponent,
+    getExpandedComponent: props.getExpandedComponent,
     actionsCollumnNeeded: actionsCollumnsNeeded,
   } as DataTableContextType;
 

@@ -2,11 +2,11 @@
 
 import React, { useState } from 'react';
 import { Box, Grid, LoadingOverlay } from '@mantine/core';
+import { ItemView } from '@/src/features/items/views/ItemView';
 import { ItemGroupView } from '../../features/grouped-stock/views/GroupedItemView';
 import { ItemFilter } from '../../features/item-filter/types/items-filter';
 import { FilterOptions } from '../../features/item-filter/views/FilterOptions';
 import { SearchBar } from '../../features/item-filter/views/SearchBar';
-import { ItemView } from '../../features/items/views/ItemView';
 import { useData } from '../../providers/DataProvider';
 
 // PRecisa ser inicializado aqui
@@ -24,8 +24,7 @@ const initialFilter: ItemFilter = {
 export type ViewMode = 'simple' | 'grouped';
 
 export default function StockPage() {
-  const { loadingItems, itemsError, controlAgenciesError, loadingControlAgencies, getReagentById } =
-    useData();
+  const { loadingItems, itemsError, controlAgenciesError, loadingControlAgencies } = useData();
 
   // STATES
 

@@ -10,7 +10,7 @@ import { ConfirmModal } from './ConfirmModal';
 import { NameDataEdit } from './NameDataEdit';
 
 type NameDataViewProps<T extends NameData> = {
-  datas: T[] | undefined;
+  datas?: T[];
   dataName: string;
   dataService: DataService<T>;
   getDeleteWarning: (data: T) => string | null;

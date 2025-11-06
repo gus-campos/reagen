@@ -27,7 +27,6 @@ export function useCollectionData<
     if (!data) throw new Error('Dados não foram carregados ainda');
     const found = data.find((d) => d.id === id);
     if (!found) {
-      console.log('use Data', data, id);
       throw new Error('O dado não foi encontrado');
     }
     return found;

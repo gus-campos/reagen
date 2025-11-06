@@ -4,4 +4,5 @@ export type TableCrudOperations<T> = {
   handleClickRow?: (item: T) => void;
   searched?: (data: T) => string;
   dataFilter?: (data: T) => boolean;
+  onChangeExpandedData?: (data: T | null) => void;
 };
