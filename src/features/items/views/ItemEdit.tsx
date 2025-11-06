@@ -27,6 +27,8 @@ type ItemModalProps = {
 
 // FIXME: Melhorar, reduzir
 
+const nullSize = { amount: 0, unit: Unit.UNITS };
+
 export function ItemEdit(props: ItemModalProps) {
   const {
     reagents,
@@ -58,7 +60,7 @@ export function ItemEdit(props: ItemModalProps) {
       inDate: new Date(),
       expireDate: new Date(),
       outDate: null,
-      size: { amount: 0, unit: Unit.GRAM },
+      size: nullSize,
       purity: 0,
       id: '',
       reagentId: '',
@@ -84,7 +86,9 @@ export function ItemEdit(props: ItemModalProps) {
       reagentId: (id) => (id !== '' || reagentAddMode ? null : 'Inserir um reagente'),
       purity: (value) => (value >= 1 && value <= 100 ? null : 'Insira uma pureza entre 1 e 100 %'),
       size: (value: Size, values: Item) =>
-        values.reagentId !== '' && value.amount === 0 ? 'Selecione um tamanho' : null,
+        (values.reagentId !== '' && value.amount === 0) || value !== ('' as any)
+          ? 'Selecione um tamanho'
+          : null,
       expireDate: (date: Date | null) => validateDate(date, false),
       inDate: (date: Date | null) => validateDate(date, false),
     },
@@ -113,7 +117,7 @@ export function ItemEdit(props: ItemModalProps) {
     }
   }, [reagents]);
 
-  // Seleciona o reagente recém criado
+  // Seleciona o reagente recém criado e reseta o tamanho
   useEffect(() => {
     if (!reagentAddMode && !loadingAddReagent && createdReagentName !== '') {
       const reagent = reagents?.find((reag) => createdReagentName.trim() === reag.name.trim());
@@ -123,6 +127,8 @@ export function ItemEdit(props: ItemModalProps) {
       itemForm.setValues({ reagentId: reagent.id });
       setCreatedReagentName('');
     }
+
+    itemForm.setFieldValue('size', '' as any);
   }, [loadingAddReagent]);
 
   // Seleciona o tamanho recém-criado
@@ -156,8 +162,31 @@ export function ItemEdit(props: ItemModalProps) {
     }
   };
 
+  const handleChangeSize = (value: string | null) => {
+    if (value === null || value === '') {
+      itemForm.setFieldValue('size', '' as any);
+      itemForm.setTouched({ ...itemForm.isTouched, size: false });
+    } else {
+      const sizeObj = selectedReagent?.sizes.find((s) => formattedSize(s) === value);
+      itemForm.setFieldValue('size', sizeObj ?? ('' as any));
+    }
+  };
+  // FIXME: ERRO AO DESMARCAR MARCA!!!
+
+  const handleChangeReagent = (value: string | null) => {
+    const validReagent = reagents?.find((r) => r.id === value);
+    itemForm.setValues({
+      reagentId: validReagent?.id ?? undefined,
+    });
+
+    itemForm.setFieldValue('size', validReagent?.sizes[0] ?? ('' as any));
+  };
+
+  console.log(itemForm.values.size);
+
   return (
     <Box>
+      {/* Adição de reagente */}
       {reagentAddMode && (
         <ItemSubReagentAddForm
           onAddReagent={props.onAddReagent}
@@ -174,6 +203,7 @@ export function ItemEdit(props: ItemModalProps) {
           itemForm.reset();
         })}
       >
+        {/* Seleção de reagente */}
         {!reagentAddMode && (
           <Grid>
             <Grid.Col span={{ base: 12 }}>
@@ -192,7 +222,9 @@ export function ItemEdit(props: ItemModalProps) {
                   }
                   searchable
                   allowDeselect={false}
-                  {...itemForm.getInputProps('reagentId')}
+                  onChange={handleChangeReagent}
+                  value={itemForm.values.reagentId}
+                  error={itemForm.errors.reagentId}
                 />
                 {!props.selectedItem && (
                   <Button
@@ -211,6 +243,7 @@ export function ItemEdit(props: ItemModalProps) {
         )}
       </form>
 
+      {/* Adição de tamanho */}
       {sizeAddMode && (
         <SizeAddForm
           onCancel={() => setSizeAddMode(false)}
@@ -226,6 +259,7 @@ export function ItemEdit(props: ItemModalProps) {
           itemForm.reset();
         })}
       >
+        {/* Seleção de tamanho */}
         {!sizeAddMode && (
           <Grid>
             <Grid.Col span={{ base: 12 }}>
@@ -235,16 +269,17 @@ export function ItemEdit(props: ItemModalProps) {
                   placeholder="Selecione ou adicione o tamanho"
                   style={{ flex: 1 }}
                   allowDeselect={false}
-                  data={selectedReagent?.sizes.map((s) => formattedSize(s))}
+                  data={
+                    selectedReagent ? selectedReagent.sizes.map((s) => formattedSize(s)) : undefined
+                  }
                   label="Tamanho"
                   disabled={!selectedReagent || reagentAddMode}
-                  onChange={(value) =>
-                    itemForm.setValues({
-                      size:
-                        selectedReagent?.sizes.find((s) => formattedSize(s) === value) ?? undefined,
-                    })
+                  onChange={handleChangeSize}
+                  value={
+                    itemForm.values.size && Object.keys(itemForm.values.size).length > 0
+                      ? formattedSize(itemForm.values.size)
+                      : null
                   }
-                  value={formattedSize(itemForm.values.size)}
                   error={itemForm.errors.size}
                 />
                 <Button
