@@ -85,9 +85,10 @@ export function ItemEdit(props: ItemModalProps) {
     validate: {
       reagentId: (id) => (id !== '' || reagentAddMode ? null : 'Inserir um reagente'),
       purity: (value) => (value >= 1 && value <= 100 ? null : 'Insira uma pureza entre 1 e 100 %'),
+      // Se já tiver selecionado reagente, e
       size: (value: Size, values: Item) =>
-        (values.reagentId !== '' && value.amount === 0) || value !== ('' as any)
-          ? 'Selecione um tamanho'
+        values.reagentId !== '' && (value === ('' as any) || value.amount === 0)
+          ? 'Selecione um tamanho válido'
           : null,
       expireDate: (date: Date | null) => validateDate(date, false),
       inDate: (date: Date | null) => validateDate(date, false),
@@ -275,11 +276,7 @@ export function ItemEdit(props: ItemModalProps) {
                   label="Tamanho"
                   disabled={!selectedReagent || reagentAddMode}
                   onChange={handleChangeSize}
-                  value={
-                    itemForm.values.size && Object.keys(itemForm.values.size).length > 0
-                      ? formattedSize(itemForm.values.size)
-                      : null
-                  }
+                  value={itemForm.values.size ? formattedSize(itemForm.values.size) : null}
                   error={itemForm.errors.size}
                 />
                 <Button
@@ -317,7 +314,7 @@ export function ItemEdit(props: ItemModalProps) {
                 return { value: b.id, label: b.name };
               })}
               onChange={(value) => {
-                const brand = getBrandById(value!);
+                const brand = value ? getBrandById(value) : null;
                 itemForm.setValues({ brandId: brand?.id ?? '' });
               }}
             />
@@ -332,7 +329,7 @@ export function ItemEdit(props: ItemModalProps) {
                 return { value: l.id, label: l.name };
               })}
               onChange={(value) => {
-                const laboratory = getLaboratoryById(value!);
+                const laboratory = value ? getLaboratoryById(value) : null;
                 itemForm.setValues({ laboratoryId: laboratory?.id ?? '' });
               }}
             />
@@ -347,7 +344,7 @@ export function ItemEdit(props: ItemModalProps) {
                 return { value: s.id, label: s.name };
               })}
               onChange={(value) => {
-                const supplier = getSupplierById(value!);
+                const supplier = value ? getSupplierById(value) : null;
                 itemForm.setValues({ supplierId: supplier?.id ?? '' });
               }}
             />
