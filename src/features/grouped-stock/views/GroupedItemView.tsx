@@ -32,18 +32,21 @@ export function ItemGroupView(props: ItemGroupViewProps) {
     );
   };
 
+  // TODO: Seria bom ordenar por nome, e depois por tamanho
   const initialCollumns: TableCollumn<ItemGroup>[] = [
     {
       name: 'Reagente',
-      accessor: (group: ItemGroup) => getReagentById(group.reagentId).name,
+      accessor: (group) => getReagentById(group.reagentId).name,
+      sorter: (a, b) =>
+        getReagentById(a.reagentId).name.localeCompare(getReagentById(b.reagentId).name),
     },
     {
       name: 'Tamanho',
-      accessor: (group: ItemGroup) => formattedSize(group.size),
+      accessor: (group) => formattedSize(group.size),
     },
     {
       name: 'Quantidade',
-      accessor: (group: ItemGroup) => group.items.length,
+      accessor: (group) => group.items.length,
     },
   ];
 

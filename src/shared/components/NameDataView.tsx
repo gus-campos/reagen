@@ -113,6 +113,7 @@ export function NameDataView<T extends NameData>(props: NameDataViewProps<T>) {
               />
             </Box>
 
+            {/* FIXME: BOtão fica mal posicionado no firefox */}
             <Button
               style={{
                 position: 'absolute',
