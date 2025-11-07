@@ -61,6 +61,18 @@ export function FilterOptions(props: FilterOptionsProps) {
 
   // FIXME: selo indicando opção não nula de filtro
 
+  // form.watch();
+
+  // Quando A mudar, B vai pro valor deutro e fica desativado
+
+  const dateFieldsDisabled = form.values.expired !== 'all';
+
+  const expiredDisabled = form.values.maxExpire !== null || form.values.minExpire !== null;
+
+  const controlledDisabled = form.values.controlAgencyId !== null;
+
+  const controlAgencyDisabled = form.values.controlled !== 'all';
+
   return (
     <Paper withBorder radius="sm" py="md" px="md">
       <Title order={4} mb="sm">
@@ -101,10 +113,11 @@ export function FilterOptions(props: FilterOptionsProps) {
             </Accordion.Control>
             <Accordion.Panel>
               {/* Range de data */}
+              {/* FIXME: Apagar o outro campo quando mudar */}
               <Radio.Group label="Mostrar" defaultValue="all" {...form.getInputProps('expired')}>
-                <Radio label="Todos" value="all"></Radio>
-                <Radio label="Apenas vencidos" value="expired"></Radio>
-                <Radio label="Apenas não vencidos" value="not-expired"></Radio>
+                <Radio disabled={expiredDisabled} label="Todos" value="all" />
+                <Radio disabled={expiredDisabled} label="Apenas vencidos" value="expired" />
+                <Radio disabled={expiredDisabled} label="Apenas não vencidos" value="not-expired" />
               </Radio.Group>
               <Grid mt="md">
                 <Grid.Col span={{ base: 6 }}>
@@ -113,6 +126,7 @@ export function FilterOptions(props: FilterOptionsProps) {
                     valueFormat="DD/MM/YYYY"
                     label="A partir de"
                     placeholder="Selecione"
+                    disabled={dateFieldsDisabled}
                     {...form.getInputProps('minExpire')}
                   />
                 </Grid.Col>
@@ -123,6 +137,7 @@ export function FilterOptions(props: FilterOptionsProps) {
                     valueFormat="DD/MM/YYYY"
                     label="Até"
                     placeholder="Selecione"
+                    disabled={dateFieldsDisabled}
                     {...form.getInputProps('maxExpire')}
                   />
                 </Grid.Col>
@@ -139,9 +154,17 @@ export function FilterOptions(props: FilterOptionsProps) {
             </Accordion.Control>
             <Accordion.Panel>
               <Radio.Group label="Mostrar" defaultValue="all" {...form.getInputProps('controlled')}>
-                <Radio label="Todos" value="all"></Radio>
-                <Radio label="Apenas controlados" value="controlled"></Radio>
-                <Radio label="Apenas não controlados" value="not-controlled"></Radio>
+                <Radio disabled={controlledDisabled} label="Todos" value="all"></Radio>
+                <Radio
+                  disabled={controlledDisabled}
+                  label="Apenas controlados"
+                  value="controlled"
+                ></Radio>
+                <Radio
+                  disabled={controlledDisabled}
+                  label="Apenas não controlados"
+                  value="not-controlled"
+                ></Radio>
               </Radio.Group>
 
               <Select
@@ -149,6 +172,7 @@ export function FilterOptions(props: FilterOptionsProps) {
                 mt="md"
                 label="Orgão de controle"
                 placeholder="Escolha o orgão de controle"
+                disabled={controlAgencyDisabled}
                 data={controlAgencies!.map((c) => {
                   return { value: c.id, label: c.name };
                 })}
