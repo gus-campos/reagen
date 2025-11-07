@@ -95,6 +95,8 @@ export function ItemEdit(props: ItemModalProps) {
     },
   });
 
+  console.log(itemForm.values);
+
   const selectedReagent: Reagent | null =
     itemForm.values.reagentId !== '' ? getReagentById(itemForm.values.reagentId) : null;
 
@@ -275,8 +277,10 @@ export function ItemEdit(props: ItemModalProps) {
                   }
                   label="Tamanho"
                   disabled={!selectedReagent || reagentAddMode}
+                  // SInceramente não faço ideia de por que é assim
+                  // TODO: Trocar de biblioteca de form
                   onChange={handleChangeSize}
-                  value={itemForm.values.size ? formattedSize(itemForm.values.size) : null}
+                  value={itemForm.values.size ? formattedSize(itemForm.values.size) : ''}
                   error={itemForm.errors.size}
                 />
                 <Button
@@ -317,6 +321,8 @@ export function ItemEdit(props: ItemModalProps) {
                 const brand = value ? getBrandById(value) : null;
                 itemForm.setValues({ brandId: brand?.id ?? '' });
               }}
+              value={itemForm.values.brandId}
+              error={itemForm.errors.brandId}
             />
           </Grid.Col>
 
@@ -332,6 +338,8 @@ export function ItemEdit(props: ItemModalProps) {
                 const laboratory = value ? getLaboratoryById(value) : null;
                 itemForm.setValues({ laboratoryId: laboratory?.id ?? '' });
               }}
+              value={itemForm.values.laboratoryId}
+              error={itemForm.errors.laboratoryId}
             />
           </Grid.Col>
 
@@ -347,6 +355,8 @@ export function ItemEdit(props: ItemModalProps) {
                 const supplier = value ? getSupplierById(value) : null;
                 itemForm.setValues({ supplierId: supplier?.id ?? '' });
               }}
+              value={itemForm.values.supplierId}
+              error={itemForm.errors.supplierId}
             />
           </Grid.Col>
 

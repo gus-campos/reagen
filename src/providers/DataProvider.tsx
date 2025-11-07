@@ -43,7 +43,7 @@ const DataContext = createContext<{
   getBrandById: (id: string) => Brand;
   getControlAgencyById: (id: string) => ControlAgency;
   getLaboratoryById: (id: string) => Laboratory;
-  getSupplierById: (id: string) => Laboratory;
+  getSupplierById: (id: string) => Supplier;
 } | null>(null);
 
 export function useData() {

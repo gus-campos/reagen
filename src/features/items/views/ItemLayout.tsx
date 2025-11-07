@@ -53,6 +53,8 @@ export function ItemLayout(props: ItemViewProps) {
     ? getReagentById(props.selectedItem.reagentId)
     : null;
 
+  // FIXME: Ícones da coluna da tabela, na frente do botão!!
+
   return (
     <>
       {/* FIXME: Dados são apagados por fechamento "clicar fora" */}
