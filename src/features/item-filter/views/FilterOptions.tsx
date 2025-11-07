@@ -3,12 +3,14 @@ import {
   Accordion,
   Badge,
   Box,
+  Divider,
   Grid,
   Group,
   Paper,
   Radio,
   Select,
   Switch,
+  Text,
   Title,
 } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
@@ -29,7 +31,7 @@ type FilterOptionsProps = {
 function TouchedBadge(props: { text: string; active: boolean }) {
   return (
     <Group gap="xs">
-      {props.text}
+      <Text fw="bold">{props.text}</Text>
       {props.active && <Badge circle size="10px" color="cyan" />}
     </Group>
   );
@@ -75,12 +77,14 @@ export function FilterOptions(props: FilterOptionsProps) {
         }}
       />
 
+      <Divider my="lg" />
+
       <Title order={4} mb="sm">
         Filtros
       </Title>
 
       <form>
-        <Accordion variant="default">
+        <Accordion variant="default" chevronPosition="left">
           {/* Vencimento */}
           <Accordion.Item value="expire-date">
             <Accordion.Control>
