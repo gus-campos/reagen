@@ -114,14 +114,7 @@ export function getInitialCollumns(getters: ItemCollumGetters): TableCollumn<Ite
 }
 
 export function getSubGroupInitialCollumns(getters: ItemCollumGetters): TableCollumn<Item>[] {
-  const allowedCollumnNames = [
-    'Tamanho',
-    'Pureza',
-    'Marca',
-    'Laboratório',
-    'Fornecedor',
-    'Vencimeto',
-  ];
+  const allowedCollumnNames = ['Pureza', 'Marca', 'Laboratório', 'Fornecedor', 'Vencimeto'];
 
   const allCollumns = getInitialCollumns(getters);
   return allowedCollumnNames.map((name) => allCollumns.find((col) => col.name === name)!);
