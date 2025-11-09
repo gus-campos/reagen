@@ -1,4 +1,4 @@
-import { Divider, Grid, Paper, Tabs, Title } from '@mantine/core';
+import { Paper, Tabs, Title } from '@mantine/core';
 import { BrandsView } from '../../features/brands/views/BrandsView';
 import { ControlAgenciesView } from '../../features/control-agency/views/ControlAgencieView';
 import { LaboratoryView } from '../../features/laboratory/views/LaboratoryView';

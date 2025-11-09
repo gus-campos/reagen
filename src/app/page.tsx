@@ -1,5 +1,7 @@
 'use client';
 
-export default function Page() {
-  return <h1>Início</h1>;
+import { redirect } from 'next/navigation';
+
+export default function Root() {
+  redirect('/estoque');
 }

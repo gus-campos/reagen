@@ -34,12 +34,12 @@ export function ItemShell(props: ItemShellProps) {
           <Menu.Item
             onClick={() => {
               toggle();
-              router.push('/');
+              router.push('/dashboard');
             }}
           >
             <Group>
               <IconHome size={20} />
-              <Text size="md">Início</Text>
+              <Text size="md">Dashboard</Text>
             </Group>
           </Menu.Item>
 
