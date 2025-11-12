@@ -13,7 +13,7 @@ Stack:
 # Próximas funcionalidades:
 - [ ] Dashboard
 - [ ] Visualização por **pacotes**
-- [ ] Dar saída em lote
+- [ ] Dar saída em lote de itens
 
 # Como exceutar:
 
