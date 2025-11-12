@@ -26,7 +26,11 @@ npm run dev
 
 ## Captura de tela
 
-<img width="1278" height="962" alt="image" src="https://github.com/user-attachments/assets/41b2d7b9-8e60-4b1d-a16d-fa8cd26123ac" />
+| <img width="1278" height="962" alt="image" src="https://github.com/user-attachments/assets/41b2d7b9-8e60-4b1d-a16d-fa8cd26123ac" /> | <img width="1278" height="962" alt="image" src="https://github.com/user-attachments/assets/aa728e18-a582-436b-9aec-1673209c515f" />
+ |
+|:--------:|:------:|
+
+
 
 ## Notas
 
