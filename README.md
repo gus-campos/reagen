@@ -31,4 +31,4 @@ npm run dev
 # Notas
 
 * Por ser desenvolvido unicamente por mim, não me preocupei com o controle de versão, commitando conforme desejava salvar progresso e atualizar o deploy.
-* Como requisitos ainda estarem ainda sendo definidos pelo stakeholder, conforme avalia os resultados prévios, ainda não foram feitos testes automatizados, já que muita coisa ainda pode mudar. 
+* Como os requisitos funcionais ainda não estão claros por parte do stakeholder, os testes automatizados ainda não foram feitos, já que muita coisa ainda pode mudar. 
