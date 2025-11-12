@@ -10,12 +10,12 @@ Stack:
 * Firebase
 * Mantine
 
-# Próximas funcionalidades
+## Próximas funcionalidades
 - [ ] Dashboard
 - [ ] Visualização por **pacotes**
 - [ ] Dar saída em lote de itens
 
-# Como rodar localmente
+## Como rodar localmente
 
 ```bash
 git clone https://github.com/gus-campos/reagen
@@ -24,11 +24,11 @@ yarn
 npm run dev
 ```
 
-# Captura de tela
+## Captura de tela
 
 <img width="1278" height="962" alt="image" src="https://github.com/user-attachments/assets/41b2d7b9-8e60-4b1d-a16d-fa8cd26123ac" />
 
-# Notas
+## Notas
 
 * Por ser desenvolvido unicamente por mim, não me preocupei com o controle de versão, commitando conforme desejava salvar progresso e atualizar o deploy.
 * Como os requisitos funcionais ainda não estão completamente claros por parte do stakeholder, os testes automatizados não foi considerada uma prioridade pro momento, já que grandes mudanças ainda podem ocorrer. 
