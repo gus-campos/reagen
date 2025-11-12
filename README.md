@@ -15,7 +15,7 @@ Stack:
 - [ ] Visualização por **pacotes**
 - [ ] Dar saída em lote de itens
 
-# Como exceutar:
+# Como rodar localmente:
 
 ```bash
 git clone https://github.com/gus-campos/reagen
@@ -23,6 +23,8 @@ cd reagen
 yarn
 npm run dev
 ```
+
+# Captura de tela
 
 <img width="1278" height="962" alt="image" src="https://github.com/user-attachments/assets/41b2d7b9-8e60-4b1d-a16d-fa8cd26123ac" />
 
