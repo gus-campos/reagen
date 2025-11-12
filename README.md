@@ -10,12 +10,12 @@ Stack:
 * Firebase
 * Mantine
 
-# Próximas funcionalidades:
+# Próximas funcionalidades
 - [ ] Dashboard
 - [ ] Visualização por **pacotes**
 - [ ] Dar saída em lote de itens
 
-# Como rodar localmente:
+# Como rodar localmente
 
 ```bash
 git clone https://github.com/gus-campos/reagen
