@@ -28,4 +28,6 @@ npm run dev
 
 <img width="1278" height="962" alt="image" src="https://github.com/user-attachments/assets/41b2d7b9-8e60-4b1d-a16d-fa8cd26123ac" />
 
-Obs: por ser desenvolvido unicamente por mim, não me preocupei com o controle de versão, commitando conforme desejava atualizações no deploy.
+# Notas
+
+Obs: por ser desenvolvido unicamente por mim, não me preocupei com o controle de versão, commitando conforme desejava salvar progresso e atualizar o deploy.
