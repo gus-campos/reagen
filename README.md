@@ -10,7 +10,12 @@ Stack:
 * Firebase
 * Mantine
 
-Para exceutar:
+# Próximas funcionalidades:
+- [ ] Dashboard
+- [ ] Visualização por **pacotes**
+- [ ] Dar saída em lote
+
+# Como exceutar:
 
 ```bash
 git clone https://github.com/gus-campos/reagen
