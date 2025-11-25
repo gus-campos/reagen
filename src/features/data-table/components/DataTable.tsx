@@ -7,6 +7,11 @@ import { searchMatch } from '../utils/search';
 import { TableRow } from './TableRow';
 import { TableThead } from './TableThead';
 
+export type CrudAction<T> = {
+  icon: ReactNode;
+  action: (data: T) => void;
+};
+
 type TableProps<T> = {
   datas: T[];
   collumns: TableCollumn<T>[];
@@ -16,6 +21,7 @@ type TableProps<T> = {
   dataFilter?: (data: T) => boolean;
   getExpandedComponent?: (data: T) => ReactNode;
   smallHeading?: boolean;
+  extraActions?: CrudAction<T>[];
 };
 
 // FIXME: Está enorme. Pode ser melhorado.
@@ -97,10 +103,11 @@ export function DataTable<T>(props: TableProps<T>) {
   }, [props.datas]);
 
   // Só é necessário haver coluna de ação se houver algum handle de ação definido
-  const actionsCollumnsNeeded = [
-    props.crudOperations?.handleBeginDataEdit,
-    props.crudOperations?.handleDeleteData,
-  ].some((action) => !!action);
+  // Ou se foi passada alguma ação extra
+  const actionsCollumnsNeeded =
+    [props.crudOperations?.handleBeginDataEdit, props.crudOperations?.handleDeleteData].some(
+      (action) => !!action
+    ) || (props.extraActions?.length ?? 0) > 0;
 
   // Se não há ações disponíveis, e pontanto não será gerada coluna de ações,
   // todas as colunas devem ser fixas
@@ -122,6 +129,7 @@ export function DataTable<T>(props: TableProps<T>) {
     onToggleSorting: handleToggleSorting,
     getExpandedComponent: props.getExpandedComponent,
     actionsCollumnNeeded: actionsCollumnsNeeded,
+    extraActions: props.extraActions,
   } as DataTableContextType;
 
   return (

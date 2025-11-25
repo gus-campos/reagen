@@ -1,5 +1,5 @@
 import { FirebaseBaseService } from '@/src/shared/services/FirebaseBaseService';
-import { ItemService } from '../../items/services/ItemService';
+import { PackageService } from '../../package/services/PackageService';
 import { Supplier } from '../types/supplier';
 
 const DOC_NAME = 'supplier';
@@ -17,13 +17,13 @@ export class SupplierService extends FirebaseBaseService<Supplier> {
   }
 
   async delete(id: string): Promise<void> {
-    await this.deleteRelatedItems(id);
+    await this.deleteRelatedPackages(id);
     await super.delete(id);
   }
 
-  private async deleteRelatedItems(supplierId: string) {
-    const items = await ItemService.instance.getAll(); // TODO: Poderia ser query
-    const relatedItems = items.filter((i) => i.supplierId === supplierId);
-    relatedItems.forEach((item) => ItemService.instance.delete(item.id));
+  private async deleteRelatedPackages(supplierId: string) {
+    const packages = await PackageService.instance.getAll();
+    const relatedPkgs = packages.filter((p) => p.supplierId === supplierId);
+    relatedPkgs.forEach((p) => PackageService.instance.delete(p.id));
   }
 }

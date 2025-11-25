@@ -1,4 +1,5 @@
 import { createContext, ReactNode, useContext, useState } from 'react';
+import { CrudAction } from '../components/DataTable';
 import { TableCollumn } from '../types/TableCollumn';
 import { TableCrudOperations } from '../types/TableCrudOperations';
 
@@ -11,6 +12,7 @@ export type DataTableContextType = {
   onToggleSorting: (collumnName: string) => void;
   getExpandedComponent?: (data: unknown) => ReactNode;
   actionsCollumnNeeded: boolean;
+  extraActions?: CrudAction<unknown>[];
 };
 
 export type DataTableRealContextType<T> = {
@@ -22,6 +24,7 @@ export type DataTableRealContextType<T> = {
   onToggleSorting: (collumnName: string) => void;
   getExpandedComponent?: (data: T) => ReactNode;
   actionsCollumnNeeded: boolean;
+  extraActions?: CrudAction<T>[];
 };
 
 export const DataTableContext = createContext<DataTableContextType | null>(null);

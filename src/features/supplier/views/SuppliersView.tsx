@@ -1,26 +1,25 @@
 'use client';
 
 import { NameDataView } from '@/src/shared/components/NameDataView';
-import { findItemsOfBrand, findItemsOfSupplier } from '@/src/shared/utils/misc';
+import { findPackagesOfSupplier } from '@/src/shared/utils/misc';
 import { useData } from '../../../providers/DataProvider';
-import { BrandService } from '../../brands/services/BrandService';
-import { Item } from '../../items/types/item';
+import { Package } from '../../package/types/package';
 import { SupplierService } from '../services/SupplierService';
 import { Supplier } from '../types/supplier';
 
 export function SupplierView() {
-  const { suppliers, loadingSuppliers, items } = useData();
+  const { suppliers, loadingSuppliers, packages } = useData();
 
   const getWarning = (supplier: Supplier) => {
-    const relatedItems = findItemsOfSupplier(supplier, items!);
-    if (relatedItems.length === 0) return null;
-    return generateWarning(supplier, relatedItems);
+    const relatedPkg = findPackagesOfSupplier(supplier, packages!);
+    if (relatedPkg.length === 0) return null;
+    return generateWarning(supplier, relatedPkg);
   };
 
-  const generateWarning = (supplier: Supplier, relatedItems: Item[]) => {
+  const generateWarning = (supplier: Supplier, relatedPkgs: Package[]) => {
     const message = `Excluir o fornecedor: ${supplier.name}
           Causará a exclusão dos seguintes itens:
-          ${relatedItems.map((item) => `* ${item.id}`).join('\n')}
+          ${relatedPkgs.map((vial) => `* ${vial.id}`).join('\n')}
           `;
 
     return message;

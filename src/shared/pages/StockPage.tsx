@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import { Box, Grid, LoadingOverlay } from '@mantine/core';
-import { ItemView } from '@/src/features/items/views/ItemView';
-import { ItemGroupView } from '../../features/grouped-stock/views/GroupedItemView';
-import { ItemFilter } from '../../features/item-filter/types/items-filter';
-import { FilterOptions } from '../../features/item-filter/views/FilterOptions';
-import { SearchBar } from '../../features/item-filter/views/SearchBar';
+import { PackageView } from '@/src/features/package/views/PackageView';
+import { PackageFilter } from '../../features/package-filter/types/package-filter';
+import { FilterOptions } from '../../features/package-filter/views/FilterOptions';
+import { SearchReagent } from '../../features/package-filter/views/SearchReagent';
 import { useData } from '../../providers/DataProvider';
 
 // PRecisa ser inicializado aqui
-const initialFilter: ItemFilter = {
+const initialFilter: PackageFilter = {
   controlled: 'all',
   expired: 'all',
   maxExpire: null,
@@ -19,16 +18,18 @@ const initialFilter: ItemFilter = {
   laboratoryId: null,
 };
 
-export type ViewMode = 'simple' | 'grouped';
-
 export default function StockPage() {
-  const { loadingItems, itemsError, controlAgenciesError, loadingControlAgencies } = useData();
+  const {
+    loadingVials: loadingVials,
+    vialsError: vialsError,
+    controlAgenciesError,
+    loadingControlAgencies,
+  } = useData();
 
   // STATES
 
   const [search, setSearch] = useState('');
-  const [filter, setFilter] = useState<ItemFilter>(initialFilter);
-  const [viewMode, setViewMode] = useState<ViewMode>('simple');
+  const [filter, setFilter] = useState<PackageFilter>(initialFilter);
 
   // HANDLERS
 
@@ -36,7 +37,7 @@ export default function StockPage() {
     setSearch(search);
   };
 
-  const handleFilterChange = (filter: ItemFilter) => {
+  const handleFilterChange = (filter: PackageFilter) => {
     setFilter(filter);
   };
 
@@ -46,36 +47,27 @@ export default function StockPage() {
     <>
       <h1>Estoque</h1>
 
-      {itemsError || controlAgenciesError ? (
+      {vialsError || controlAgenciesError ? (
         <p>ERRO</p>
-      ) : loadingItems || loadingControlAgencies ? (
+      ) : loadingVials || loadingControlAgencies ? (
         // TODO: Inserir skeletons
         <LoadingOverlay visible />
       ) : (
         <>
           <Grid>
             <Grid.Col span={{ base: 3 }}>
-              <FilterOptions
-                filter={filter}
-                onFilterChange={handleFilterChange}
-                viewMode={viewMode}
-                onViewModeChange={setViewMode}
-              />
+              <FilterOptions filter={filter} onFilterChange={handleFilterChange} />
             </Grid.Col>
 
             <Grid.Col span={{ base: 9 }}>
-              <SearchBar
+              <SearchReagent
                 search={search}
                 placeholder="Busque por nome de reagentes..."
                 onChangeSearch={handleSearchChange}
               />
               <Box>
                 {/* Tabela de itens */}
-                {viewMode === 'simple' ? (
-                  <ItemView filter={filter} search={search} />
-                ) : (
-                  <ItemGroupView search={search} filter={filter} />
-                )}
+                <PackageView filter={filter} search={search} />
               </Box>
             </Grid.Col>
           </Grid>

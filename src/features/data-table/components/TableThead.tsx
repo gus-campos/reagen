@@ -4,13 +4,13 @@ import { TableCollumn } from '../types/TableCollumn';
 import { ActionsCollumnButtons } from './ActionsCollumnButtons';
 import { TableExtraOptions } from './TableExtraOptions';
 
-type ItemsTableTheadProps<T> = {
+type VialsTableTheadProps<T> = {
   sortedAscending: boolean | null;
   sortedBy: string | null;
   smallHeding?: boolean;
 };
 
-export function TableThead<T>(props: ItemsTableTheadProps<T>) {
+export function TableThead<T>(props: VialsTableTheadProps<T>) {
   const {
     collumns,
     hiddenCollumns,

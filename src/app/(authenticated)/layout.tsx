@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 import { redirect } from 'next/navigation';
-import { ItemShell } from '../../features/app-shell/views/AppShell';
+import { ReagenShell } from '../../features/app-shell/views/ReagenShell';
 import { DataProvider } from '../../providers/DataProvider';
 
 type RootLayoutProps = {
@@ -16,7 +16,7 @@ export default function AuthenticatedLayout({ children }: RootLayoutProps) {
 
   return (
     <DataProvider>
-      <ItemShell>{children}</ItemShell>
+      <ReagenShell>{children}</ReagenShell>
     </DataProvider>
   );
 }

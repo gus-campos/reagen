@@ -75,7 +75,7 @@ export abstract class FirebaseBaseService<T extends HasId> extends DataService<T
 
     // Se for um array
     if (Array.isArray(obj)) {
-      return obj.map((item) => this.convertTimestampsToDate(item)) as any;
+      return obj.map((vial) => this.convertTimestampsToDate(vial)) as any;
     }
 
     // Se for um objeto
