@@ -1,10 +1,10 @@
 import { BaseRepository, IDatabase } from '@core/services/base-repository.service';
-import { Vial } from './vial.model';
 import { Injectable } from '@angular/core';
+import { Box } from './box.model';
 
 @Injectable({ providedIn: 'root' })
-export class VialRepository extends BaseRepository<Vial> {
+export class BoxRepository extends BaseRepository<Box> {
   constructor(db: IDatabase) {
-    super(db, 'vial');
+    super(db, 'box');
   }
 }

@@ -13,29 +13,29 @@ export class VialStore extends EntityStore<Vial> {
 
   readonly vials = this.select((s) => s.items);
 
-  async loadVials() {
+  async load() {
     const vials = await this.handleAsync(() => firstValueFrom(this.vialRepository.getAll()));
     if (vials) this.setItems(vials);
   }
 
-  async addVial(vial: OmitId<Vial>) {
+  async add(vial: OmitId<Vial>) {
     const newVial = await this.handleAsync(
       async () => await firstValueFrom(this.vialRepository.create(vial))
     );
     if (newVial) this.addItem(newVial);
   }
 
-  removeVial(id: VialId) {
+  remove(id: VialId) {
     this.removeItem(id);
     this.vialRepository.delete(id);
   }
 
-  updateVial(id: VialId, data: Partial<OmitId<Vial>>) {
+  update(id: VialId, data: Partial<OmitId<Vial>>) {
     this.updateItem(id, data);
     this.vialRepository.update(id, data);
   }
 
-  getVialById(id: Signal<VialId>): Signal<Vial | undefined> {
+  getById(id: Signal<VialId>): Signal<Vial | undefined> {
     return this.getItemById(id);
   }
 }

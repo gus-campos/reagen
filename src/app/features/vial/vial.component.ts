@@ -6,22 +6,30 @@ import { VialId } from './vial.model';
 
 @Component({
   selector: 'vial-view',
-  templateUrl: './vial.component.html',
-  styleUrl: './vial.component.css',
+  template: ``,
+  styles: `
+    button {
+      background-color: grey;
+    }
+
+    .vial-container {
+      background-color: grey;
+    }
+  `,
 })
 export class VialView {
   readonly vialStore = inject(VialStore);
   readonly vials = this.vialStore.vials;
 
   ngOnInit() {
-    this.vialStore.loadVials();
+    this.vialStore.load();
   }
 
   add() {
-    this.vialStore.addVial({ boxId: '' as BoxId, labId: '' as LabId, outDate: new Date() });
+    this.vialStore.add({ boxId: '' as BoxId, labId: '' as LabId, outDate: new Date() });
   }
 
   delete(id: VialId) {
-    this.vialStore.removeVial(id);
+    this.vialStore.remove(id);
   }
 }
