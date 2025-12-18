@@ -1,0 +1,9 @@
+<div>
+  @for (vial of vials(); track vial.id) {
+  <div class="vial-container">
+    <button (click)="delete(vial.id)">Deletar</button>
+    <div>{{ vial.outDate }}</div>
+  </div>
+  }
+</div>
+<button (click)="add()">Add</button>

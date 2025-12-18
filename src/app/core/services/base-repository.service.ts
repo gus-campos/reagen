@@ -1,49 +1,48 @@
-import { WithId } from '@core/models/base.interface';
-import { Observable, of } from 'rxjs';
+import { OmitId, WithId } from '@core/models/base.interface';
+import { from, Observable, of } from 'rxjs';
 
 export abstract class IDatabase {
-  abstract get<T>(table: string): T[];
-  abstract add<T>(table: string, item: T): T;
-  abstract update<T>(table: string, item: T): T;
-  abstract delete(table: string, id: string): void;
-  abstract query<T>(table: string, fn: (item: T) => boolean): T[];
+  abstract get<T extends WithId>(table: string): Promise<T[]>;
+  abstract create<T extends WithId>(table: string, item: OmitId<T>): Promise<T>;
+  abstract update<T extends WithId>(
+    table: string,
+    id: string,
+    data: Partial<OmitId<T>>
+  ): Promise<void>;
+  abstract delete(table: string, id: string): Promise<void>;
+  abstract query<T extends WithId>(table: string, fn: (item: T) => boolean): Promise<T[]>;
 }
 
 export interface IRepository<T extends WithId> {
   getAll(): Observable<T[]>;
-  getById(id: string): Observable<T | null>;
-  create(item: Omit<T, 'id'>): Observable<T>;
-  update(item: T): Observable<T>;
+  getById(id: string): Observable<T | undefined>;
+  create(item: OmitId<T>): Observable<T>;
+  update(id: string, item: Partial<OmitId<T>>): Observable<void>;
   delete(id: string): Observable<void>;
 }
 
 export abstract class BaseRepository<T extends WithId> implements IRepository<T> {
   constructor(protected db: IDatabase, protected tableName: string) {}
 
-  // TODO: Herdar como EntityId
-  // FIXME: Futuramente mover geração pro back
-  protected abstract generateId(): string;
-
   getAll(): Observable<T[]> {
-    return of(this.db.get<T>(this.tableName));
+    return from(this.db.get<T>(this.tableName));
   }
 
-  getById(id: string): Observable<T | null> {
-    const items = this.db.get<T>(this.tableName);
-    return of(items.find((i: T) => i.id === id) || null);
+  getById(id: string): Observable<T | undefined> {
+    return from(
+      this.db.get<T>(this.tableName).then((items) => items.find((i) => i.id === id) ?? undefined)
+    );
   }
 
-  create(item: Omit<T, 'id'>): Observable<T> {
-    const newItem = { ...item, id: this.generateId() } as T;
-    return of(this.db.add(this.tableName, newItem));
+  create(item: OmitId<T>): Observable<T> {
+    return from(this.db.create(this.tableName, item));
   }
 
-  update(item: T): Observable<T> {
-    return of(this.db.update(this.tableName, item));
+  update(id: string, item: Partial<OmitId<T>>): Observable<void> {
+    return from(this.db.update(this.tableName, id, item));
   }
 
   delete(id: string): Observable<void> {
-    this.db.delete(this.tableName, id);
-    return of(void 0);
+    return from(this.db.delete(this.tableName, id));
   }
 }
