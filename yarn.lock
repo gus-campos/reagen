@@ -207,6 +207,14 @@
   optionalDependencies:
     lmdb "3.4.3"
 
+"@angular/cdk@21.0.5":
+  version "21.0.5"
+  resolved "https://registry.yarnpkg.com/@angular/cdk/-/cdk-21.0.5.tgz#b4eaa09c2804d2614cccbab9f816c469245839b1"
+  integrity sha512-yO/IRYEZ5wJkpwg3GT3b6RST4pqNFTAhuyPdEdLcE81cs283K3aKOsCYh2xUR3bR4WxBh2kBPSJ31AFZyJXbSA==
+  dependencies:
+    parse5 "^8.0.0"
+    tslib "^2.3.0"
+
 "@angular/cli@^21.0.3":
   version "21.0.3"
   resolved "https://registry.yarnpkg.com/@angular/cli/-/cli-21.0.3.tgz#410e8183c33dc69d388292afd849236636d5425c"
@@ -271,6 +279,13 @@
   version "21.0.5"
   resolved "https://registry.yarnpkg.com/@angular/forms/-/forms-21.0.5.tgz#0054ccc7373093df8172d671f667927637a66468"
   integrity sha512-RcmXs/LgKyc7D70xVT+3aK/H2SCFEyuebAiw72Iz1te1Gbql2GDFF6hgEOaNwOUglDg8ogN5MdVif2DbRLD3Hw==
+  dependencies:
+    tslib "^2.3.0"
+
+"@angular/material@21.0.5":
+  version "21.0.5"
+  resolved "https://registry.yarnpkg.com/@angular/material/-/material-21.0.5.tgz#9bb6754cc8a56e6ad009282a42701b64143ef0a6"
+  integrity sha512-LcDotwwTl2GFtFK1BqcKjj0eRAkOjTSj1C6ux0rOlpU2hJaECxue/ZqEyB/KMHngFAqMJpecxF4zGy/ISCp2xA==
   dependencies:
     tslib "^2.3.0"
 
@@ -1537,26 +1552,12 @@
     "@parcel/watcher-win32-ia32" "2.5.1"
     "@parcel/watcher-win32-x64" "2.5.1"
 
-"@primeuix/motion@^0.0.10":
-  version "0.0.10"
-  resolved "https://registry.yarnpkg.com/@primeuix/motion/-/motion-0.0.10.tgz#9af4238226042d80518dd343c6481d03582e374a"
-  integrity sha512-PsZwOPq79Scp7/ionshRcQ5xKVf9+zuLcyY5mf6onK8chHT5C9JGphmcIZ4CzcqxuGEpsm8AIbTGy+zS3RtzLA==
-  dependencies:
-    "@primeuix/utils" "^0.6.3"
-
 "@primeuix/styled@^0.7.4":
   version "0.7.4"
   resolved "https://registry.yarnpkg.com/@primeuix/styled/-/styled-0.7.4.tgz#d2108a7fad297dea60d549b2c10ed744dc0cbc0e"
   integrity sha512-QSO/NpOQg8e9BONWRBx9y8VGMCMYz0J/uKfNJEya/RGEu7ARx0oYW0ugI1N3/KB1AAvyGxzKBzGImbwg0KUiOQ==
   dependencies:
     "@primeuix/utils" "^0.6.1"
-
-"@primeuix/styles@^2.0.2":
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/@primeuix/styles/-/styles-2.0.2.tgz#40521d234999d9a1f2f1f6e0d5cf90b7ba855973"
-  integrity sha512-LNtkJsTonNHF5ag+9s3+zQzm00+LRmffw68QRIHy6S/dam1JpdrrAnUzNYlWbaY7aE2EkZvQmx7Np7+PyHn+ow==
-  dependencies:
-    "@primeuix/styled" "^0.7.4"
 
 "@primeuix/themes@^2.0.2":
   version "2.0.2"
@@ -1565,7 +1566,7 @@
   dependencies:
     "@primeuix/styled" "^0.7.4"
 
-"@primeuix/utils@^0.6.1", "@primeuix/utils@^0.6.3":
+"@primeuix/utils@^0.6.1":
   version "0.6.3"
   resolved "https://registry.yarnpkg.com/@primeuix/utils/-/utils-0.6.3.tgz#0d31e41c530fb64dd487ce768f8c244ca1d0872e"
   integrity sha512-/SLNQSKQ73WbBIsflKVqbpVjCfFYvQO3Sf1LMheXyxh8JqxO4M63dzP56wwm9OPGuCQ6MYOd2AHgZXz+g7PZcg==
@@ -3591,17 +3592,6 @@ postcss@^8.4.49, postcss@^8.5.6:
     nanoid "^3.3.11"
     picocolors "^1.1.1"
     source-map-js "^1.2.1"
-
-primeng@^21.0.2:
-  version "21.0.2"
-  resolved "https://registry.yarnpkg.com/primeng/-/primeng-21.0.2.tgz#157080b92e3ee690c588548ddca7ab49e007e08f"
-  integrity sha512-suf+xK3V3z2aG9OmQMAriqhMt79JM3jBSoRDu4XQKCiTiWDRnOvoVdCZCjByT32sE5tYqhrLBsCH0lT7RLcosg==
-  dependencies:
-    "@primeuix/motion" "^0.0.10"
-    "@primeuix/styled" "^0.7.4"
-    "@primeuix/styles" "^2.0.2"
-    "@primeuix/utils" "^0.6.3"
-    tslib "^2.3.0"
 
 proc-log@^5.0.0:
   version "5.0.0"

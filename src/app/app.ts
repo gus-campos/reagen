@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { ButtonModule } from 'primeng/button';
-import { VialView } from '@features/vial/vial.component';
+import { BoxView } from '@features/box/box.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, ButtonModule, VialView],
+  imports: [RouterOutlet, BoxView],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
-export class App {}
+export class App {
+  ngOnInit() {}
+}

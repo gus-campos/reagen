@@ -19,13 +19,3 @@ export const UnitMultiplier: Record<Unit, number> = {
   [Unit.Mol]: 1,
   [Unit.Units]: 1,
 };
-
-export const UnitDimension: Record<Unit, Dimension> = {
-  [Unit.Kilogram]: Dimension.Mass,
-  [Unit.Gram]: Dimension.Mass,
-  [Unit.Milligram]: Dimension.Mass,
-  [Unit.Liter]: Dimension.Volume,
-  [Unit.Milliliter]: Dimension.Volume,
-  [Unit.Mol]: Dimension.Matter,
-  [Unit.Units]: Dimension.Count,
-};
