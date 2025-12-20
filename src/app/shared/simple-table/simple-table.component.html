@@ -1,0 +1,25 @@
+<table mat-table [dataSource]="dataSource()" matSort>
+  @for (column of columns(); track column.label) {
+  <!-- Definição da coluna de nome "purity" -->
+  <ng-container [matColumnDef]="column.id">
+    <!-- Como é o header (com diretiva angular) -->
+    <th
+      mat-header-cell
+      *matHeaderCellDef
+      mat-sort-header
+      [sortActionDescription]="`Sort by ${column.label}`"
+    >
+      {{ column.label }}
+    </th>
+    <!-- Como é a célula (com diretiva angular) -->
+    <td mat-cell *matCellDef="let item">
+      {{ column.render ? column.render(item) : column.value(item) }}
+    </td>
+  </ng-container>
+  }
+
+  <!-- Define a linha do header -->
+  <tr mat-header-row *matHeaderRowDef="columnsIds()"></tr>
+  <!-- Define a linha do código -->
+  <tr mat-row *matRowDef="let row; columns: columnsIds()"></tr>
+</table>

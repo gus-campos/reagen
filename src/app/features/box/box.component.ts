@@ -1,94 +1,55 @@
 import { Component, inject } from '@angular/core';
-import { BoxStore } from './box.store';
-import { BoxId } from './box.model';
 import { BrandId } from '@features/validated-options/brand.model';
 import { ReagentId } from '@features/reagent/reagent.model';
 import { SupplierId } from '@features/validated-options/supplier.model';
 import { Unit } from '@features/reagent/unit.model';
 
 import { MatTableModule } from '@angular/material/table';
+import { Column, SimpleTable } from '@shared/simple-table/simple-table.component';
+import { Box, BoxId } from './box.model';
 
 @Component({
   selector: 'box-view',
-  imports: [MatTableModule],
-  template: ` <!-- Elemento base com diretiva angular -->
-    <table mat-table [dataSource]="boxes">
-      <!-- Definição da coluna de nome "purity" -->
-      <ng-container matColumnDef="purity">
-        <!-- Como é o header (com diretiva angular) -->
-        <th mat-header-cell *matHeaderCellDef>Pureza</th>
-        <!-- Como é a célula (com diretiva angular) -->
-        <td mat-cell *matCellDef="let element">{{ element.purity }}</td>
-      </ng-container>
-
-      <!-- Define a linha do header -->
-      <tr mat-header-row *matHeaderRowDef="['purity']"></tr>
-      <!-- Define a linha do código -->
-      <tr mat-row *matRowDef="let row; columns: ['purity']"></tr>
-    </table>`,
+  imports: [MatTableModule, SimpleTable],
+  template: ` <simple-table [data]="boxes" [columns]="columns" /> `,
   styles: ``,
 })
 export class BoxView {
-  readonly boxStore = inject(BoxStore);
-  // readonly boxes = this.boxStore.boxes;
+  columns: Column<Box>[] = [
+    { id: 'purity', label: 'Pureza', value: (box: Box) => String(box.purity) },
+    { id: 'size', label: 'Tamanho', value: (box: Box) => `${box.size.amount} ${box.size.unit}` },
+  ];
 
-  readonly boxes = [
+  boxes: Box[] = [
     {
+      id: '' as BoxId,
       brandId: 'a' as BrandId,
       reagentId: 'b' as ReagentId,
       supplierId: 'c' as SupplierId,
       expireDate: new Date(),
       inDate: new Date(),
-      purity: 10,
+      purity: 21,
       size: { amount: 10, unit: Unit.Gram },
     },
     {
+      id: '' as BoxId,
       brandId: 'a' as BrandId,
       reagentId: 'b' as ReagentId,
       supplierId: 'c' as SupplierId,
       expireDate: new Date(),
       inDate: new Date(),
-      purity: 10,
+      purity: 22,
       size: { amount: 10, unit: Unit.Gram },
     },
     {
+      id: '' as BoxId,
       brandId: 'a' as BrandId,
       reagentId: 'b' as ReagentId,
       supplierId: 'c' as SupplierId,
       expireDate: new Date(),
       inDate: new Date(),
-      purity: 10,
-      size: { amount: 10, unit: Unit.Gram },
-    },
-    {
-      brandId: 'a' as BrandId,
-      reagentId: 'b' as ReagentId,
-      supplierId: 'c' as SupplierId,
-      expireDate: new Date(),
-      inDate: new Date(),
-      purity: 10,
-      size: { amount: 10, unit: Unit.Gram },
-    },
-    {
-      brandId: 'a' as BrandId,
-      reagentId: 'b' as ReagentId,
-      supplierId: 'c' as SupplierId,
-      expireDate: new Date(),
-      inDate: new Date(),
-      purity: 10,
+      purity: 23,
       size: { amount: 10, unit: Unit.Gram },
     },
   ];
-
-  ngOnInit() {
-    this.boxStore.load();
-  }
-
-  add() {
-    // this.boxStore.add();
-  }
-
-  delete(id: BoxId) {
-    this.boxStore.remove(id);
-  }
 }
