@@ -14,7 +14,8 @@ export class BoxStore extends EntityStore<Box> {
   readonly boxes = this.select((s) => s.items);
 
   async load() {
-    const boxes = await this.handleAsync(() => firstValueFrom(this.boxRepository.getAll()));
+    const fetch = () => firstValueFrom(this.boxRepository.getAll());
+    const boxes = await this.handleAsync(fetch);
     if (boxes) this.setItems(boxes);
   }
 

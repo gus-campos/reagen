@@ -5,8 +5,9 @@ import { MatSort, Sort, MatSortModule } from '@angular/material/sort';
 export type Column<T> = {
   id: string;
   label: string;
-  value: (data: T) => unknown; // Para fazer sorting, e exibir se não tiver render
   render?: (data: T) => string;
+  // Para fazer sorting, e se n tiver render, exibir
+  value: (data: T) => unknown;
 };
 
 @Component({

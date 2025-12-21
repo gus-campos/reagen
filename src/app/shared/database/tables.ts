@@ -1,5 +1,7 @@
 export enum DataTable {
-  Vials = 'vials',
+  Vial = 'vial',
+  Box = 'box',
+  Reagent = 'reagent',
 }
 
 export type TableName = (typeof DataTable)[keyof typeof DataTable];

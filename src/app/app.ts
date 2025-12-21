@@ -1,6 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { BoxView } from '@features/box/box.component';
+import { OmitId } from '@core/models/base.interface';
+import { BoxView } from '@features/box/box-view/box-view.component';
+import { Box } from '@features/box/box.model';
+import { BoxStore } from '@features/box/box.store';
 
 @Component({
   selector: 'app-root',
@@ -9,5 +12,9 @@ import { BoxView } from '@features/box/box.component';
   styleUrl: './app.scss',
 })
 export class App {
-  ngOnInit() {}
+  boxStore = inject(BoxStore);
+
+  add(value: OmitId<Box>) {
+    this.boxStore.add(value);
+  }
 }

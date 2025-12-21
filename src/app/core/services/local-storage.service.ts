@@ -1,44 +1,12 @@
 import { Injectable } from '@angular/core';
 import { OmitId, WithId } from '@core/models/base.interface';
 import { IDatabase } from './base-repository.service';
-import { DataTable, TableName } from '@shared/database/tables';
-import { Unit } from '@features/reagent/unit.model';
-import { ReagentId } from '@features/reagent/reagent.model';
-import { Dimension } from '@features/reagent/dimension.model';
+import { TABLE_REVIVERS } from '@shared/database/revivers';
+import { TableName } from '@shared/database/tables';
 
 @Injectable({ providedIn: 'root' })
-export class MockDatabase implements IDatabase {
-  private storage: Record<TableName, unknown[]> = {
-    [DataTable.Vial]: [],
-    [DataTable.Box]: [
-      {
-        id: '',
-        size: { amount: 1, unit: Unit.Gram },
-        purity: 1,
-        inDate: new Date(),
-        expireDate: new Date(),
-        reagentId: '',
-        brandId: '',
-        supplierId: '',
-      },
-    ],
-    [DataTable.Reagent]: [
-      {
-        id: '0' as ReagentId,
-        name: 'Ácido Clorídrico',
-        dimension: Dimension.Volume,
-        sizes: [{ amount: 10, unit: Unit.Liter }],
-        regulatorId: null,
-      },
-      {
-        id: '1' as ReagentId,
-        name: 'Tolueno',
-        dimension: Dimension.Mass,
-        sizes: [{ amount: 200, unit: Unit.Gram }],
-        regulatorId: null,
-      },
-    ],
-  };
+export class LocalStorageDatabase implements IDatabase {
+  private storage = window.localStorage;
 
   // ------------- Helpers -------------
 
@@ -47,14 +15,18 @@ export class MockDatabase implements IDatabase {
   }
 
   async get<T extends WithId>(table: TableName): Promise<T[]> {
-    return this.storage[table] as T[];
+    const data = this.storage.getItem(table);
+    const items = data ? JSON.parse(data) : [];
+
+    const reviver = TABLE_REVIVERS[table];
+    return reviver ? items.map(reviver) : items;
   }
 
   async create<T extends WithId>(table: TableName, item: OmitId<T>): Promise<T> {
     const items = await this.get<T>(table);
     const createdItem = { ...item, id: this.generateId(table) } as T;
     items.push(createdItem);
-    this.storage[table] = items;
+    this.storage.setItem(table, JSON.stringify(items));
     return createdItem;
   }
 
@@ -67,13 +39,13 @@ export class MockDatabase implements IDatabase {
     const index = items.findIndex((i) => i.id === id);
     if (index >= 0) {
       items[index] = { ...items[index], ...data };
-      this.storage[table] = items;
+      this.storage.setItem(table, JSON.stringify(items));
     }
   }
 
   async delete(table: TableName, id: string): Promise<void> {
     const items = await this.get(table);
-    this.storage[table] = items.filter((i) => i.id !== id);
+    this.storage.setItem(table, JSON.stringify(items.filter((i: any) => i.id !== id)));
   }
 
   async query<T extends WithId>(table: TableName, fn: (item: T) => boolean): Promise<T[]> {

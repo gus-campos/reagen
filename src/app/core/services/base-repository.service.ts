@@ -1,4 +1,5 @@
 import { OmitId, WithId } from '@core/models/base.interface';
+import { TableName } from '@shared/database/tables';
 import { from, Observable, of } from 'rxjs';
 
 export abstract class IDatabase {
@@ -22,7 +23,7 @@ export interface IRepository<T extends WithId> {
 }
 
 export abstract class BaseRepository<T extends WithId> implements IRepository<T> {
-  constructor(protected db: IDatabase, protected tableName: string) {}
+  constructor(protected db: IDatabase, protected tableName: TableName) {}
 
   getAll(): Observable<T[]> {
     return from(this.db.get<T>(this.tableName));

@@ -22,3 +22,7 @@ export const UnitDimension: Record<Unit, Dimension> = {
   [Unit.Mol]: Dimension.Matter,
   [Unit.Units]: Dimension.Count,
 };
+
+export function showSize(value: Size): string {
+  return `${value.amount} ${value.unit}`;
+}
