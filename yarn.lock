@@ -10183,7 +10183,7 @@ __metadata:
   version: 3.0.1
   resolution: "mkdirp@npm:3.0.1"
   bin:
-    mkdirp: dist/cjs/src/bin.js
+    mkdirp: dist/cjs/bin.js
   checksum: 10c0/9f2b975e9246351f5e3a40dcfac99fcd0baa31fbfab615fe059fb11e51f10e4803c63de1f384c54d656e4db31d000e4767e9ef076a22e12a641357602e31d57d
   languageName: node
   linkType: hard

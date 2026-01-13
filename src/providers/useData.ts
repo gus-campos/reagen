@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { DataService } from '../shared/services/data.service';
+import { DataService } from '@/shared/services/data.service';
 
 export function useCollectionData<
   TData extends { id: string },

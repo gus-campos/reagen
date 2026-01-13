@@ -2,12 +2,12 @@
 
 import React, { useState } from 'react';
 import { Box, Button, LoadingOverlay, Modal } from '@mantine/core';
-import { TableCrudOperations } from '@/src/features/data-table/data-table.type';
-import { DataTable } from '@/src/features/data-table/data-table.view';
-import { DataService } from '../services/data.service';
-import { NameData } from '../types/name-data';
-import { ConfirmModal } from './ConfirmModal';
-import { NameDataEdit } from './NameDataEdit';
+import { TableCrudOperations } from '@/features/data-table/data-table.type';
+import { DataTable } from '@/features/data-table/data-table.view';
+import { ConfirmModal } from '@/shared/components/ConfirmModal';
+import { NameDataEdit } from '@/shared/components/NameDataEdit';
+import { DataService } from '@/shared/services/data.service';
+import { NameData } from '@/shared/types/name-data';
 
 type NameDataViewProps<T extends NameData> = {
   datas?: T[];

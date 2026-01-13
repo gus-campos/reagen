@@ -1,9 +1,9 @@
-import { WithoutId } from '@/src/shared/services/data.service';
-import { FirebaseBaseService } from '@/src/shared/services/firabse-base.service';
-import { PackageService } from '../package/package.service';
-import { Size } from '../size/size.type';
-import { areSizesEqual } from '../size/size.util';
-import { Reagent } from './reagent.type';
+import { PackageService } from '@/features/package/package.service';
+import { Reagent } from '@/features/reagent/reagent.type';
+import { Size } from '@/features/size/size.type';
+import { areSizesEqual } from '@/features/size/size.util';
+import { WithoutId } from '@/shared/services/data.service';
+import { FirebaseBaseService } from '@/shared/services/firabse-base.service';
 
 const DOC_NAME = 'reagents';
 

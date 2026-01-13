@@ -1,7 +1,7 @@
-import { Package } from '../package/package.type';
-import { Reagent } from '../reagent/reagent.type';
-import { Vial } from '../vial/vial.type';
-import { StockFilter } from './stock-filter';
+import { Package } from '@/features/package/package.type';
+import { Reagent } from '@/features/reagent/reagent.type';
+import { StockFilter } from '@/features/stock-filter/stock-filter.type';
+import { Vial } from '@/features/vial/vial.type';
 
 export function filteredPackage(
   pkg: Package,

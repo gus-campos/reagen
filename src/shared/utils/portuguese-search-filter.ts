@@ -1,5 +1,5 @@
 import { ComboboxParsedItem } from '@mantine/core';
-import { normalizeString } from '@/src/features/data-table/data-table.util';
+import { normalizeString } from '@/features/data-table/data-table.util';
 
 export function portugueseSearchFilter({
   options,

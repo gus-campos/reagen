@@ -1,5 +1,5 @@
-import { Size } from '@/src/features/size/size.type';
-import { DimensionDefaultUnit, UnitDimension, UnitMultiplier } from '@/src/features/size/unit.type';
+import { Size } from '@/features/size/size.type';
+import { DimensionDefaultUnit, UnitDimension, UnitMultiplier } from '@/features/size/unit.type';
 
 export function areSizesEqual(a: Size, b: Size) {
   return a.amount === b.amount && a.unit === b.unit;

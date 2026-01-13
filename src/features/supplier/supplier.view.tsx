@@ -1,11 +1,11 @@
 'use client';
 
-import { useData } from '@/src/providers/data.provider';
-import { NameDataView } from '@/src/shared/components/NameDataView';
-import { findPackagesOfSupplier } from '@/src/shared/utils/misc';
-import { Package } from '../package/package.type';
-import { SupplierService } from './supplier.service';
-import { Supplier } from './supplier.type';
+import { Package } from '@/features/package/package.type';
+import { SupplierService } from '@/features/supplier/supplier.service';
+import { Supplier } from '@/features/supplier/supplier.type';
+import { useData } from '@/providers/data.provider';
+import { NameDataView } from '@/shared/components/NameDataView';
+import { findPackagesOfSupplier } from '@/shared/utils/misc';
 
 export function SupplierView() {
   const { suppliers, loadingSuppliers, packages } = useData();

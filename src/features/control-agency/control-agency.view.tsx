@@ -1,12 +1,12 @@
 'use client';
 
-import { useData } from '@/src/providers/data.provider';
-import { NameDataView } from '@/src/shared/components/NameDataView';
-import { findPackagesOfControlAgency, findReagentsOfControlAgency } from '@/src/shared/utils/misc';
-import { Package } from '../package/package.type';
-import { Reagent } from '../reagent/reagent.type';
-import { ControlAgencyService } from './control-agency.service';
-import { ControlAgency } from './control-agency.type';
+import { ControlAgencyService } from '@/features/control-agency/control-agency.service';
+import { ControlAgency } from '@/features/control-agency/control-agency.type';
+import { Package } from '@/features/package/package.type';
+import { Reagent } from '@/features/reagent/reagent.type';
+import { useData } from '@/providers/data.provider';
+import { NameDataView } from '@/shared/components/NameDataView';
+import { findPackagesOfControlAgency, findReagentsOfControlAgency } from '@/shared/utils/misc';
 
 export function ControlAgenciesView() {
   const { controlAgencies, loadingControlAgencies, reagents, packages } = useData();

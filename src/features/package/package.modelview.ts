@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { TableCrudOperations } from '../data-table/data-table.type';
-import { Package } from './package.type';
-import { ViewMode } from './package.view';
+import { TableCrudOperations } from '@/features/data-table/data-table.type';
+import { Package } from '@/features/package/package.type';
+import { ViewMode } from '@/features/package/package.view';
 
 export function usePackageView() {
   const [selectedPackage, setSelectedPackage] = useState<Package | null>(null);

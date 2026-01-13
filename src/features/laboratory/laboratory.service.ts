@@ -1,6 +1,6 @@
-import { FirebaseBaseService } from '@/src/shared/services/firabse-base.service';
-import { VialService } from '../vial/vial.service';
-import { Laboratory } from './laboratory.type';
+import { Laboratory } from '@/features/laboratory/laboratory.type';
+import { VialService } from '@/features/vial/vial.service';
+import { FirebaseBaseService } from '@/shared/services/firabse-base.service';
 
 const DOC_NAME = 'laboratory';
 

@@ -1,5 +1,5 @@
 import { Grid, Stack, Text } from '@mantine/core';
-import { useData } from '@/src/providers/data.provider';
+import { useData } from '@/providers/data.provider';
 import { Reagent } from '../reagent.type';
 
 type VialShowProps = {

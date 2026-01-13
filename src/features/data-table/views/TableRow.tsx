@@ -1,7 +1,10 @@
 import { Box, Table } from '@mantine/core';
 import { useHover } from '@mantine/hooks';
-import { DataTableRealContextType, useDataTableContext } from '../data-table.provider';
-import { ActionsRowButtons } from './ActionsRowButtons';
+import {
+  DataTableRealContextType,
+  useDataTableContext,
+} from '@/features/data-table/data-table.provider';
+import { ActionsRowButtons } from '@/features/data-table/views/ActionsRowButtons';
 
 type TableRowProps<T> = {
   data: T;

@@ -1,9 +1,9 @@
-import { useData } from '@/src/providers/data.provider';
-import { NameDataView } from '@/src/shared/components/NameDataView';
-import { findPackagesOfBrand } from '@/src/shared/utils/misc';
-import { Package } from '../package/package.type';
-import { BrandService } from './brand.service';
-import { Brand } from './brand.type';
+import { BrandService } from '@/features/brand/brand.service';
+import { Brand } from '@/features/brand/brand.type';
+import { Package } from '@/features/package/package.type';
+import { useData } from '@/providers/data.provider';
+import { NameDataView } from '@/shared/components/NameDataView';
+import { findPackagesOfBrand } from '@/shared/utils/misc';
 
 export function BrandsView() {
   const { brands, packages, loadingBrands } = useData();

@@ -1,11 +1,11 @@
-import { WithoutId } from '@/src/shared/services/data.service';
-import { FirebaseBaseService } from '@/src/shared/services/firabse-base.service';
-import { ReagentService } from '../reagent/reagent.service';
-import { Reagent } from '../reagent/reagent.type';
-import { Size } from '../size/size.type';
-import { areSizesEqual } from '../size/size.util';
-import { VialService } from '../vial/vial.service';
-import { Package } from './package.type';
+import { Package } from '@/features/package/package.type';
+import { ReagentService } from '@/features/reagent/reagent.service';
+import { Reagent } from '@/features/reagent/reagent.type';
+import { Size } from '@/features/size/size.type';
+import { areSizesEqual } from '@/features/size/size.util';
+import { VialService } from '@/features/vial/vial.service';
+import { WithoutId } from '@/shared/services/data.service';
+import { FirebaseBaseService } from '@/shared/services/firabse-base.service';
 
 const DOC_NAME = 'packages';
 

@@ -1,7 +1,7 @@
 import { FaMagnifyingGlass } from 'react-icons/fa6';
 import { Autocomplete, Box } from '@mantine/core';
-import { Reagent } from '@/src/features/reagent/reagent.type';
-import { useData } from '@/src/providers/data.provider';
+import { Reagent } from '@/features/reagent/reagent.type';
+import { useData } from '@/providers/data.provider';
 
 type SearchBarProps = {
   search: string;

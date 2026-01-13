@@ -1,6 +1,9 @@
 import { IconEdit, IconTrash } from '@tabler/icons-react';
 import { ActionIcon, Group } from '@mantine/core';
-import { DataTableRealContextType, useDataTableContext } from '../data-table.provider';
+import {
+  DataTableRealContextType,
+  useDataTableContext,
+} from '@/features/data-table/data-table.provider';
 
 type ActionsRowButtonsProps<T> = {
   data: T;

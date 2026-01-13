@@ -4,16 +4,16 @@ import { MdCancel } from 'react-icons/md';
 import { Button, Modal, Paper, Stack, Tooltip } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
-import { useData } from '@/src/providers/data.provider';
-import { stringToLocalDate } from '@/src/shared/utils/date';
-import { formattedDate } from '@/src/shared/utils/formatted-date';
-import { TableCollumn } from '../../data-table/data-table.type';
-import { CrudAction, DataTable } from '../../data-table/data-table.view';
-import { StockFilter } from '../../stock-filter/stock-filter';
-import { filteredVial } from '../../stock-filter/stock-filter.util';
-import { VialService } from '../../vial/vial.service';
-import { Vial } from '../../vial/vial.type';
-import { Package } from '../package.type';
+import { TableCollumn } from '@/features/data-table/data-table.type';
+import { CrudAction, DataTable } from '@/features/data-table/data-table.view';
+import { Package } from '@/features/package/package.type';
+import { StockFilter } from '@/features/stock-filter/stock-filter.type';
+import { filteredVial } from '@/features/stock-filter/stock-filter.util';
+import { VialService } from '@/features/vial/vial.service';
+import { Vial } from '@/features/vial/vial.type';
+import { useData } from '@/providers/data.provider';
+import { stringToLocalDate } from '@/shared/utils/date';
+import { formattedDate } from '@/shared/utils/formatted-date';
 
 type PackageVialsTableProps = {
   data: Package;

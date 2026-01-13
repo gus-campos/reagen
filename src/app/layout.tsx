@@ -2,8 +2,8 @@ import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
 
 import React, { ReactNode } from 'react';
+import { theme } from 'theme';
 import { ColorSchemeScript, mantineHtmlProps, MantineProvider } from '@mantine/core';
-import { theme } from '../../theme';
 
 export const metadata = {
   title: 'Controle de Reagentes',

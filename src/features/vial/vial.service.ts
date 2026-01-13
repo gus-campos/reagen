@@ -1,5 +1,5 @@
-import { FirebaseBaseService } from '@/src/shared/services/firabse-base.service';
-import { Vial } from './vial.type';
+import { Vial } from '@/features/vial/vial.type';
+import { FirebaseBaseService } from '@/shared/services/firabse-base.service';
 
 const DOC_NAME = 'vial';
 

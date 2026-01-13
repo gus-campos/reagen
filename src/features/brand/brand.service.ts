@@ -1,6 +1,6 @@
-import { FirebaseBaseService } from '@/src/shared/services/firabse-base.service';
-import { PackageService } from '../package/package.service';
-import { Brand } from './brand.type';
+import { Brand } from '@/features/brand/brand.type';
+import { PackageService } from '@/features/package/package.service';
+import { FirebaseBaseService } from '@/shared/services/firabse-base.service';
 
 const DOC_NAME = 'brands';
 

@@ -1,6 +1,6 @@
 import { Box, Button, Group, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { NameData } from '../types/name-data';
+import { NameData } from '@/shared/types/name-data';
 
 type NameDataEditProps<T extends NameData> = {
   selectedData: T;

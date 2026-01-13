@@ -1,12 +1,12 @@
-import { Brand } from '@/src/features/brand/brand.type';
-import { ControlAgency } from '@/src/features/control-agency/control-agency.type';
-import { Reagent } from '@/src/features/reagent/reagent.type';
-import { formattedDate } from '@/src/shared/utils/formatted-date';
-import { TableCollumn } from '../data-table/data-table.type';
-import { Laboratory } from '../laboratory/laboratory.type';
-import { formattedSize, normalizedAmount } from '../size/size.util';
-import { Supplier } from '../supplier/supplier.type';
-import { Package } from './package.type';
+import { Brand } from '@/features/brand/brand.type';
+import { ControlAgency } from '@/features/control-agency/control-agency.type';
+import { TableCollumn } from '@/features/data-table/data-table.type';
+import { Laboratory } from '@/features/laboratory/laboratory.type';
+import { Package } from '@/features/package/package.type';
+import { Reagent } from '@/features/reagent/reagent.type';
+import { formattedSize, normalizedAmount } from '@/features/size/size.util';
+import { Supplier } from '@/features/supplier/supplier.type';
+import { formattedDate } from '@/shared/utils/formatted-date';
 
 export type PackageCollumGetters = {
   getPackageById: (id: string) => Package;

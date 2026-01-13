@@ -13,18 +13,18 @@ import {
 } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
-import { ReagentService } from '@/src/features/reagent/reagent.service';
-import { Reagent } from '@/src/features/reagent/reagent.type';
-import { Size } from '@/src/features/size/size.type';
-import Unit from '@/src/features/size/unit.type';
-import { useData } from '@/src/providers/data.provider';
-import { toNullableLocalDate, validateDate } from '@/src/shared/utils/date';
-import { portugueseSearchFilter } from '@/src/shared/utils/portuguese-search-filter';
-import { SizeAddForm } from '../../reagent/views/SizeAddForm';
-import { formattedSize } from '../../size/size.util';
-import { VialService } from '../../vial/vial.service';
-import { Package } from '../package.type';
-import { PackageSubReagentAddForm } from './PackageSubReagentAddForm';
+import { Package } from '@/features/package/package.type';
+import { PackageSubReagentAddForm } from '@/features/package/views/PackageSubReagentAddForm';
+import { ReagentService } from '@/features/reagent/reagent.service';
+import { Reagent } from '@/features/reagent/reagent.type';
+import { SizeAddForm } from '@/features/reagent/views/SizeAddForm';
+import { Size } from '@/features/size/size.type';
+import { formattedSize } from '@/features/size/size.util';
+import Unit from '@/features/size/unit.type';
+import { VialService } from '@/features/vial/vial.service';
+import { useData } from '@/providers/data.provider';
+import { toNullableLocalDate, validateDate } from '@/shared/utils/date';
+import { portugueseSearchFilter } from '@/shared/utils/portuguese-search-filter';
 
 type PackageEditProps = {
   selectedPackage: Package | null;

@@ -1,4 +1,10 @@
 {
-  "C_Cpp_Runner.msvcBatchPath": "",
-  "editor.tabSize": 2
+  "editor.tabSize": 2,
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+
+  "typescript.preferences.importModuleSpecifierEnding": "auto",
+  // Adicione esta:
+  "javascript.preferences.importModuleSpecifier": "non-relative"
 }

@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react';
 import { Box, Button, Grid, Group, InputBase, Pill, Select, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { Reagent } from '@/src/features/reagent/reagent.type';
-import { Size } from '@/src/features/size/size.type';
-import { Dimension } from '@/src/features/size/unit.type';
-import { useData } from '@/src/providers/data.provider';
-import { findPackagesOfReagentSizes, findRemovedSizes } from '@/src/shared/utils/misc';
-import { portugueseSearchFilter } from '@/src/shared/utils/portuguese-search-filter';
-import { ConfirmModal } from '../../../shared/components/ConfirmModal';
-import { Package } from '../../package/package.type';
-import { formattedSize } from '../../size/size.util';
-import { SizeAddForm } from './SizeAddForm';
+import { Package } from '@/features/package/package.type';
+import { Reagent } from '@/features/reagent/reagent.type';
+import { SizeAddForm } from '@/features/reagent/views/SizeAddForm';
+import { Size } from '@/features/size/size.type';
+import { formattedSize } from '@/features/size/size.util';
+import { Dimension } from '@/features/size/unit.type';
+import { useData } from '@/providers/data.provider';
+import { ConfirmModal } from '@/shared/components/ConfirmModal';
+import { findPackagesOfReagentSizes, findRemovedSizes } from '@/shared/utils/misc';
+import { portugueseSearchFilter } from '@/shared/utils/portuguese-search-filter';
 
 type VialModalProps = {
   selectedReagent: Reagent | null;

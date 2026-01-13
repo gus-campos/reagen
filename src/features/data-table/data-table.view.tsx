@@ -1,10 +1,10 @@
 import React, { ReactNode, useEffect, useState } from 'react';
 import { Paper, Table } from '@mantine/core';
-import { DataTableContext, DataTableContextType } from './data-table.provider';
-import { TableCollumn, TableCrudOperations } from './data-table.type';
-import { searchMatch } from './data-table.util';
-import { TableRow } from './views/TableRow';
-import { TableThead } from './views/TableThead';
+import { DataTableContext, DataTableContextType } from '@/features/data-table/data-table.provider';
+import { TableCollumn, TableCrudOperations } from '@/features/data-table/data-table.type';
+import { searchMatch } from '@/features/data-table/data-table.util';
+import { TableRow } from '@/features/data-table/views/TableRow';
+import { TableThead } from '@/features/data-table/views/TableThead';
 
 export type CrudAction<T> = {
   icon: ReactNode;

@@ -2,17 +2,17 @@
 
 import React, { useMemo, useState } from 'react';
 import { Box, Button, LoadingOverlay, Modal, Pill } from '@mantine/core';
-import { findPackagesOfReagent } from '@/src/shared/utils/misc';
-import { useData } from '../../providers/data.provider';
-import { ConfirmModal } from '../../shared/components/ConfirmModal';
-import { TableCrudOperations } from '../data-table/data-table.type';
-import { DataTable } from '../data-table/data-table.view';
-import { Package } from '../package/package.type';
-import { formattedSize } from '../size/size.util';
-import { SearchReagent } from '../stock-filter/views/SearchReagent';
-import { ReagentService } from './reagent.service';
-import { Reagent } from './reagent.type';
-import { ReagentEdit } from './views/ReagentEdit';
+import { TableCrudOperations } from '@/features/data-table/data-table.type';
+import { DataTable } from '@/features/data-table/data-table.view';
+import { Package } from '@/features/package/package.type';
+import { ReagentService } from '@/features/reagent/reagent.service';
+import { Reagent } from '@/features/reagent/reagent.type';
+import { ReagentEdit } from '@/features/reagent/views/ReagentEdit';
+import { formattedSize } from '@/features/size/size.util';
+import { SearchReagent } from '@/features/stock-filter/views/SearchReagent';
+import { useData } from '@/providers/data.provider';
+import { ConfirmModal } from '@/shared/components/ConfirmModal';
+import { findPackagesOfReagent } from '@/shared/utils/misc';
 
 export function ReagentsView() {
   const {

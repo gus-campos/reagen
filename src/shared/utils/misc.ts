@@ -1,11 +1,11 @@
-import { Brand } from '@/src/features/brand/brand.type';
-import { ControlAgency as Laboratory } from '@/src/features/control-agency/control-agency.type';
-import { Package } from '@/src/features/package/package.type';
-import { Reagent } from '@/src/features/reagent/reagent.type';
-import { Size } from '@/src/features/size/size.type';
-import { formattedSize } from '@/src/features/size/size.util';
-import { Supplier } from '@/src/features/validated-name/supplier/supplier.type';
-import { Vial } from '@/src/features/vial/vial.type';
+import { Brand } from '@/features/brand/brand.type';
+import { ControlAgency as Laboratory } from '@/features/control-agency/control-agency.type';
+import { Package } from '@/features/package/package.type';
+import { Reagent } from '@/features/reagent/reagent.type';
+import { Size } from '@/features/size/size.type';
+import { formattedSize } from '@/features/size/size.util';
+import { Supplier } from '@/features/validated-name/supplier/supplier.type';
+import { Vial } from '@/features/vial/vial.type';
 
 export function findRemovedSizes(before: Size[], after: Size[]) {
   return before.filter(

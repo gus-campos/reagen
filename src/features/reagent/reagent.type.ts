@@ -1,5 +1,5 @@
-import { Size } from '../size/size.type';
-import { Dimension } from '../size/unit.type';
+import { Size } from '@/features/size/size.type';
+import { Dimension } from '@/features/size/unit.type';
 
 export type Reagent = {
   id: string;

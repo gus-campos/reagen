@@ -1,5 +1,5 @@
-import { Size } from '../size/size.type';
-import { Vial } from '../vial/vial.type';
+import { Size } from '@/features/size/size.type';
+import { Vial } from '@/features/vial/vial.type';
 
 export type Package = {
   id: string;

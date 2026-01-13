@@ -1,8 +1,11 @@
 import { Group, Table, Text } from '@mantine/core';
-import { DataTableRealContextType, useDataTableContext } from '../data-table.provider';
-import { TableCollumn } from '../types/TableCollumn';
-import { ActionsCollumnButtons } from './ActionsCollumnButtons';
-import { TableExtraOptions } from './TableExtraOptions';
+import {
+  DataTableRealContextType,
+  useDataTableContext,
+} from '@/features/data-table/data-table.provider';
+import { TableCollumn } from '@/features/data-table/data-table.type';
+import { ActionsCollumnButtons } from '@/features/data-table/views/ActionsCollumnButtons';
+import { TableExtraOptions } from '@/features/data-table/views/TableExtraOptions';
 
 type VialsTableTheadProps = {
   sortedAscending: boolean | null;

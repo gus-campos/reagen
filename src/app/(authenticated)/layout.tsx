@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import { redirect } from 'next/navigation';
-import { ReagenShell } from '../../features/app-shell/app-shell.view';
-import { DataProvider } from '../../providers/data.provider';
+import { ReagenShell } from '@/features/app-shell/app-shell.view';
+import { DataProvider } from '@/providers/data.provider';
 
 type RootLayoutProps = {
   children: ReactNode[];

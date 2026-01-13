@@ -1,11 +1,11 @@
 'use client';
 
-import { useData } from '@/src/providers/data.provider';
-import { NameDataView } from '@/src/shared/components/NameDataView';
-import { findVialsOfLaboratory } from '@/src/shared/utils/misc';
-import { Vial } from '../vial/vial.type';
-import { LaboratoryService } from './laboratory.service';
-import { Laboratory } from './laboratory.type';
+import { LaboratoryService } from '@/features/laboratory/laboratory.service';
+import { Laboratory } from '@/features/laboratory/laboratory.type';
+import { Vial } from '@/features/vial/vial.type';
+import { useData } from '@/providers/data.provider';
+import { NameDataView } from '@/shared/components/NameDataView';
+import { findVialsOfLaboratory } from '@/shared/utils/misc';
 
 export function LaboratoryView() {
   const { laboratories, loadingLaboratories, vials: vials } = useData();

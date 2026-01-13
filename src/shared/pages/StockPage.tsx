@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Box, Grid, LoadingOverlay } from '@mantine/core';
-import { PackageView } from '@/src/features/package/package.view';
-import { StockFilter } from '@/src/features/stock-filter/stock-filter';
-import { FilterOptions } from '../../features/stock-filter/views/FilterOptions';
-import { SearchReagent } from '../../features/stock-filter/views/SearchReagent';
-import { useData } from '../../providers/data.provider';
+import { PackageView } from '@/features/package/package.view';
+import { StockFilter } from '@/features/stock-filter/stock-filter.type';
+import { FilterOptions } from '@/features/stock-filter/views/FilterOptions';
+import { SearchReagent } from '@/features/stock-filter/views/SearchReagent';
+import { useData } from '@/providers/data.provider';
 
 // PRecisa ser inicializado aqui
 const initialFilter: StockFilter = {

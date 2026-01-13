@@ -2,10 +2,10 @@ import { useEffect } from 'react';
 import { Accordion, Badge, Grid, Group, Paper, Radio, Select, Text, Title } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
-import { useData } from '@/src/providers/data.provider';
-import { toNullableLocalDate } from '@/src/shared/utils/date';
-import { portugueseSearchFilter } from '@/src/shared/utils/portuguese-search-filter';
-import { StockFilter } from '../stock-filter';
+import { StockFilter } from '@/features/stock-filter/stock-filter.type';
+import { useData } from '@/providers/data.provider';
+import { toNullableLocalDate } from '@/shared/utils/date';
+import { portugueseSearchFilter } from '@/shared/utils/portuguese-search-filter';
 
 type FilterOptionsProps = {
   filter: StockFilter;

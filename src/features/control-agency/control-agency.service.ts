@@ -1,6 +1,6 @@
-import { FirebaseBaseService } from '@/src/shared/services/firabse-base.service';
-import { ReagentService } from '../reagent/reagent.service';
-import { ControlAgency } from './control-agency.type';
+import { ControlAgency } from '@/features/control-agency/control-agency.type';
+import { ReagentService } from '@/features/reagent/reagent.service';
+import { FirebaseBaseService } from '@/shared/services/firabse-base.service';
 
 const DOC_NAME = 'control-agencies';
 

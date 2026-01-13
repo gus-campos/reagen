@@ -1,22 +1,22 @@
 'use client';
 
 import React, { createContext, ReactNode, useContext } from 'react';
-import { BrandService } from '../features/brand/brand.service';
-import { Brand } from '../features/brand/brand.type';
-import { ControlAgencyService } from '../features/control-agency/control-agency.service';
-import { ControlAgency } from '../features/control-agency/control-agency.type';
-import { LaboratoryService } from '../features/laboratory/laboratory.service';
-import { Laboratory } from '../features/laboratory/laboratory.type';
-import { PackageService } from '../features/package/package.service';
-import { Package } from '../features/package/package.type';
-import { ReagentService } from '../features/reagent/reagent.service';
-import { Reagent } from '../features/reagent/reagent.type';
-import { SupplierService } from '../features/supplier/supplier.service';
-import { Supplier } from '../features/supplier/supplier.type';
-import { VialService } from '../features/vial/vial.service';
-import { Vial } from '../features/vial/vial.type';
-import { sortKeys } from '../shared/utils/sort-keys';
-import { useCollectionData } from './useData';
+import { BrandService } from '@/features/brand/brand.service';
+import { Brand } from '@/features/brand/brand.type';
+import { ControlAgencyService } from '@/features/control-agency/control-agency.service';
+import { ControlAgency } from '@/features/control-agency/control-agency.type';
+import { LaboratoryService } from '@/features/laboratory/laboratory.service';
+import { Laboratory } from '@/features/laboratory/laboratory.type';
+import { PackageService } from '@/features/package/package.service';
+import { Package } from '@/features/package/package.type';
+import { ReagentService } from '@/features/reagent/reagent.service';
+import { Reagent } from '@/features/reagent/reagent.type';
+import { SupplierService } from '@/features/supplier/supplier.service';
+import { Supplier } from '@/features/supplier/supplier.type';
+import { VialService } from '@/features/vial/vial.service';
+import { Vial } from '@/features/vial/vial.type';
+import { useCollectionData } from '@/providers/useData';
+import { sortKeys } from '@/shared/utils/sort-keys';
 
 export function useData() {
   const context = useContext(DataContext);

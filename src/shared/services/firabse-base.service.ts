@@ -11,8 +11,8 @@ import {
   Timestamp,
   updateDoc,
 } from 'firebase/firestore';
-import { db } from '@/src/core/config/firebase';
-import { DataService, HasId, WithoutId } from './data.service';
+import { db } from '@/core/config/firebase';
+import { DataService, HasId, WithoutId } from '@/shared/services/data.service';
 
 export abstract class FirebaseBaseService<T extends HasId> extends DataService<T> {
   private firestorageConverter: FirestoreDataConverter<T>;

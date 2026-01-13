@@ -3,15 +3,15 @@
 import { CiViewList } from 'react-icons/ci';
 import { IoMdAdd } from 'react-icons/io';
 import { Button, Drawer, Modal, Tabs } from '@mantine/core';
-import { useData } from '@/src/providers/data.provider';
-import { ReagentService } from '../../reagent/reagent.service';
-import { Reagent } from '../../reagent/reagent.type';
-import { ReagentShow } from '../../reagent/views/ReagentShow';
-import { PackageService } from '../package.service';
-import { Package } from '../package.type';
-import { ViewMode } from '../package.view.ts';
-import { PackageEdit } from './PackageEdit';
-import { PackageShow } from './PackageShow';
+import { PackageService } from '@/features/package/package.service';
+import { Package } from '@/features/package/package.type';
+import { ViewMode } from '@/features/package/package.view';
+import { PackageEdit } from '@/features/package/views/PackageEdit';
+import { PackageShow } from '@/features/package/views/PackageShow';
+import { ReagentService } from '@/features/reagent/reagent.service';
+import { Reagent } from '@/features/reagent/reagent.type';
+import { ReagentShow } from '@/features/reagent/views/ReagentShow';
+import { useData } from '@/providers/data.provider';
 
 export type PackageLayoutProps = {
   mode: ViewMode;
