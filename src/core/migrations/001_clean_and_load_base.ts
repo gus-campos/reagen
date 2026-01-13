@@ -1,13 +1,13 @@
-import { ItemService } from '@/src/features/items/services/ItemService';
-import { Item } from '@/src/features/items/types/item';
-import { migrateDB } from './migrateDB';
+// import { VialService } from '@/src/features/vial/services/VialService';
+// import { Vial } from '@/src/features/vial/types/vial';
+// import { migrateDB } from './migrateDB';
 
-const migrator = (item: Item) => {
-  const migrated: Item = {
-    ...item,
-    brandId: item.brandId ?? null,
-  };
-  return migrated;
-};
+// const migrator = (vial: Vial) => {
+//   const migrated: Vial = {
+//     ...vial,
+//     brandId: vial.brandId ?? null,
+//   };
+//   return migrated;
+// };
 
-migrateDB<Item>(ItemService.instance, migrator);
+// migrateDB<Vial>(VialService.instance, migrator);

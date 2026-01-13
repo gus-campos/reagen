@@ -2,24 +2,24 @@
 
 import { useData } from '@/src/providers/DataProvider';
 import { NameDataView } from '@/src/shared/components/NameDataView';
-import { findItemsOfLaboratory } from '@/src/shared/utils/misc';
-import { Item } from '../../items/types/item';
+import { findVialsOfLaboratory } from '@/src/shared/utils/misc';
+import { Vial } from '../../vial/types/vial';
 import { LaboratoryService } from '../services/LaboratoryService';
 import { Laboratory } from '../types/laboratory';
 
 export function LaboratoryView() {
-  const { laboratories, loadingLaboratories, items } = useData();
+  const { laboratories, loadingLaboratories, vials: vials } = useData();
 
   const getWarning = (laboratory: Laboratory) => {
-    const relatedItems = findItemsOfLaboratory(laboratory, items!);
-    if (relatedItems.length === 0) return null;
-    return generateWarning(laboratory, relatedItems);
+    const relatedVials = findVialsOfLaboratory(laboratory, vials!);
+    if (relatedVials.length === 0) return null;
+    return generateWarning(laboratory, relatedVials);
   };
 
-  const generateWarning = (laboratory: Laboratory, relatedItems: Item[]) => {
+  const generateWarning = (laboratory: Laboratory, relatedVials: Vial[]) => {
     const message = `Excluir o laboratório: ${laboratory.name}
-          Causará a exclusão dos seguintes items:
-          ${relatedItems.map((i) => `* ${i.id}`).join('\n')}
+          Causará a exclusão dos seguintes vials:
+          ${relatedVials.map((i) => `* ${i.id}`).join('\n')}
           `;
 
     return message;

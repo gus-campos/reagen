@@ -4,7 +4,7 @@ export type HasId = {
 
 export type WithoutId<T> = Omit<T, 'id'>;
 
-// FIXME: Implementar store? Como?
+// TODO: Implementar store? Como?
 export abstract class DataService<T extends HasId> {
   abstract getById(id: string): Promise<T>;
   abstract getAll(): Promise<T[]>;

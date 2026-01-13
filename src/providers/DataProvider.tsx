@@ -1,45 +1,51 @@
 'use client';
 
 import React, { createContext, ReactNode, useContext } from 'react';
-import { BrandService } from '../features/brands/services/BrandService';
-import { Brand } from '../features/brands/types/brand';
+import { BrandService } from '../features/brand/services/BrandService';
+import { Brand } from '../features/brand/types/brand';
 import { ControlAgencyService } from '../features/control-agency/services/ControlAgencyService';
 import { ControlAgency } from '../features/control-agency/types/control-agency';
-import { ItemService } from '../features/items/services/ItemService';
-import { Item } from '../features/items/types/item';
 import { LaboratoryService } from '../features/laboratory/services/LaboratoryService';
 import { Laboratory } from '../features/laboratory/types/laboratory';
-import { ReagentService } from '../features/reagents/services/ReagentService';
-import { Reagent } from '../features/reagents/types/reagent';
+import { PackageService } from '../features/package/services/PackageService';
+import { Package } from '../features/package/types/package';
+import { ReagentService } from '../features/reagent/services/ReagentService';
+import { Reagent } from '../features/reagent/types/reagent';
 import { SupplierService } from '../features/supplier/services/SupplierService';
 import { Supplier } from '../features/supplier/types/supplier';
+import { VialService } from '../features/vial/services/VialService';
+import { Vial } from '../features/vial/types/vial';
 import { sortKeys } from '../shared/utils/sort-keys';
 import { useCollectionData } from './useData';
 
 const DataContext = createContext<{
-  items?: Item[];
+  packages: Package[];
+  vials?: Vial[];
   reagents?: Reagent[];
   brands?: Brand[];
   controlAgencies?: ControlAgency[];
   laboratories?: Laboratory[];
   suppliers?: Supplier[];
   //
+  loadingPackages: boolean;
   loadingReagents: boolean;
-  loadingItems: boolean;
+  loadingVials: boolean;
   loadingBrands: boolean;
   loadingControlAgencies: boolean;
   loadingLaboratories: boolean;
   loadingSuppliers: boolean;
   //
-  itemsError?: Error | null;
+  packagesError: Error | null;
+  vialsError?: Error | null;
   reagentsError?: Error | null;
   brandsError?: Error | null;
   controlAgenciesError?: Error | null;
   laboratoriesError?: Error | null;
   suppliersError?: Error | null;
   //
+  getPackageById: (id: string) => Package;
   getReagentById: (id: string) => Reagent;
-  getItemById: (id: string) => Item;
+  getVialById: (id: string) => Vial;
   getBrandById: (id: string) => Brand;
   getControlAgencyById: (id: string) => ControlAgency;
   getLaboratoryById: (id: string) => Laboratory;
@@ -59,15 +65,13 @@ type DataProviderProps = {
 };
 
 export const DataProvider = (props: DataProviderProps) => {
-  const [brands, loadingBrands, brandsError, getBrandById] = useCollectionData<Brand, BrandService>(
-    BrandService.instance
-  );
+  const [packages, loadingPackages, packagesError, getPackageById] = useCollectionData<
+    Package,
+    PackageService
+  >(PackageService.instance);
 
-  const [controlAgencies, loadingControlAgencies, controlAgenciesError, getControlAgencyById] =
-    useCollectionData<ControlAgency, ControlAgencyService>(ControlAgencyService.instance);
-
-  const [items, loadingItems, itemsError, getItemById] = useCollectionData<Item, ItemService>(
-    ItemService.instance
+  const [vials, loadingVials, vialsError, getVialById] = useCollectionData<Vial, VialService>(
+    VialService.instance
   );
 
   const [reagents, loadingReagents, reagentsError, getReagentById] = useCollectionData<
@@ -75,8 +79,15 @@ export const DataProvider = (props: DataProviderProps) => {
     ReagentService
   >(ReagentService.instance);
 
+  const [brands, loadingBrands, brandsError, getBrandById] = useCollectionData<Brand, BrandService>(
+    BrandService.instance
+  );
+
   const [laboratories, loadingLaboratories, laboratoriesError, getLaboratoryById] =
     useCollectionData<Laboratory, LaboratoryService>(LaboratoryService.instance);
+
+  const [controlAgencies, loadingControlAgencies, controlAgenciesError, getControlAgencyById] =
+    useCollectionData<ControlAgency, ControlAgencyService>(ControlAgencyService.instance);
 
   const [suppliers, loadingSuppliers, suppliersError, getSupplierById] = useCollectionData<
     Supplier,
@@ -84,7 +95,8 @@ export const DataProvider = (props: DataProviderProps) => {
   >(SupplierService.instance);
 
   console.log('useData', {
-    items: items?.map((r) => sortKeys(r)),
+    packages: packages?.map((r) => sortKeys(r)),
+    vials: vials?.map((r) => sortKeys(r)),
     reagents: reagents?.map((op) => sortKeys(op)),
     brands: brands?.map((b) => sortKeys(b)),
     controlAgency: controlAgencies?.map((c) => sortKeys(c)),
@@ -95,29 +107,33 @@ export const DataProvider = (props: DataProviderProps) => {
   return (
     <DataContext.Provider
       value={{
-        items,
+        packages,
+        vials,
         reagents,
         brands,
         controlAgencies,
         laboratories,
         suppliers,
         //
+        loadingPackages,
         loadingReagents,
-        loadingItems,
+        loadingVials,
         loadingBrands,
         loadingControlAgencies,
         loadingLaboratories,
         loadingSuppliers,
         //
+        packagesError,
         reagentsError,
-        itemsError,
+        vialsError,
         brandsError,
         controlAgenciesError,
         laboratoriesError,
         suppliersError,
         //
+        getPackageById,
         getReagentById,
-        getItemById,
+        getVialById,
         getBrandById,
         getControlAgencyById,
         getLaboratoryById,

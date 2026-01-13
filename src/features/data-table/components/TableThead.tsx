@@ -4,13 +4,13 @@ import { TableCollumn } from '../types/TableCollumn';
 import { ActionsCollumnButtons } from './ActionsCollumnButtons';
 import { TableExtraOptions } from './TableExtraOptions';
 
-type ItemsTableTheadProps<T> = {
+type VialsTableTheadProps = {
   sortedAscending: boolean | null;
   sortedBy: string | null;
   smallHeding?: boolean;
 };
 
-export function TableThead<T>(props: ItemsTableTheadProps<T>) {
+export function TableThead<T>(props: VialsTableTheadProps) {
   const {
     collumns,
     hiddenCollumns,
@@ -25,7 +25,7 @@ export function TableThead<T>(props: ItemsTableTheadProps<T>) {
   const isColumnFixed = (collumn: TableCollumn<T>) => collumn?.fixed ?? true;
 
   const ascending = (collumn: TableCollumn<T>) =>
-    props.sortedBy === collumn.name ? (props.sortedAscending ? true : false) : null;
+    props.sortedBy === collumn.name ? !!props.sortedAscending : null;
 
   return (
     <Table.Thead>

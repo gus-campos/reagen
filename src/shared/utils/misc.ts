@@ -1,10 +1,11 @@
-import { Brand } from '@/src/features/brands/types/brand';
+import { Brand } from '@/src/features/brand/types/brand';
 import { ControlAgency as Laboratory } from '@/src/features/control-agency/types/control-agency';
-import { Item } from '@/src/features/items/types/item';
-import { Reagent } from '@/src/features/reagents/types/reagent';
-import { Size } from '@/src/features/reagents/types/size';
+import { Package } from '@/src/features/package/types/package';
+import { Reagent } from '@/src/features/reagent/types/reagent';
+import { Size } from '@/src/features/reagent/types/size';
 import { Supplier } from '@/src/features/supplier/types/supplier';
-import { formattedSize } from '../../features/reagents/utils/formatted-amount';
+import { Vial } from '@/src/features/vial/types/vial';
+import { formattedSize } from '../../features/reagent/utils/formatted-amount';
 
 export function findRemovedSizes(before: Size[], after: Size[]) {
   return before.filter(
@@ -13,40 +14,40 @@ export function findRemovedSizes(before: Size[], after: Size[]) {
   );
 }
 
-export function findItemsOfReagentSizes(reagent: Reagent, sizes: Size[], items: Item[]) {
+export function findPackagesOfReagentSizes(reagent: Reagent, sizes: Size[], pkgs: Package[]) {
   // Assume que já carregou
-  return items.filter(
-    (item) =>
-      item.reagentId === reagent.id &&
-      sizes.some((size) => formattedSize(size) === formattedSize(item.size))
+  return pkgs.filter(
+    (pkg) =>
+      pkg.reagentId === reagent.id &&
+      sizes.some((size) => formattedSize(size) === formattedSize(pkg.size))
   );
 }
 
-export function findItemsOfReagent(reagent: Reagent, items: Item[]) {
-  return items.filter((item) => item.reagentId === reagent.id);
+export function findPackagesOfReagent(reagent: Reagent, pkgs: Package[]) {
+  return pkgs.filter((pkg) => pkg.reagentId === reagent.id);
 }
 
-export function findItemsOfControlAgency(
+export function findPackagesOfControlAgency(
   controlAgency: Laboratory,
   reagents: Reagent[],
-  items: Item[]
+  pkgs: Package[]
 ) {
   const relatedReagents = findReagentsOfControlAgency(controlAgency, reagents);
-  return relatedReagents.flatMap((reag) => findItemsOfReagent(reag, items));
+  return relatedReagents.flatMap((reag) => findPackagesOfReagent(reag, pkgs));
 }
 
-export function findItemsOfLaboratory(laboratory: Laboratory, items: Item[]) {
-  return items.filter((item) => item.laboratoryId === laboratory.id);
+export function findVialsOfLaboratory(laboratory: Laboratory, vials: Vial[]) {
+  return vials.filter((vial) => vial.laboratoryId === laboratory.id);
 }
 
 export function findReagentsOfControlAgency(controlAgency: Laboratory, reagents: Reagent[]) {
   return reagents.filter((reag) => reag.controlAgencyId === controlAgency.id);
 }
 
-export function findItemsOfBrand(brand: Brand, items: Item[]) {
-  return items.filter((item) => item.brandId === brand.id);
+export function findPackagesOfBrand(brand: Brand, pkgs: Package[]) {
+  return pkgs.filter((pkg) => pkg.brandId === brand.id);
 }
 
-export function findItemsOfSupplier(supplier: Supplier, items: Item[]) {
-  return items.filter((item) => item.supplierId === supplier.id);
+export function findPackagesOfSupplier(supplier: Supplier, pkgs: Package[]) {
+  return pkgs.filter((pkg) => pkg.supplierId === supplier.id);
 }

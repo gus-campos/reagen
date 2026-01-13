@@ -1,7 +1,7 @@
-import { getFirestore } from 'firebase/firestore';
+//import { getFirestore } from 'firebase/firestore';
 import { DataService, HasId } from '@/src/shared/services/DataService';
 
-const db = getFirestore();
+//const db = getFirestore();
 
 export async function migrateDB<T extends HasId>(
   service: DataService<T>,
