@@ -9,7 +9,6 @@ import { DataTable } from '../../data-table/components/DataTable';
 import { TableCrudOperations } from '../../data-table/types/TableCrudOperations';
 import { SearchReagent } from '../../package-filter/views/SearchReagent';
 import { Package } from '../../package/types/package';
-import { Vial } from '../../vial/types/vial';
 import { ReagentService } from '../services/ReagentService';
 import { Reagent } from '../types/reagent';
 import { formattedSize } from '../utils/formatted-amount';

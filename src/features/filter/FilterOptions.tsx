@@ -1,15 +1,26 @@
 import { useEffect } from 'react';
-import { Accordion, Badge, Grid, Group, Paper, Radio, Select, Text, Title } from '@mantine/core';
+import {
+  Accordion,
+  Badge,
+  Divider,
+  Grid,
+  Group,
+  Paper,
+  Radio,
+  Select,
+  Text,
+  Title,
+} from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
-import { PackageFilter } from '@/src/features/package-filter/types/package-filter';
 import { useData } from '@/src/providers/DataProvider';
 import { toNullableLocalDate } from '@/src/shared/utils/date';
 import { portugueseSearchFilter } from '@/src/shared/utils/portuguese-search-filter';
+import { StockFilter } from './stock-filter';
 
 type FilterOptionsProps = {
-  filter: PackageFilter;
-  onFilterChange: (filter: PackageFilter) => void;
+  filter: StockFilter;
+  onFilterChange: (filter: StockFilter) => void;
 };
 
 function TouchedBadge(props: { text: string; active: boolean }) {
@@ -24,7 +35,7 @@ function TouchedBadge(props: { text: string; active: boolean }) {
 export function FilterOptions(props: FilterOptionsProps) {
   const { controlAgencies, brands, suppliers, laboratories } = useData();
 
-  const form = useForm<PackageFilter>({
+  const form = useForm<StockFilter>({
     initialValues: props.filter,
     transformValues: (values) => ({
       ...values,
@@ -45,6 +56,8 @@ export function FilterOptions(props: FilterOptionsProps) {
 
   // FIXME: selo indicando opção não nula de filtro
 
+  // form.watch();
+
   // Quando A mudar, B vai pro valor deutro e fica desativado
 
   const dateFieldsDisabled = form.values.expired !== 'all';
@@ -57,6 +70,12 @@ export function FilterOptions(props: FilterOptionsProps) {
 
   return (
     <Paper withBorder radius="sm" py="md" px="md">
+      <Title order={4} mb="sm">
+        Modo de visualização
+      </Title>
+
+      <Divider my="lg" />
+
       <Title order={4} mb="sm">
         Filtros
       </Title>

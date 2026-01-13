@@ -1,7 +1,6 @@
 import { WithoutId } from '@/src/shared/services/DataService';
 import { FirebaseBaseService } from '@/src/shared/services/FirebaseBaseService';
 import { PackageService } from '../../package/services/PackageService';
-import { VialService } from '../../vial/services/VialService';
 import { Reagent } from '../types/reagent';
 import { Size } from '../types/size';
 import { areSizesEqual } from '../utils/areSizesEqual';

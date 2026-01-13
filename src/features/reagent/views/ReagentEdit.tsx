@@ -5,7 +5,6 @@ import { Reagent } from '@/src/features/reagent/types/reagent';
 import { Size } from '@/src/features/reagent/types/size';
 import { Dimension } from '@/src/features/reagent/types/unit';
 import { formattedSize } from '@/src/features/reagent/utils/formatted-amount';
-import { Vial } from '@/src/features/vial/types/vial';
 import { useData } from '@/src/providers/DataProvider';
 import { findPackagesOfReagentSizes, findRemovedSizes } from '@/src/shared/utils/misc';
 import { portugueseSearchFilter } from '@/src/shared/utils/portuguese-search-filter';

@@ -1,5 +1,5 @@
 import { IconEye } from '@tabler/icons-react';
-import { ActionIcon, Group, Menu, Table } from '@mantine/core';
+import { ActionIcon, Group, Menu } from '@mantine/core';
 import { TableCollumn } from '../types/TableCollumn';
 
 type TableExtraOptionsProps<T> = {

@@ -1,10 +1,10 @@
-import { PackageFilter } from '../../package-filter/types/package-filter';
+import { StockFilter } from '../../filter/stock-filter';
 import { usePackageView } from '../modelviews/usePackageView';
 import { PackageLayout } from './PackageLayout';
 import { PackageTable } from './PackageTable';
 
 export type PackageViewProps = {
-  filter?: PackageFilter;
+  filter?: StockFilter;
   search?: string;
 };
 

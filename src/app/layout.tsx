@@ -2,7 +2,6 @@ import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
 
 import React, { ReactNode } from 'react';
-import { redirect } from 'next/navigation';
 import { ColorSchemeScript, mantineHtmlProps, MantineProvider } from '@mantine/core';
 import { theme } from '../../theme';
 

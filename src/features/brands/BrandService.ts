@@ -1,6 +1,6 @@
 import { FirebaseBaseService } from '@/src/shared/services/FirebaseBaseService';
-import { PackageService } from '../../package/services/PackageService';
-import { Brand } from '../types/brand';
+import { PackageService } from '../package/services/PackageService';
+import { Brand } from './brand';
 
 const DOC_NAME = 'brands';
 
@@ -22,8 +22,8 @@ export class BrandService extends FirebaseBaseService<Brand> {
   }
 
   private async deleteRelatedPackages(brandId: string) {
-    const packages = await PackageService.instance.getAll();
-    const relatedPkgs = packages.filter((p) => p.brandId === brandId);
-    relatedPkgs.forEach((vial) => PackageService.instance.delete(vial.id));
+    const packages = await PackageService.instance.getAll(); // TODO: Poderia ser query
+    const relatedPackages = packages.filter((p) => p.brandId === brandId);
+    relatedPackages.forEach((pkg) => PackageService.instance.delete(pkg.id));
   }
 }

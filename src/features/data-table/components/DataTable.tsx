@@ -121,7 +121,7 @@ export function DataTable<T>(props: TableProps<T>) {
 
   // Valores pro provider
   const dataTableContextValues: DataTableContextType = {
-    collumns: collumns,
+    collumns,
     hiddenCollumns: hiddenColumns,
     crudOperations: props.crudOperations,
     onHideCollumn: handleHideCollumn,

@@ -1,4 +1,5 @@
 import { Size } from '../../reagent/types/size';
+import { Vial } from '../../vial/types/vial';
 
 export type Package = {
   id: string;
@@ -14,3 +15,5 @@ export type Package = {
   brandId: string | null;
   supplierId: string | null;
 };
+
+export type PackageWithVials = Package & { vials: Vial[] };

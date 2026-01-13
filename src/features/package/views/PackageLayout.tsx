@@ -13,7 +13,7 @@ import { PackageEdit } from './PackageEdit';
 import { PackageShow } from './PackageShow';
 import { ViewMode } from './PackageView';
 
-export type PackageViewProps = {
+export type PackageLayoutProps = {
   mode: ViewMode;
   onModeChange: (mode: ViewMode) => void;
   selectedPackage: Package | null;
@@ -21,7 +21,7 @@ export type PackageViewProps = {
   preFilledPackageData?: Partial<Package>;
 };
 
-export function PackageLayout(props: PackageViewProps) {
+export function PackageLayout(props: PackageLayoutProps) {
   const { getReagentById } = useData();
 
   // HANDLERS

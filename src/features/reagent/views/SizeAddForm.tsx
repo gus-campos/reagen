@@ -30,10 +30,10 @@ type SizeAddForm = {
 export function SizeAddForm(props: SizeAddForm) {
   const validateAmount = (value: number): string | null => {
     const countUnits =
-      unitSelectOptions.find((group) => group.group == Dimension.Count)?.items ?? [];
+      unitSelectOptions.find((group) => group.group === Dimension.Count)?.items ?? [];
 
     return value > 0
-      ? !countUnits.includes(sizeForm.values.unit) || value % 1 == 0
+      ? !countUnits.includes(sizeForm.values.unit) || value % 1 === 0
         ? null
         : 'Precisa ser inteiro'
       : 'Só é possível adicionar quantidade maior que 0';

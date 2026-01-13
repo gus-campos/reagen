@@ -19,12 +19,12 @@ export function usePackageView() {
 
   const crudOperations: TableCrudOperations<Package> = {
     handleBeginDataEdit: handleBeginPackageEdit,
-    handleClickRow: handleClickRow,
+    handleClickRow,
   };
 
   return {
     mode,
-    selectedPackage: selectedPackage,
+    selectedPackage,
     handleSelectPackage: (pkg: Package | null) => setSelectedPackage(pkg),
     handleChangeMode: (mode: ViewMode) => setMode(mode),
     crudOperations,

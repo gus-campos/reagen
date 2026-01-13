@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { Box, Grid, LoadingOverlay } from '@mantine/core';
+import { StockFilter } from '@/src/features/filter/stock-filter';
 import { PackageView } from '@/src/features/package/views/PackageView';
-import { PackageFilter } from '../../features/package-filter/types/package-filter';
 import { FilterOptions } from '../../features/package-filter/views/FilterOptions';
 import { SearchReagent } from '../../features/package-filter/views/SearchReagent';
 import { useData } from '../../providers/DataProvider';
 
 // PRecisa ser inicializado aqui
-const initialFilter: PackageFilter = {
+const initialFilter: StockFilter = {
   controlled: 'all',
   expired: 'all',
   maxExpire: null,
@@ -29,7 +29,7 @@ export default function StockPage() {
   // STATES
 
   const [search, setSearch] = useState('');
-  const [filter, setFilter] = useState<PackageFilter>(initialFilter);
+  const [filter, setFilter] = useState<StockFilter>(initialFilter);
 
   // HANDLERS
 
@@ -37,7 +37,7 @@ export default function StockPage() {
     setSearch(search);
   };
 
-  const handleFilterChange = (filter: PackageFilter) => {
+  const handleFilterChange = (filter: StockFilter) => {
     setFilter(filter);
   };
 

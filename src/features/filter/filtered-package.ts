@@ -1,11 +1,11 @@
-import { Package } from '../../package/types/package';
-import { Reagent } from '../../reagent/types/reagent';
-import { PackageFilter } from '../types/package-filter';
+import { Package } from '../package/types/package';
+import { Reagent } from '../reagent/types/reagent';
+import { StockFilter } from './stock-filter';
 
 export function filteredPackage(
   pkg: Package,
-  getReagentById: (reagentId: string) => Reagent,
-  filter: PackageFilter
+  filter: StockFilter,
+  getReagentById: (reagentId: string) => Reagent
 ): boolean {
   const matchesExpiredFilter =
     // Filtro não ativado
@@ -34,9 +34,6 @@ export function filteredPackage(
 
   const macthesSupplierFilter = filter.supplierId === null || filter.supplierId === pkg.supplierId;
 
-  // const matchesLaboratoryFilter =
-  //   filter.laboratoryId === null || filter.laboratoryId === pkg.laboratoryId;
-
   return (
     matchesExpiredFilter &&
     macthesExpireRangeFilter &&
@@ -44,7 +41,6 @@ export function filteredPackage(
     matchesControlAgencyFilter &&
     matchesBrandFilter &&
     macthesSupplierFilter
-    // && matchesLaboratoryFilter
   );
 }
 
