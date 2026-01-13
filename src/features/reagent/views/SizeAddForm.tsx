@@ -11,13 +11,13 @@ import {
   Text,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { Reagent } from '@/src/features/reagent/types/reagent';
-import { Size } from '@/src/features/reagent/types/size';
+import { Reagent } from '@/src/features/reagent/reagent.type';
+import { Size } from '@/src/features/size/size.type';
 import Unit, {
   Dimension,
   DimensionDefaultUnit,
   UnitDimension,
-} from '@/src/features/reagent/types/unit';
+} from '@/src/features/size/unit.type';
 import { portugueseSearchFilter } from '@/src/shared/utils/portuguese-search-filter';
 
 type SizeAddForm = {

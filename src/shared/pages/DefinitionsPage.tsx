@@ -1,9 +1,9 @@
 import { Paper, Tabs, Title } from '@mantine/core';
-import { BrandsView } from '../../features/brand/views/BrandsView';
-import { ControlAgenciesView } from '../../features/control-agency/views/ControlAgencieView';
-import { LaboratoryView } from '../../features/laboratory/views/LaboratoryView';
-import { ReagentsView } from '../../features/reagent/views/ReagentsView';
-import { SupplierView } from '../../features/supplier/views/SuppliersView';
+import { BrandsView } from '@/src/features/brand/brand.view';
+import { ControlAgenciesView } from '@/src/features/control-agency/control-agency.view';
+import { LaboratoryView } from '@/src/features/laboratory/laboratory.view';
+import { SupplierView } from '@/src/features/supplier/supplier.view';
+import { ReagentsView } from '../../features/reagent/reagent.view';
 
 export default function DefinitionsPage() {
   return (

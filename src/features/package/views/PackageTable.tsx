@@ -1,14 +1,14 @@
 'use client';
 
 import { LoadingOverlay } from '@mantine/core';
-import { TableCrudOperations } from '@/src/features/data-table/types/TableCrudOperations';
-import { useData } from '@/src/providers/DataProvider';
-import { DataTable } from '../../data-table/components/DataTable';
-import { filteredPackage } from '../../filter/filtered-package';
-import { StockFilter } from '../../filter/stock-filter';
-import { getInitialCollumns, PackageCollumGetters } from '../constants/getInitialCollumns';
-import { PackageService } from '../services/PackageService';
-import { Package } from '../types/package';
+import { useData } from '@/src/providers/data.provider';
+import { TableCrudOperations } from '../../data-table/data-table.type';
+import { DataTable } from '../../data-table/data-table.view';
+import { StockFilter } from '../../stock-filter/stock-filter';
+import { filteredPackage } from '../../stock-filter/stock-filter.util';
+import { getInitialCollumns, PackageCollumGetters } from '../package.constants';
+import { PackageService } from '../package.service';
+import { Package } from '../package.type';
 import { PackageVialsTable } from './PackageVialsTable';
 
 export type PackageTableProps = {

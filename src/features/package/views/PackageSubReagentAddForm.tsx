@@ -1,8 +1,8 @@
 import { Box, Button, Flex, Grid, Group, Loader, Select, Text, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { Reagent } from '@/src/features/reagent/types/reagent';
-import { Dimension } from '@/src/features/reagent/types/unit';
-import { useData } from '@/src/providers/DataProvider';
+import { Reagent } from '@/src/features/reagent/reagent.type';
+import { Dimension } from '@/src/features/size/unit.type';
+import { useData } from '@/src/providers/data.provider';
 import { portugueseSearchFilter } from '@/src/shared/utils/portuguese-search-filter';
 
 type PackageSubReagentAddFormProps = {

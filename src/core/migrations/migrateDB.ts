@@ -1,5 +1,5 @@
 //import { getFirestore } from 'firebase/firestore';
-import { DataService, HasId } from '@/src/shared/services/DataService';
+import { DataService, HasId } from '@/src/shared/services/data.service';
 
 //const db = getFirestore();
 

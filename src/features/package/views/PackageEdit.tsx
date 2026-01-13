@@ -13,17 +13,17 @@ import {
 } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
-import { ReagentService } from '@/src/features/reagent/services/ReagentService';
-import { Reagent } from '@/src/features/reagent/types/reagent';
-import { Size } from '@/src/features/reagent/types/size';
-import Unit from '@/src/features/reagent/types/unit';
-import { useData } from '@/src/providers/DataProvider';
+import { ReagentService } from '@/src/features/reagent/reagent.service';
+import { Reagent } from '@/src/features/reagent/reagent.type';
+import { Size } from '@/src/features/size/size.type';
+import Unit from '@/src/features/size/unit.type';
+import { useData } from '@/src/providers/data.provider';
 import { toNullableLocalDate, validateDate } from '@/src/shared/utils/date';
 import { portugueseSearchFilter } from '@/src/shared/utils/portuguese-search-filter';
-import { formattedSize } from '../../reagent/utils/formatted-amount';
 import { SizeAddForm } from '../../reagent/views/SizeAddForm';
-import { VialService } from '../../vial/services/VialService';
-import { Package } from '../types/package';
+import { formattedSize } from '../../size/size.util';
+import { VialService } from '../../vial/vial.service';
+import { Package } from '../package.type';
 import { PackageSubReagentAddForm } from './PackageSubReagentAddForm';
 
 type PackageEditProps = {

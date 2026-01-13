@@ -1,8 +1,8 @@
 import { Grid, Stack, Text } from '@mantine/core';
-import { useData } from '@/src/providers/DataProvider';
+import { useData } from '@/src/providers/data.provider';
 import { formattedDate } from '@/src/shared/utils/formatted-date';
-import { formattedSize } from '../../reagent/utils/formatted-amount';
-import { Package } from '../types/package';
+import { formattedSize } from '../../size/size.util';
+import { Package } from '../package.type';
 
 type PackageShowProps = {
   pkg: Package;

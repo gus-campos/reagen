@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react';
+import { ReactNode } from 'react';
 import { Button, Group, Modal, Text } from '@mantine/core';
 
 type ConfirmModalProps = {

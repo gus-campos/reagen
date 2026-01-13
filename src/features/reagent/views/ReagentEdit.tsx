@@ -1,15 +1,15 @@
 import { useEffect, useState } from 'react';
 import { Box, Button, Grid, Group, InputBase, Pill, Select, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { Reagent } from '@/src/features/reagent/types/reagent';
-import { Size } from '@/src/features/reagent/types/size';
-import { Dimension } from '@/src/features/reagent/types/unit';
-import { formattedSize } from '@/src/features/reagent/utils/formatted-amount';
-import { useData } from '@/src/providers/DataProvider';
+import { Reagent } from '@/src/features/reagent/reagent.type';
+import { Size } from '@/src/features/size/size.type';
+import { Dimension } from '@/src/features/size/unit.type';
+import { useData } from '@/src/providers/data.provider';
 import { findPackagesOfReagentSizes, findRemovedSizes } from '@/src/shared/utils/misc';
 import { portugueseSearchFilter } from '@/src/shared/utils/portuguese-search-filter';
 import { ConfirmModal } from '../../../shared/components/ConfirmModal';
-import { Package } from '../../package/types/package';
+import { Package } from '../../package/package.type';
+import { formattedSize } from '../../size/size.util';
 import { SizeAddForm } from './SizeAddForm';
 
 type VialModalProps = {

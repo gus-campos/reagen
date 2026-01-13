@@ -2,9 +2,9 @@
 
 import React, { useState } from 'react';
 import { Box, Button, LoadingOverlay, Modal } from '@mantine/core';
-import { DataTable } from '@/src/features/data-table/components/DataTable';
-import { TableCrudOperations } from '@/src/features/data-table/types/TableCrudOperations';
-import { DataService } from '../services/DataService';
+import { TableCrudOperations } from '@/src/features/data-table/data-table.type';
+import { DataTable } from '@/src/features/data-table/data-table.view';
+import { DataService } from '../services/data.service';
 import { NameData } from '../types/name-data';
 import { ConfirmModal } from './ConfirmModal';
 import { NameDataEdit } from './NameDataEdit';
@@ -92,8 +92,8 @@ export function NameDataView<T extends NameData>(props: NameDataViewProps<T>) {
   };
 
   const crudOperations: TableCrudOperations<T> = {
-    handleBeginDataEdit: handleBeginDataEdit,
-    handleDeleteData: handleDeleteData,
+    handleBeginDataEdit,
+    handleDeleteData,
   };
 
   return (
