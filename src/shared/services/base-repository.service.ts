@@ -12,10 +12,7 @@ export interface IDatabase {
   ) => Promise<void>;
   delete: (table: DatabaseTableName, id: string) => Promise<void>;
   query: <T extends WithId>(table: DatabaseTableName, fn: (item: T) => boolean) => Promise<T[]>;
-  listen?: <T extends WithId>(
-    table: DatabaseTableName,
-    callback: (data: T[]) => void
-  ) => () => void;
+  listen: <T extends WithId>(table: DatabaseTableName, callback: (data: T[]) => void) => () => void;
 }
 
 // Abstrai o acesso de uma tabela específica em um database específico
@@ -58,7 +55,6 @@ export abstract class BaseRepository<T extends WithId> implements IRepository<T>
   }
 
   listen(callback: (data: T[]) => void) {
-    if (!this.db.listen) return () => {};
     return this.db.listen(this.tableName, callback);
   }
 }

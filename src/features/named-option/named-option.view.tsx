@@ -103,7 +103,7 @@ export function NamedOptionView<T extends NamedOption>(props: NameDataViewProps<
       ) : (
         <>
           <span style={{ position: 'relative' }}>
-            <h1>Marcas</h1>
+            <h1>{props.dataName}</h1>
 
             <Box pb="80px">
               <DataTable<T>

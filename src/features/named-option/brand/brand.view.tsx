@@ -2,7 +2,7 @@ import { Brand } from '@/features/named-option/brand/brand.type';
 import { NamedOptionView } from '@/features/named-option/named-option.view';
 import { Package } from '@/features/package/package.type';
 import { useData } from '@/providers/data.provider';
-import { useDependencyInjection } from '@/providers/di.provider';
+import { useDependencyInjection } from '@/providers/dependency-injection.provider';
 import { findPackagesOfBrand } from '@/shared/utils/misc';
 
 export function BrandsView() {

@@ -3,7 +3,7 @@ import { Reagent } from '@/features/reagent/reagent.type';
 import { Size } from '@/features/size/size.type';
 import { areSizesEqual } from '@/features/size/size.util';
 import { BaseRepository, IDatabase } from '@/shared/services/base-repository.service';
-import { WithoutId } from '@/shared/services/data.service';
+import { OmitId } from '@/shared/types/id.type';
 import { DatabaseTableName } from '@/shared/types/table-name.type';
 
 export class ReagentService extends BaseRepository<Reagent> {
@@ -29,7 +29,7 @@ export class ReagentService extends BaseRepository<Reagent> {
 
   // FIXME: Tamanho com leading zeros ??? Não pode!
 
-  async update(id: string, data: Partial<WithoutId<Reagent>>): Promise<void> {
+  async update(id: string, data: Partial<OmitId<Reagent>>): Promise<void> {
     /* Além de atualizar, verifica por duplicatas de tamanho, e para cada tamanho deletado, deleta 
     os vials que os usavam.  */
 

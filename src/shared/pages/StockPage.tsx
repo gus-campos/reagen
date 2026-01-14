@@ -19,12 +19,7 @@ const initialFilter: StockFilter = {
 };
 
 export default function StockPage() {
-  const {
-    loadingVials: loadingVials,
-    vialsError: vialsError,
-    controlAgenciesError,
-    loadingControlAgencies,
-  } = useData();
+  const { loadingVials, vialsError, controlAgenciesError, loadingControlAgencies } = useData();
 
   // STATES
 
@@ -40,8 +35,6 @@ export default function StockPage() {
   const handleFilterChange = (filter: StockFilter) => {
     setFilter(filter);
   };
-
-  // CONSTS
 
   return (
     <>

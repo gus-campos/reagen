@@ -9,7 +9,7 @@ import { PackageVialsTable } from '@/features/package/views/PackageVialsTable';
 import { StockFilter } from '@/features/stock-filter/stock-filter.type';
 import { filteredPackage } from '@/features/stock-filter/stock-filter.util';
 import { useData } from '@/providers/data.provider';
-import { useDependencyInjection } from '@/providers/di.provider';
+import { useDependencyInjection } from '@/providers/dependency-injection.provider';
 
 export type PackageTableProps = {
   filter?: StockFilter;

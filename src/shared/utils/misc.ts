@@ -1,10 +1,11 @@
-import { Brand } from '@/features/brand/brand.type';
-import { ControlAgency as Laboratory } from '@/features/control-agency/control-agency.type';
+import { Brand } from '@/features/named-option/brand/brand.type';
+import { ControlAgency } from '@/features/named-option/control-agency/control-agency.type';
+import { Laboratory } from '@/features/named-option/laboratory/laboratory.type';
+import { Supplier } from '@/features/named-option/supplier/supplier.type';
 import { Package } from '@/features/package/package.type';
 import { Reagent } from '@/features/reagent/reagent.type';
 import { Size } from '@/features/size/size.type';
 import { formattedSize } from '@/features/size/size.util';
-import { Supplier } from '@/features/validated-name/supplier/supplier.type';
 import { Vial } from '@/features/vial/vial.type';
 
 export function findRemovedSizes(before: Size[], after: Size[]) {
@@ -28,7 +29,7 @@ export function findPackagesOfReagent(reagent: Reagent, pkgs: Package[]) {
 }
 
 export function findPackagesOfControlAgency(
-  controlAgency: Laboratory,
+  controlAgency: ControlAgency,
   reagents: Reagent[],
   pkgs: Package[]
 ) {
@@ -40,7 +41,7 @@ export function findVialsOfLaboratory(laboratory: Laboratory, vials: Vial[]) {
   return vials.filter((vial) => vial.laboratoryId === laboratory.id);
 }
 
-export function findReagentsOfControlAgency(controlAgency: Laboratory, reagents: Reagent[]) {
+export function findReagentsOfControlAgency(controlAgency: ControlAgency, reagents: Reagent[]) {
   return reagents.filter((reag) => reag.controlAgencyId === controlAgency.id);
 }
 

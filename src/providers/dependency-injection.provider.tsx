@@ -1,4 +1,6 @@
-import { createContext, ReactNode, useContext } from 'react';
+'use client';
+
+import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 import { BrandService } from '@/features/named-option/brand/brand.service';
 import { ControlAgencyService } from '@/features/named-option/control-agency/control-agency.service';
 import { LaboratoryService } from '@/features/named-option/laboratory/laboratory.service';
@@ -34,7 +36,19 @@ type DiProviderProps = {
 };
 
 export function DependencyInjectionProvider(props: DiProviderProps) {
-  const db: IDatabase = new LocalStorageDatabase();
+  // DATABASE
+
+  const [localStorage, setLocalStorage] = useState<Storage | null>(null);
+
+  useEffect(() => {
+    setLocalStorage(window.localStorage);
+  }, []);
+
+  if (!localStorage) return null;
+
+  const db: IDatabase = new LocalStorageDatabase(localStorage);
+
+  // Services
 
   const vialService = new VialService(db);
   const laboratoryService = new LaboratoryService(db);
@@ -43,6 +57,8 @@ export function DependencyInjectionProvider(props: DiProviderProps) {
   const brandService = new BrandService(db);
   const supplierService = new SupplierService(db);
   const packageService = new PackageService(db);
+
+  // Late Injection
 
   laboratoryService.injectLate(vialService);
   controlAgencyService.injectLate(reagentService);

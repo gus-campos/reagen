@@ -1,11 +1,11 @@
-import { Brand } from '@/features/brand/brand.type';
-import { ControlAgency } from '@/features/control-agency/control-agency.type';
 import { TableCollumn } from '@/features/data-table/data-table.type';
-import { Laboratory } from '@/features/laboratory/laboratory.type';
+import { Brand } from '@/features/named-option/brand/brand.type';
+import { ControlAgency } from '@/features/named-option/control-agency/control-agency.type';
+import { Laboratory } from '@/features/named-option/laboratory/laboratory.type';
+import { Supplier } from '@/features/named-option/supplier/supplier.type';
 import { Package } from '@/features/package/package.type';
 import { Reagent } from '@/features/reagent/reagent.type';
 import { formattedSize, normalizedAmount } from '@/features/size/size.util';
-import { Supplier } from '@/features/supplier/supplier.type';
 import { formattedDate } from '@/shared/utils/formatted-date';
 
 export type PackageCollumGetters = {

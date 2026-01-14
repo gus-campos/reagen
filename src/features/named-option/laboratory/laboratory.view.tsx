@@ -4,7 +4,7 @@ import { Laboratory } from '@/features/named-option/laboratory/laboratory.type';
 import { NamedOptionView } from '@/features/named-option/named-option.view';
 import { Vial } from '@/features/vial/vial.type';
 import { useData } from '@/providers/data.provider';
-import { useDependencyInjection } from '@/providers/di.provider';
+import { useDependencyInjection } from '@/providers/dependency-injection.provider';
 import { findVialsOfLaboratory } from '@/shared/utils/misc';
 
 export function LaboratoryView() {
@@ -28,7 +28,7 @@ export function LaboratoryView() {
 
   return (
     <NamedOptionView
-      dataName="Orgão de Controle"
+      dataName="Laboratório"
       repositoryService={laboratoryService}
       datas={laboratories}
       loadingData={loadingLaboratories}

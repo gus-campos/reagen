@@ -21,7 +21,7 @@ import { Size } from '@/features/size/size.type';
 import { formattedSize } from '@/features/size/size.util';
 import Unit from '@/features/size/unit.type';
 import { useData } from '@/providers/data.provider';
-import { useDependencyInjection } from '@/providers/di.provider';
+import { useDependencyInjection } from '@/providers/dependency-injection.provider';
 import { toNullableLocalDate, validateDate } from '@/shared/utils/date';
 import { portugueseSearchFilter } from '@/shared/utils/portuguese-search-filter';
 

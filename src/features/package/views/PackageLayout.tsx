@@ -10,7 +10,7 @@ import { PackageShow } from '@/features/package/views/PackageShow';
 import { Reagent } from '@/features/reagent/reagent.type';
 import { ReagentShow } from '@/features/reagent/views/ReagentShow';
 import { useData } from '@/providers/data.provider';
-import { useDependencyInjection } from '@/providers/di.provider';
+import { useDependencyInjection } from '@/providers/dependency-injection.provider';
 
 export type PackageLayoutProps = {
   mode: ViewMode;

@@ -10,7 +10,7 @@ import { ReagentEdit } from '@/features/reagent/views/ReagentEdit';
 import { formattedSize } from '@/features/size/size.util';
 import { SearchReagent } from '@/features/stock-filter/views/SearchReagent';
 import { useData } from '@/providers/data.provider';
-import { useDependencyInjection } from '@/providers/di.provider';
+import { useDependencyInjection } from '@/providers/dependency-injection.provider';
 import { ConfirmModal } from '@/shared/components/ConfirmModal';
 import { findPackagesOfReagent } from '@/shared/utils/misc';
 

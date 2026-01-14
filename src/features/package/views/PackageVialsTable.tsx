@@ -11,7 +11,7 @@ import { StockFilter } from '@/features/stock-filter/stock-filter.type';
 import { filteredVial } from '@/features/stock-filter/stock-filter.util';
 import { Vial } from '@/features/vial/vial.type';
 import { useData } from '@/providers/data.provider';
-import { useDependencyInjection } from '@/providers/di.provider';
+import { useDependencyInjection } from '@/providers/dependency-injection.provider';
 import { stringToLocalDate } from '@/shared/utils/date';
 import { formattedDate } from '@/shared/utils/formatted-date';
 

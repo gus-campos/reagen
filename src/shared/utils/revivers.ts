@@ -1,16 +1,16 @@
-import { DatabaseTableName, DataBaseTableName } from '@/shared/types/table-name.type';
+import { DatabaseTableName } from '@/shared/types/table-name.type';
 
 type Reviver<T> = (raw: any) => T;
 
 // FIXME: Tipagem
-export const TABLE_REVIVERS: Record<DataBaseTableName, Reviver<any>> = {
+export const TABLE_REVIVERS: Record<DatabaseTableName, Reviver<any>> = {
   [DatabaseTableName.Vial]: (raw: any) => {
     return {
       ...raw,
       outDate: raw.outDate ? new Date(raw.outDate) : null,
     };
   },
-  [DatabaseTableName.Box]: (raw: any) => {
+  [DatabaseTableName.Package]: (raw: any) => {
     return {
       ...raw,
       inDate: raw.inDate ? new Date(raw.inDate) : null,
@@ -18,4 +18,8 @@ export const TABLE_REVIVERS: Record<DataBaseTableName, Reviver<any>> = {
     };
   },
   [DatabaseTableName.Reagent]: (raw: any) => raw,
+  [DatabaseTableName.Brand]: (raw: any) => raw,
+  [DatabaseTableName.ControlAgency]: (raw: any) => raw,
+  [DatabaseTableName.Laboratory]: (raw: any) => raw,
+  [DatabaseTableName.Supplier]: (raw: any) => raw,
 };

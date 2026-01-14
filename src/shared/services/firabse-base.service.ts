@@ -5,56 +5,103 @@ import {
   doc,
   DocumentData,
   FirestoreDataConverter,
-  getDoc,
   getDocs,
   onSnapshot,
   Timestamp,
   updateDoc,
 } from 'firebase/firestore';
 import { db } from '@/core/config/firebase';
-import { DataService, HasId, WithoutId } from '@/shared/services/data.service';
+import { Brand } from '@/features/named-option/brand/brand.type';
+import { ControlAgency } from '@/features/named-option/control-agency/control-agency.type';
+import { Laboratory } from '@/features/named-option/laboratory/laboratory.type';
+import { Supplier } from '@/features/named-option/supplier/supplier.type';
+import { Package } from '@/features/package/package.type';
+import { Reagent } from '@/features/reagent/reagent.type';
+import { Vial } from '@/features/vial/vial.type';
+import { IDatabase } from '@/shared/services/base-repository.service';
+import { OmitId, WithId } from '@/shared/types/id.type';
+import { DatabaseTableName } from '@/shared/types/table-name.type';
 
-export abstract class FirebaseBaseService<T extends HasId> extends DataService<T> {
-  private firestorageConverter: FirestoreDataConverter<T>;
+const convertTimestampsToDate = <T>(obj: any): T => {
+  if (obj === null || obj === undefined) return obj;
 
-  protected constructor(protected collectionName: string) {
-    super();
-    this.firestorageConverter = this.createFirestoreConverter<T>();
+  // Se for um Timestamp do Firestore
+  if (obj instanceof Timestamp) return obj.toDate() as any;
+
+  // Se for um array
+  if (Array.isArray(obj)) return obj.map((vial) => convertTimestampsToDate(vial)) as any;
+
+  // Se for um objeto
+  if (typeof obj === 'object') {
+    const converted: any = {};
+    for (const key in obj) {
+      if (obj.hasOwn(key)) {
+        converted[key] = convertTimestampsToDate(obj[key]);
+      }
+    }
+    return converted;
   }
 
-  async getById(id: string): Promise<T> {
-    const docRef = doc(db, this.collectionName, id).withConverter(this.firestorageConverter);
-    const snapshot = await getDoc(docRef);
+  // Valores primitivos
+  return obj;
+};
 
-    if (!snapshot.exists()) throw new Error('Dado não encontrado para obtenção');
+// Converter genérico
+const createFirestoreConverter = <T extends WithId>() => {
+  return {
+    toFirestore(data: T): OmitId<T> {
+      const { id, ...rest } = data;
+      return rest as OmitId<T>;
+    },
 
-    return snapshot.data() as T;
-  }
+    fromFirestore(snapshot: any): T {
+      const data = snapshot.data();
+      const converted = convertTimestampsToDate<OmitId<T>>(data);
 
-  async getAll(): Promise<T[]> {
-    const colRef = collection(db, this.collectionName).withConverter(this.firestorageConverter);
+      return {
+        ...converted,
+        id: snapshot.id,
+      } as T;
+    },
+  };
+};
+
+// FIXME: Converter do firabse poderia aprovitar os revivers
+export const FIRESTORE_CONVERTERS: Record<DatabaseTableName, FirestoreDataConverter<any>> = {
+  [DatabaseTableName.Vial]: createFirestoreConverter<Vial>(),
+  [DatabaseTableName.Package]: createFirestoreConverter<Package>(),
+  [DatabaseTableName.Reagent]: createFirestoreConverter<Reagent>(),
+  [DatabaseTableName.Brand]: createFirestoreConverter<Brand>(),
+  [DatabaseTableName.ControlAgency]: createFirestoreConverter<ControlAgency>(),
+  [DatabaseTableName.Laboratory]: createFirestoreConverter<Laboratory>(),
+  [DatabaseTableName.Supplier]: createFirestoreConverter<Supplier>(),
+};
+
+export abstract class FirebaseBaseDatabase implements IDatabase {
+  async get<T extends WithId>(table: DatabaseTableName) {
+    const colRef = collection(db, table).withConverter(FIRESTORE_CONVERTERS[table]);
     const snapshot = await getDocs(colRef);
     return snapshot.docs.map((doc) => doc.data() as T);
   }
 
-  async add(data: WithoutId<T>): Promise<string> {
-    const colRef = collection(db, this.collectionName).withConverter(this.firestorageConverter);
+  async create<T extends WithId>(table: DatabaseTableName, data: OmitId<T>) {
+    const colRef = collection(db, table).withConverter(FIRESTORE_CONVERTERS[table]);
     const docRef = await addDoc(colRef, data as DocumentData);
-    return docRef.id;
+    return { id: docRef.id, ...data } as T;
   }
 
-  async update(id: string, data: Partial<WithoutId<T>>): Promise<void> {
-    const docRef = doc(db, this.collectionName, id).withConverter(this.firestorageConverter);
+  async update<T extends WithId>(table: DatabaseTableName, id: string, data: Partial<OmitId<T>>) {
+    const docRef = doc(db, table, id).withConverter(FIRESTORE_CONVERTERS[table]);
     await updateDoc(docRef, data as DocumentData);
   }
 
-  async delete(id: string): Promise<void> {
-    const docRef = doc(db, this.collectionName, id);
+  async delete(table: DatabaseTableName, id: string): Promise<void> {
+    const docRef = doc(db, table, id);
     await deleteDoc(docRef);
   }
 
-  listen(callback: (data: T[]) => void): () => void {
-    const colRef = collection(db, this.collectionName).withConverter(this.firestorageConverter);
+  listen<T extends WithId>(table: DatabaseTableName, callback: (data: T[]) => void) {
+    const colRef = collection(db, table).withConverter(FIRESTORE_CONVERTERS[table]);
 
     const unsubscribe = onSnapshot(colRef, (snapshot) => {
       callback(snapshot.docs.map((doc) => doc.data()));
@@ -63,55 +110,8 @@ export abstract class FirebaseBaseService<T extends HasId> extends DataService<T
     return unsubscribe;
   }
 
-  protected convertTimestampsToDate<T>(obj: any): T {
-    if (obj === null || obj === undefined) {
-      return obj;
-    }
-
-    // Se for um Timestamp do Firestore
-    if (obj instanceof Timestamp) {
-      return obj.toDate() as any;
-    }
-
-    // Se for um array
-    if (Array.isArray(obj)) {
-      return obj.map((vial) => this.convertTimestampsToDate(vial)) as any;
-    }
-
-    // Se for um objeto
-    if (typeof obj === 'object') {
-      const converted: any = {};
-      for (const key in obj) {
-        if (obj.hasOwnProperty(key)) {
-          converted[key] = this.convertTimestampsToDate(obj[key]);
-        }
-      }
-      return converted;
-    }
-
-    // Valores primitivos
-    return obj;
-  }
-
-  // Converter genérico
-  protected createFirestoreConverter<T extends HasId>() {
-    const self = this;
-
-    return {
-      toFirestore(data: T): WithoutId<T> {
-        const { id, ...rest } = data;
-        return rest as WithoutId<T>;
-      },
-
-      fromFirestore(snapshot: any): T {
-        const data = snapshot.data();
-        const converted = self.convertTimestampsToDate<WithoutId<T>>(data);
-
-        return {
-          ...converted,
-          id: snapshot.id,
-        } as T;
-      },
-    };
+  async query<T extends WithId>(table: DatabaseTableName, fn: (item: T) => boolean): Promise<T[]> {
+    const items = await this.get<T>(table);
+    return items.filter(fn);
   }
 }

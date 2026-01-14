@@ -4,7 +4,7 @@ import '@mantine/dates/styles.css';
 import React, { ReactNode } from 'react';
 import { theme } from 'theme';
 import { ColorSchemeScript, mantineHtmlProps, MantineProvider } from '@mantine/core';
-import { DependencyInjectionProvider } from '@/providers/di.provider';
+import { DependencyInjectionProvider } from '@/providers/dependency-injection.provider';
 
 export const metadata = {
   title: 'Controle de Reagentes',

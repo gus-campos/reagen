@@ -15,6 +15,7 @@ import { ReagentService } from '@/features/reagent/reagent.service';
 import { Reagent } from '@/features/reagent/reagent.type';
 import { VialService } from '@/features/vial/vial.service';
 import { Vial } from '@/features/vial/vial.type';
+import { useDependencyInjection } from '@/providers/dependency-injection.provider';
 import { useCollectionData } from '@/providers/useCollectionData';
 import { sortKeys } from '@/shared/utils/sort-keys';
 
@@ -65,36 +66,44 @@ type DataProviderProps = {
 };
 
 export const DataProvider = (props: DataProviderProps) => {
-  // TODO: Chamar contexto de injeção para obter serviços
+  const {
+    packageService,
+    vialService,
+    reagentService,
+    brandService,
+    laboratoryService,
+    controlAgencyService,
+    supplierService,
+  } = useDependencyInjection();
 
   const [packages, loadingPackages, packagesError, getPackageById] = useCollectionData<
     Package,
     PackageService
-  >(PackageService.instance);
+  >(packageService);
 
   const [vials, loadingVials, vialsError, getVialById] = useCollectionData<Vial, VialService>(
-    VialService.instance
+    vialService
   );
 
   const [reagents, loadingReagents, reagentsError, getReagentById] = useCollectionData<
     Reagent,
     ReagentService
-  >(ReagentService.instance);
+  >(reagentService);
 
   const [brands, loadingBrands, brandsError, getBrandById] = useCollectionData<Brand, BrandService>(
-    BrandService.instance
+    brandService
   );
 
   const [laboratories, loadingLaboratories, laboratoriesError, getLaboratoryById] =
-    useCollectionData<Laboratory, LaboratoryService>(LaboratoryService.instance);
+    useCollectionData<Laboratory, LaboratoryService>(laboratoryService);
 
   const [controlAgencies, loadingControlAgencies, controlAgenciesError, getControlAgencyById] =
-    useCollectionData<ControlAgency, ControlAgencyService>(ControlAgencyService.instance);
+    useCollectionData<ControlAgency, ControlAgencyService>(controlAgencyService);
 
   const [suppliers, loadingSuppliers, suppliersError, getSupplierById] = useCollectionData<
     Supplier,
     SupplierService
-  >(SupplierService.instance);
+  >(supplierService);
 
   console.log('useData', {
     packages: packages?.map((r) => sortKeys(r)),

@@ -4,7 +4,7 @@ import { NamedOptionView } from '@/features/named-option/named-option.view';
 import { Supplier } from '@/features/named-option/supplier/supplier.type';
 import { Package } from '@/features/package/package.type';
 import { useData } from '@/providers/data.provider';
-import { useDependencyInjection } from '@/providers/di.provider';
+import { useDependencyInjection } from '@/providers/dependency-injection.provider';
 import { findPackagesOfSupplier } from '@/shared/utils/misc';
 
 export function SupplierView() {
