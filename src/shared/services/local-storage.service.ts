@@ -1,6 +1,6 @@
 import { IDatabase } from '@/shared/services/base-repository.service';
 import { OmitId, WithId } from '@/shared/types/id.type';
-import { TableName } from '@/shared/types/table-name.type';
+import { DataBaseTableName } from '@/shared/types/table-name.type';
 import { TABLE_REVIVERS } from '@/shared/utils/revivers';
 
 export class LocalStorageDatabase implements IDatabase {
@@ -12,7 +12,7 @@ export class LocalStorageDatabase implements IDatabase {
     return `${table}-${crypto.randomUUID()}`;
   }
 
-  async get<T extends WithId>(table: TableName): Promise<T[]> {
+  async get<T extends WithId>(table: DataBaseTableName): Promise<T[]> {
     const data = this.storage.getItem(table);
     const vials = data ? JSON.parse(data) : [];
 
@@ -20,7 +20,7 @@ export class LocalStorageDatabase implements IDatabase {
     return reviver ? vials.map(reviver) : vials;
   }
 
-  async create<T extends WithId>(table: TableName, vial: OmitId<T>): Promise<T> {
+  async create<T extends WithId>(table: DataBaseTableName, vial: OmitId<T>): Promise<T> {
     const vials = await this.get<T>(table);
     const createdVial = { ...vial, id: this.generateId(table) } as T;
     vials.push(createdVial);
@@ -29,7 +29,7 @@ export class LocalStorageDatabase implements IDatabase {
   }
 
   async update<T extends WithId>(
-    table: TableName,
+    table: DataBaseTableName,
     id: string,
     data: Partial<OmitId<T>>
   ): Promise<void> {
@@ -41,12 +41,12 @@ export class LocalStorageDatabase implements IDatabase {
     }
   }
 
-  async delete(table: TableName, id: string): Promise<void> {
+  async delete(table: DataBaseTableName, id: string): Promise<void> {
     const vials = await this.get(table);
     this.storage.setItem(table, JSON.stringify(vials.filter((i: any) => i.id !== id)));
   }
 
-  async query<T extends WithId>(table: TableName, fn: (vial: T) => boolean): Promise<T[]> {
+  async query<T extends WithId>(table: DataBaseTableName, fn: (vial: T) => boolean): Promise<T[]> {
     const vials = await this.get<T>(table);
     return vials.filter(fn);
   }

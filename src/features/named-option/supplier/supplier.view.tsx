@@ -1,13 +1,14 @@
 'use client';
 
 import { NamedOptionView } from '@/features/named-option/named-option.view';
-import { SupplierService } from '@/features/named-option/supplier/supplier.service';
 import { Supplier } from '@/features/named-option/supplier/supplier.type';
 import { Package } from '@/features/package/package.type';
 import { useData } from '@/providers/data.provider';
+import { useDependencyInjection } from '@/providers/di.provider';
 import { findPackagesOfSupplier } from '@/shared/utils/misc';
 
 export function SupplierView() {
+  const { supplierService } = useDependencyInjection();
   const { suppliers, loadingSuppliers, packages } = useData();
 
   const getWarning = (supplier: Supplier) => {
@@ -30,7 +31,7 @@ export function SupplierView() {
       loadingData={loadingSuppliers}
       datas={suppliers}
       dataName="Fornecedores"
-      dataService={SupplierService.instance}
+      repositoryService={supplierService}
       getDeleteWarning={getWarning}
     />
   );

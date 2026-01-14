@@ -15,14 +15,13 @@ import { DatePickerInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
 import { Package } from '@/features/package/package.type';
 import { PackageSubReagentAddForm } from '@/features/package/views/PackageSubReagentAddForm';
-import { ReagentService } from '@/features/reagent/reagent.service';
 import { Reagent } from '@/features/reagent/reagent.type';
 import { SizeAddForm } from '@/features/reagent/views/SizeAddForm';
 import { Size } from '@/features/size/size.type';
 import { formattedSize } from '@/features/size/size.util';
 import Unit from '@/features/size/unit.type';
-import { VialService } from '@/features/vial/vial.service';
 import { useData } from '@/providers/data.provider';
+import { useDependencyInjection } from '@/providers/di.provider';
 import { toNullableLocalDate, validateDate } from '@/shared/utils/date';
 import { portugueseSearchFilter } from '@/shared/utils/portuguese-search-filter';
 
@@ -30,7 +29,7 @@ type PackageEditProps = {
   selectedPackage: Package | null;
   packageModalOpened: boolean;
   onClosePackageModal: () => void;
-  onAddPackage: (pkg: Package) => Promise<string>;
+  onAddPackage: (pkg: Package) => Promise<Package>;
   onEditPackage: (selectedPackage: Package) => void;
   onBeginShownPackageEdit?: () => void;
   onAddReagent: (reagent: Reagent) => void;
@@ -46,6 +45,7 @@ const nullSize = { amount: 0, unit: Unit.Units };
 type LabGroup = { laboratoryId: string; amount: number };
 
 export function PackageEdit(props: PackageEditProps) {
+  const { reagentService, vialService } = useDependencyInjection();
   const {
     reagents,
     suppliers,
@@ -167,7 +167,7 @@ export function PackageEdit(props: PackageEditProps) {
 
   const handleAddSize = (size: Size) => {
     const newReagent = { ...selectedReagent!, sizes: [...selectedReagent!.sizes, size] };
-    ReagentService.instance.update(selectedReagent!.id, newReagent);
+    reagentService.update(selectedReagent!.id, newReagent);
     setAddedSize(size);
     setLoadingAddedSize(true);
   };
@@ -177,14 +177,14 @@ export function PackageEdit(props: PackageEditProps) {
     if (props.selectedPackage) {
       props.onEditPackage(pkg);
     } else {
-      const pkgId = await props.onAddPackage(pkg);
+      const pkgCreated = await props.onAddPackage(pkg);
 
       // Adicionar todos os frascos
       labGroups.flatMap((group) =>
         Array.from({ length: group.amount }).map(() =>
-          VialService.instance.add({
+          vialService.create({
             laboratoryId: group.laboratoryId,
-            packageId: pkgId,
+            packageId: pkgCreated.id,
             outDate: null,
           })
         )

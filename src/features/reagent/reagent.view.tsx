@@ -5,16 +5,18 @@ import { Box, Button, LoadingOverlay, Modal, Pill } from '@mantine/core';
 import { TableCrudOperations } from '@/features/data-table/data-table.type';
 import { DataTable } from '@/features/data-table/data-table.view';
 import { Package } from '@/features/package/package.type';
-import { ReagentService } from '@/features/reagent/reagent.service';
 import { Reagent } from '@/features/reagent/reagent.type';
 import { ReagentEdit } from '@/features/reagent/views/ReagentEdit';
 import { formattedSize } from '@/features/size/size.util';
 import { SearchReagent } from '@/features/stock-filter/views/SearchReagent';
 import { useData } from '@/providers/data.provider';
+import { useDependencyInjection } from '@/providers/di.provider';
 import { ConfirmModal } from '@/shared/components/ConfirmModal';
 import { findPackagesOfReagent } from '@/shared/utils/misc';
 
 export function ReagentsView() {
+  const { reagentService } = useDependencyInjection();
+
   const {
     reagents,
     loadingReagents,
@@ -93,12 +95,12 @@ export function ReagentsView() {
   };
 
   const handleAddReagent = (reagent: Reagent) => {
-    ReagentService.instance.add(reagent);
+    reagentService.create(reagent);
     setSelectedReagentId(null);
   };
 
   const handleEditReagent = (reagent: Reagent) => {
-    ReagentService.instance.update(reagent.id, reagent);
+    reagentService.update(reagent.id, reagent);
     setSelectedReagentId(null);
   };
 
@@ -109,12 +111,12 @@ export function ReagentsView() {
       setSelectedReagentId(reagent.id);
       setWarning(getConfirmationMessage(reagent, relatedPackages));
     } else {
-      ReagentService.instance.delete(reagent.id);
+      reagentService.delete(reagent.id);
     }
   };
 
   const handleConfirmReagentDelete = () => {
-    ReagentService.instance.delete(selectedReagentId!);
+    reagentService.delete(selectedReagentId!);
     setSelectedReagentId(null);
     setWarning(null);
   };

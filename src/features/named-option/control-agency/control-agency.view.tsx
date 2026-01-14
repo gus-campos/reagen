@@ -1,14 +1,15 @@
 'use client';
 
-import { ControlAgencyService } from '@/features/named-option/control-agency/control-agency.service';
 import { ControlAgency } from '@/features/named-option/control-agency/control-agency.type';
 import { NamedOptionView } from '@/features/named-option/named-option.view';
 import { Package } from '@/features/package/package.type';
 import { Reagent } from '@/features/reagent/reagent.type';
 import { useData } from '@/providers/data.provider';
+import { useDependencyInjection } from '@/providers/di.provider';
 import { findPackagesOfControlAgency, findReagentsOfControlAgency } from '@/shared/utils/misc';
 
 export function ControlAgenciesView() {
+  const { controlAgencyService } = useDependencyInjection();
   const { controlAgencies, loadingControlAgencies, reagents, packages } = useData();
 
   const getWarning = (controlAgency: ControlAgency) => {
@@ -40,7 +41,7 @@ export function ControlAgenciesView() {
   return (
     <NamedOptionView
       dataName="Orgão de Controle"
-      dataService={ControlAgencyService.instance}
+      repositoryService={controlAgencyService}
       datas={controlAgencies}
       loadingData={loadingControlAgencies}
       getDeleteWarning={getWarning}

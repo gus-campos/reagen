@@ -9,9 +9,9 @@ import { CrudAction, DataTable } from '@/features/data-table/data-table.view';
 import { Package } from '@/features/package/package.type';
 import { StockFilter } from '@/features/stock-filter/stock-filter.type';
 import { filteredVial } from '@/features/stock-filter/stock-filter.util';
-import { VialService } from '@/features/vial/vial.service';
 import { Vial } from '@/features/vial/vial.type';
 import { useData } from '@/providers/data.provider';
+import { useDependencyInjection } from '@/providers/di.provider';
 import { stringToLocalDate } from '@/shared/utils/date';
 import { formattedDate } from '@/shared/utils/formatted-date';
 
@@ -21,6 +21,7 @@ type PackageVialsTableProps = {
 };
 
 export function PackageVialsTable(props: PackageVialsTableProps) {
+  const { vialService } = useDependencyInjection();
   const { vials, getLaboratoryById } = useData();
   const [modalOpened, setModalOpened] = useState(false);
   const [selectedVialId, setSelectedVialId] = useState<string | null>(null);
@@ -61,7 +62,7 @@ export function PackageVialsTable(props: PackageVialsTableProps) {
       action: (vial: Vial) => {
         const startOfDay = new Date();
         startOfDay.setHours(0, 0, 0, 0);
-        VialService.instance.update(vial.id, { outDate: null });
+        vialService.update(vial.id, { outDate: null });
       },
     },
     // Saída no dia de hoje
@@ -74,7 +75,7 @@ export function PackageVialsTable(props: PackageVialsTableProps) {
       action: (vial: Vial) => {
         const startOfDay = new Date();
         startOfDay.setHours(0, 0, 0, 0);
-        VialService.instance.update(vial.id, { outDate: startOfDay });
+        vialService.update(vial.id, { outDate: startOfDay });
       },
     },
     // Saída em data específica
@@ -94,7 +95,7 @@ export function PackageVialsTable(props: PackageVialsTableProps) {
   const handleSubmit = (values: { outDate: Date }) => {
     if (!selectedVialId || !values.outDate) return;
 
-    VialService.instance.update(selectedVialId, {
+    vialService.update(selectedVialId, {
       outDate: stringToLocalDate(values.outDate),
     });
     setSelectedVialId(null);

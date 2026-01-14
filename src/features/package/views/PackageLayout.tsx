@@ -3,15 +3,14 @@
 import { CiViewList } from 'react-icons/ci';
 import { IoMdAdd } from 'react-icons/io';
 import { Button, Drawer, Modal, Tabs } from '@mantine/core';
-import { PackageService } from '@/features/package/package.service';
 import { Package } from '@/features/package/package.type';
 import { ViewMode } from '@/features/package/package.view';
 import { PackageEdit } from '@/features/package/views/PackageEdit';
 import { PackageShow } from '@/features/package/views/PackageShow';
-import { ReagentService } from '@/features/reagent/reagent.service';
 import { Reagent } from '@/features/reagent/reagent.type';
 import { ReagentShow } from '@/features/reagent/views/ReagentShow';
 import { useData } from '@/providers/data.provider';
+import { useDependencyInjection } from '@/providers/di.provider';
 
 export type PackageLayoutProps = {
   mode: ViewMode;
@@ -22,6 +21,7 @@ export type PackageLayoutProps = {
 };
 
 export function PackageLayout(props: PackageLayoutProps) {
+  const { reagentService, packageService } = useDependencyInjection();
   const { getReagentById } = useData();
 
   // HANDLERS
@@ -32,15 +32,15 @@ export function PackageLayout(props: PackageLayoutProps) {
   };
 
   const handleAddReagent = (reagent: Reagent) => {
-    return ReagentService.instance.add(reagent);
+    return reagentService.create(reagent);
   };
   const handleAddPackage = async (pkg: Package) => {
     props.onModeChange('table');
-    return await PackageService.instance.add(pkg);
+    return await packageService.create(pkg);
   };
 
   const handleEditPackage = (pkg: Package) => {
-    PackageService.instance.update(pkg.id, pkg);
+    packageService.update(pkg.id, pkg);
     props.onModeChange('table');
   };
 

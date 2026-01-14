@@ -1,13 +1,14 @@
 'use client';
 
-import { LaboratoryService } from '@/features/named-option/laboratory/laboratory.service';
 import { Laboratory } from '@/features/named-option/laboratory/laboratory.type';
 import { NamedOptionView } from '@/features/named-option/named-option.view';
 import { Vial } from '@/features/vial/vial.type';
 import { useData } from '@/providers/data.provider';
+import { useDependencyInjection } from '@/providers/di.provider';
 import { findVialsOfLaboratory } from '@/shared/utils/misc';
 
 export function LaboratoryView() {
+  const { laboratoryService } = useDependencyInjection();
   const { laboratories, loadingLaboratories, vials: vials } = useData();
 
   const getWarning = (laboratory: Laboratory) => {
@@ -28,7 +29,7 @@ export function LaboratoryView() {
   return (
     <NamedOptionView
       dataName="Orgão de Controle"
-      dataService={LaboratoryService.instance}
+      repositoryService={laboratoryService}
       datas={laboratories}
       loadingData={loadingLaboratories}
       getDeleteWarning={getWarning}

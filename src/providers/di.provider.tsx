@@ -6,33 +6,64 @@ import { SupplierService } from '@/features/named-option/supplier/supplier.servi
 import { PackageService } from '@/features/package/package.service';
 import { ReagentService } from '@/features/reagent/reagent.service';
 import { VialService } from '@/features/vial/vial.service';
+import { IDatabase } from '@/shared/services/base-repository.service';
+import { LocalStorageDatabase } from '@/shared/services/local-storage.service';
 
-export function useDi() {
-  const context = useContext(DiContext);
+export function useDependencyInjection() {
+  const context = useContext(DependencyInjection);
   if (!context) {
-    throw new Error('useDI must be used within DataProvider');
+    throw new Error('useDependencyInjection must be used within DependencyInjectionProvider');
   }
   return context;
 }
 
 type ServicesSet = {
-  package: PackageService;
-  vial: VialService;
-  reagent: ReagentService;
-  brand: BrandService;
-  controlAgency: ControlAgencyService;
-  laboratory: LaboratoryService;
-  supplier: SupplierService;
+  vialService: VialService;
+  laboratoryService: LaboratoryService;
+  controlAgencyService: ControlAgencyService;
+  reagentService: ReagentService;
+  brandService: BrandService;
+  supplierService: SupplierService;
+  packageService: PackageService;
 };
 
-const DiContext = createContext<ServicesSet | null>(null);
+const DependencyInjection = createContext<ServicesSet | null>(null);
 
 type DiProviderProps = {
   children: ReactNode;
 };
 
-export function DiProvider(props: DiProviderProps) {
-  const servicesSet: ServicesSet = {};
+export function DependencyInjectionProvider(props: DiProviderProps) {
+  const db: IDatabase = new LocalStorageDatabase();
 
-  return <DiContext.Provider value={servicesSet}>{props.children}</DiContext.Provider>;
+  const vialService = new VialService(db);
+  const laboratoryService = new LaboratoryService(db);
+  const controlAgencyService = new ControlAgencyService(db);
+  const reagentService = new ReagentService(db);
+  const brandService = new BrandService(db);
+  const supplierService = new SupplierService(db);
+  const packageService = new PackageService(db);
+
+  laboratoryService.injectLate(vialService);
+  controlAgencyService.injectLate(reagentService);
+  reagentService.injectLate(packageService);
+  brandService.injectLate(packageService);
+  supplierService.injectLate(packageService);
+  packageService.injectLate(reagentService, vialService);
+
+  const servicesSet: ServicesSet = {
+    vialService,
+    laboratoryService,
+    controlAgencyService,
+    reagentService,
+    brandService,
+    supplierService,
+    packageService,
+  };
+
+  return (
+    <DependencyInjection.Provider value={servicesSet}>
+      {props.children}
+    </DependencyInjection.Provider>
+  );
 }

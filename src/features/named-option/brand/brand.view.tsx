@@ -1,11 +1,12 @@
-import { BrandService } from '@/features/named-option/brand/brand.service';
 import { Brand } from '@/features/named-option/brand/brand.type';
 import { NamedOptionView } from '@/features/named-option/named-option.view';
 import { Package } from '@/features/package/package.type';
 import { useData } from '@/providers/data.provider';
+import { useDependencyInjection } from '@/providers/di.provider';
 import { findPackagesOfBrand } from '@/shared/utils/misc';
 
 export function BrandsView() {
+  const { brandService } = useDependencyInjection();
   const { brands, packages, loadingBrands } = useData();
 
   const getWarning = (brand: Brand) => {
@@ -28,7 +29,7 @@ export function BrandsView() {
       loadingData={loadingBrands}
       datas={brands}
       dataName="Marca"
-      dataService={BrandService.instance}
+      repositoryService={brandService}
       getDeleteWarning={getWarning}
     />
   );

@@ -22,7 +22,7 @@ export abstract class FirebaseBaseService<T extends HasId> extends DataService<T
     this.firestorageConverter = this.createFirestoreConverter<T>();
   }
 
-  public async getById(id: string): Promise<T> {
+  async getById(id: string): Promise<T> {
     const docRef = doc(db, this.collectionName, id).withConverter(this.firestorageConverter);
     const snapshot = await getDoc(docRef);
 
@@ -31,29 +31,29 @@ export abstract class FirebaseBaseService<T extends HasId> extends DataService<T
     return snapshot.data() as T;
   }
 
-  public async getAll(): Promise<T[]> {
+  async getAll(): Promise<T[]> {
     const colRef = collection(db, this.collectionName).withConverter(this.firestorageConverter);
     const snapshot = await getDocs(colRef);
     return snapshot.docs.map((doc) => doc.data() as T);
   }
 
-  public async add(data: WithoutId<T>): Promise<string> {
+  async add(data: WithoutId<T>): Promise<string> {
     const colRef = collection(db, this.collectionName).withConverter(this.firestorageConverter);
     const docRef = await addDoc(colRef, data as DocumentData);
     return docRef.id;
   }
 
-  public async update(id: string, data: Partial<WithoutId<T>>): Promise<void> {
+  async update(id: string, data: Partial<WithoutId<T>>): Promise<void> {
     const docRef = doc(db, this.collectionName, id).withConverter(this.firestorageConverter);
     await updateDoc(docRef, data as DocumentData);
   }
 
-  public async delete(id: string): Promise<void> {
+  async delete(id: string): Promise<void> {
     const docRef = doc(db, this.collectionName, id);
     await deleteDoc(docRef);
   }
 
-  public listen(callback: (data: T[]) => void): () => void {
+  listen(callback: (data: T[]) => void): () => void {
     const colRef = collection(db, this.collectionName).withConverter(this.firestorageConverter);
 
     const unsubscribe = onSnapshot(colRef, (snapshot) => {

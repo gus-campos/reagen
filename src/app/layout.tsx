@@ -4,6 +4,7 @@ import '@mantine/dates/styles.css';
 import React, { ReactNode } from 'react';
 import { theme } from 'theme';
 import { ColorSchemeScript, mantineHtmlProps, MantineProvider } from '@mantine/core';
+import { DependencyInjectionProvider } from '@/providers/di.provider';
 
 export const metadata = {
   title: 'Controle de Reagentes',
@@ -27,7 +28,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
       </head>
       <body>
         <MantineProvider theme={theme} defaultColorScheme="light">
-          {children}
+          <DependencyInjectionProvider>{children}</DependencyInjectionProvider>
         </MantineProvider>
       </body>
     </html>

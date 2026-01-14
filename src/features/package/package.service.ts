@@ -4,40 +4,58 @@ import { Reagent } from '@/features/reagent/reagent.type';
 import { Size } from '@/features/size/size.type';
 import { areSizesEqual } from '@/features/size/size.util';
 import { VialService } from '@/features/vial/vial.service';
+import { BaseRepository, IDatabase } from '@/shared/services/base-repository.service';
 import { WithoutId } from '@/shared/services/data.service';
-import { FirebaseBaseService } from '@/shared/services/firabse-base.service';
+import { DatabaseTableName } from '@/shared/types/table-name.type';
 
-const DOC_NAME = 'packages';
+export class PackageService extends BaseRepository<Package> {
+  private reagentService?: ReagentService;
+  private vialService?: VialService;
 
-export class PackageService extends FirebaseBaseService<Package> {
-  private constructor() {
-    super(DOC_NAME);
+  constructor(db: IDatabase) {
+    super(db, DatabaseTableName.Package);
   }
 
-  private static _instance: PackageService | null = null;
-
-  static get instance() {
-    if (!this._instance) this._instance = new PackageService();
-    return this._instance;
+  injectLate(reagentService: ReagentService, vialService: VialService) {
+    this.reagentService = reagentService;
+    this.vialService = vialService;
   }
 
-  async add(pkg: WithoutId<Package>) {
-    const relatedReagent = await ReagentService.instance.getById(pkg.reagentId);
+  private checkLateInjection() {
+    if (!this.reagentService) throw new Error('injeção tardia não realizada');
+  }
+
+  private static isSizeValidInReagent(sizeToValidate: Size, reagent: Reagent) {
+    return reagent.sizes.some(
+      (size) => size.amount === sizeToValidate.amount && size.unit === sizeToValidate.unit
+    );
+  }
+
+  async create(pkg: WithoutId<Package>) {
+    this.checkLateInjection();
+    const relatedReagent = await this.reagentService!.getById(pkg.reagentId);
+
+    if (!relatedReagent) throw new Error('Não foi possível encontrar o reagente relacionado');
 
     if (!PackageService.isSizeValidInReagent(pkg.size, relatedReagent))
       throw new Error('O tamanho não é válido para o reagente referenciado.');
 
-    const pkgId = await super.add(pkg);
+    const pkgId = await super.create(pkg);
     return pkgId;
   }
 
   async update(id: string, data: Partial<WithoutId<Package>>) {
     // Se o tamanho for modificado, verificar a validade do novo tamanho
-    if (data.size !== undefined) {
-      const vialToUpdate = await PackageService.instance.getById(id);
+    this.checkLateInjection();
+    const vialToUpdate = await this.getById(id);
 
+    if (!vialToUpdate) throw new Error('Frasco não encontrado para atualizar');
+
+    if (data.size !== undefined) {
       if (!areSizesEqual(vialToUpdate.size, data.size)) {
-        const relatedReagent = await ReagentService.instance.getById(vialToUpdate.reagentId);
+        const relatedReagent = await this.reagentService!.getById(vialToUpdate.reagentId);
+
+        if (!relatedReagent) throw new Error('Não foi possível encontrar o reagente relacionado');
 
         if (!PackageService.isSizeValidInReagent(data.size, relatedReagent))
           throw new Error('O tamanho não é válido para o reagente referenciado.');
@@ -46,13 +64,11 @@ export class PackageService extends FirebaseBaseService<Package> {
 
     // Não permitir editar o reagente
     if (data.reagentId !== undefined) {
-      const vialToUpdate = await PackageService.instance.getById(id);
-
       if (data.reagentId !== vialToUpdate.reagentId)
         throw new Error('Não é permitido editar o reagente');
     }
 
-    super.update(id, data);
+    await super.update(id, data);
   }
 
   async delete(id: string): Promise<void> {
@@ -60,15 +76,10 @@ export class PackageService extends FirebaseBaseService<Package> {
     await super.delete(id);
   }
 
-  private static async isSizeValidInReagent(sizeToValidate: Size, reagent: Reagent) {
-    return reagent.sizes.some(
-      (size) => size.amount === sizeToValidate.amount && size.unit === sizeToValidate.unit
-    );
-  }
-
   private async deleteRelatedVials(packageId: string) {
-    const vials = await VialService.instance.getAll();
+    this.checkLateInjection();
+    const vials = await this.vialService!.getAll();
     const relatedVials = vials.filter((vial) => vial.packageId === packageId);
-    await Promise.all(relatedVials.map((vial) => VialService.instance.delete(vial.id)));
+    await Promise.all(relatedVials.map((vial) => this.vialService!.delete(vial.id)));
   }
 }

@@ -7,12 +7,12 @@ import { DataTable } from '@/features/data-table/data-table.view';
 import { NamedOption } from '@/features/named-option/named-option.type';
 import { ConfirmModal } from '@/shared/components/ConfirmModal';
 import { NameDataEdit } from '@/shared/components/NameDataEdit';
-import { DataService } from '@/shared/services/data.service';
+import { BaseRepository } from '@/shared/services/base-repository.service';
 
 type NameDataViewProps<T extends NamedOption> = {
   datas?: T[];
   dataName: string;
-  dataService: DataService<T>;
+  repositoryService: BaseRepository<T>;
   getDeleteWarning: (data: T) => string | null;
   loadingData: boolean;
 };
@@ -51,13 +51,13 @@ export function NamedOptionView<T extends NamedOption>(props: NameDataViewProps<
   };
 
   const handleAddData = (data: T) => {
-    props.dataService.add(data);
+    props.repositoryService.create(data);
     setSelectedDataId(null);
     setMode('table');
   };
 
   const handleEditData = (data: T) => {
-    props.dataService.update(data.id, data);
+    props.repositoryService.update(data.id, data);
     setSelectedDataId(null);
     setMode('table');
   };
@@ -71,12 +71,12 @@ export function NamedOptionView<T extends NamedOption>(props: NameDataViewProps<
       setSelectedDataId(data.id);
     } else {
       // Deleta
-      props.dataService.delete(data.id!);
+      props.repositoryService.delete(data.id!);
     }
   };
 
   const handleConfirmDataDelete = () => {
-    props.dataService.delete(selectedDataId!);
+    props.repositoryService.delete(selectedDataId!);
     handleExitConfirmation();
     setWarning(null);
   };

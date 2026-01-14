@@ -4,12 +4,12 @@ import { LoadingOverlay } from '@mantine/core';
 import { TableCrudOperations } from '@/features/data-table/data-table.type';
 import { DataTable } from '@/features/data-table/data-table.view';
 import { getInitialCollumns, PackageCollumGetters } from '@/features/package/package.constants';
-import { PackageService } from '@/features/package/package.service';
 import { Package } from '@/features/package/package.type';
 import { PackageVialsTable } from '@/features/package/views/PackageVialsTable';
 import { StockFilter } from '@/features/stock-filter/stock-filter.type';
 import { filteredPackage } from '@/features/stock-filter/stock-filter.util';
 import { useData } from '@/providers/data.provider';
+import { useDependencyInjection } from '@/providers/di.provider';
 
 export type PackageTableProps = {
   filter?: StockFilter;
@@ -18,6 +18,7 @@ export type PackageTableProps = {
 };
 
 export function PackageTable(props: PackageTableProps) {
+  const { packageService } = useDependencyInjection();
   const {
     packages,
     loadingPackages,
@@ -44,7 +45,7 @@ export function PackageTable(props: PackageTableProps) {
   // HANDLERS
 
   const handleDeletePackage = (pkg: Package) => {
-    PackageService.instance.delete(pkg.id);
+    packageService.delete(pkg.id);
   };
 
   const crudOperations: TableCrudOperations<Package> = {

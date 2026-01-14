@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { DataService } from '@/shared/services/data.service';
+import { BaseRepository } from '@/shared/services/base-repository.service';
 
 export function useCollectionData<
   TData extends { id: string },
-  TService extends DataService<TData>,
+  TService extends BaseRepository<TData>,
 >(service: TService) {
   const [data, setData] = useState<TData[]>([]);
   const [loadingData, setLoadingData] = useState(true);

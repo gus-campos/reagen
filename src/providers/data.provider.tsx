@@ -1,21 +1,21 @@
 'use client';
 
 import React, { createContext, ReactNode, useContext } from 'react';
-import { BrandService } from '@/features/brand/brand.service';
-import { Brand } from '@/features/brand/brand.type';
-import { ControlAgencyService } from '@/features/control-agency/control-agency.service';
-import { ControlAgency } from '@/features/control-agency/control-agency.type';
-import { LaboratoryService } from '@/features/laboratory/laboratory.service';
-import { Laboratory } from '@/features/laboratory/laboratory.type';
+import { BrandService } from '@/features/named-option/brand/brand.service';
+import { Brand } from '@/features/named-option/brand/brand.type';
+import { ControlAgencyService } from '@/features/named-option/control-agency/control-agency.service';
+import { ControlAgency } from '@/features/named-option/control-agency/control-agency.type';
+import { LaboratoryService } from '@/features/named-option/laboratory/laboratory.service';
+import { Laboratory } from '@/features/named-option/laboratory/laboratory.type';
+import { SupplierService } from '@/features/named-option/supplier/supplier.service';
+import { Supplier } from '@/features/named-option/supplier/supplier.type';
 import { PackageService } from '@/features/package/package.service';
 import { Package } from '@/features/package/package.type';
 import { ReagentService } from '@/features/reagent/reagent.service';
 import { Reagent } from '@/features/reagent/reagent.type';
-import { SupplierService } from '@/features/supplier/supplier.service';
-import { Supplier } from '@/features/supplier/supplier.type';
 import { VialService } from '@/features/vial/vial.service';
 import { Vial } from '@/features/vial/vial.type';
-import { useCollectionData } from '@/providers/useData';
+import { useCollectionData } from '@/providers/useCollectionData';
 import { sortKeys } from '@/shared/utils/sort-keys';
 
 export function useData() {
@@ -65,6 +65,8 @@ type DataProviderProps = {
 };
 
 export const DataProvider = (props: DataProviderProps) => {
+  // TODO: Chamar contexto de injeção para obter serviços
+
   const [packages, loadingPackages, packagesError, getPackageById] = useCollectionData<
     Package,
     PackageService

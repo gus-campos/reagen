@@ -1,14 +1,21 @@
 import { Supplier } from '@/features/named-option/supplier/supplier.type';
 import { PackageService } from '@/features/package/package.service';
 import { BaseRepository, IDatabase } from '@/shared/services/base-repository.service';
-import { DbTableName } from '@/shared/types/table-name.type';
+import { DatabaseTableName } from '@/shared/types/table-name.type';
 
 export class SupplierService extends BaseRepository<Supplier> {
-  public constructor(
-    db: IDatabase,
-    private packageService: PackageService
-  ) {
-    super(db, DbTableName.Supplier);
+  private packageService?: PackageService;
+
+  constructor(db: IDatabase) {
+    super(db, DatabaseTableName.Supplier);
+  }
+
+  injectLate(packageService: PackageService) {
+    this.packageService = packageService;
+  }
+
+  private checkLateInjection() {
+    if (!this.packageService) throw new Error('packageService não injetado');
   }
 
   async delete(id: string): Promise<void> {
@@ -17,8 +24,9 @@ export class SupplierService extends BaseRepository<Supplier> {
   }
 
   private async deleteRelatedPackages(supplierId: string) {
-    const packages = await this.packageService.getAll();
+    this.checkLateInjection();
+    const packages = await this.packageService!.getAll();
     const relatedPkgs = packages.filter((p) => p.supplierId === supplierId);
-    relatedPkgs.forEach((p) => this.packageService.delete(p.id));
+    return Promise.all(relatedPkgs.map((p) => this.packageService!.delete(p.id)));
   }
 }

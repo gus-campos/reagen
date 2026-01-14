@@ -2,21 +2,23 @@ import { PackageService } from '@/features/package/package.service';
 import { Reagent } from '@/features/reagent/reagent.type';
 import { Size } from '@/features/size/size.type';
 import { areSizesEqual } from '@/features/size/size.util';
+import { BaseRepository, IDatabase } from '@/shared/services/base-repository.service';
 import { WithoutId } from '@/shared/services/data.service';
-import { FirebaseBaseService } from '@/shared/services/firabse-base.service';
+import { DatabaseTableName } from '@/shared/types/table-name.type';
 
-const DOC_NAME = 'reagents';
+export class ReagentService extends BaseRepository<Reagent> {
+  private packageService?: PackageService;
 
-export class ReagentService extends FirebaseBaseService<Reagent> {
-  private constructor() {
-    super(DOC_NAME);
+  constructor(db: IDatabase) {
+    super(db, DatabaseTableName.Reagent);
   }
 
-  private static _instance: ReagentService | null = null;
+  injectLate(packageService: PackageService) {
+    this.packageService = packageService;
+  }
 
-  public static get instance() {
-    if (!this._instance) this._instance = new ReagentService();
-    return this._instance;
+  private checkLateInjection() {
+    if (!this.packageService) throw new Error('packageService não injetado');
   }
 
   async delete(id: string): Promise<void> {
@@ -33,12 +35,14 @@ export class ReagentService extends FirebaseBaseService<Reagent> {
 
     const currentReagent = await this.getById(id);
 
+    if (!currentReagent) throw new Error('reagente não encontrado para atualização');
+
     if (data.sizes) {
       // Verificando diplicatas
       if (new Set(data.sizes).size !== data.sizes.length)
         throw new Error('Reagente não pode ter tamanho duplicado.');
 
-      super.update(id, data);
+      await super.update(id, data);
 
       // Deletando vials relacionados
       const deletedSizes = currentReagent.sizes.filter(
@@ -52,20 +56,20 @@ export class ReagentService extends FirebaseBaseService<Reagent> {
 
   private async deletePackagesRelatedToSize(reagentId: string, size: Size) {
     /* Deleta todos os itens relacionados a dado reagente e um dado tamanho */
-    const packages = await PackageService.instance.getAll();
+    this.checkLateInjection();
+    const packages = await this.packageService!.getAll();
     const pkgsRelatedToSize = packages.filter(
       (p) => p.reagentId === reagentId && areSizesEqual(p.size, size)
     );
 
-    await Promise.all(
-      pkgsRelatedToSize.map(async (p) => await PackageService.instance.delete(p.id))
-    );
+    await Promise.all(pkgsRelatedToSize.map(async (p) => await this.packageService!.delete(p.id)));
   }
 
   private async deleteRelatedPackages(reagentId: string) {
     /* Deleta todos os itens relacionados a um reagente */
-    const packages = await PackageService.instance.getAll();
+    this.checkLateInjection();
+    const packages = await this.packageService!.getAll();
     const relatedPkgs = packages.filter((p) => p.reagentId === reagentId);
-    await Promise.all(relatedPkgs.map(async (p) => await PackageService.instance.delete(p.id)));
+    await Promise.all(relatedPkgs.map(async (p) => await this.packageService!.delete(p.id)));
   }
 }

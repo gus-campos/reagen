@@ -1,17 +1,9 @@
 import { Vial } from '@/features/vial/vial.type';
-import { FirebaseBaseService } from '@/shared/services/firabse-base.service';
+import { BaseRepository, IDatabase } from '@/shared/services/base-repository.service';
+import { DatabaseTableName } from '@/shared/types/table-name.type';
 
-const DOC_NAME = 'vial';
-
-export class VialService extends FirebaseBaseService<Vial> {
-  private constructor() {
-    super(DOC_NAME);
-  }
-
-  private static _instance: VialService | null = null;
-
-  static get instance() {
-    if (!this._instance) this._instance = new VialService();
-    return this._instance;
+export class VialService extends BaseRepository<Vial> {
+  constructor(db: IDatabase) {
+    super(db, DatabaseTableName.Vial);
   }
 }

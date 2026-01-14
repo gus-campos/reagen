@@ -1,4 +1,4 @@
-export enum DbTableName {
+export enum DatabaseTableName {
   Vial = 'vial',
   Box = 'box',
   Reagent = 'reagent',
@@ -8,5 +8,3 @@ export enum DbTableName {
   Laboratory = 'laboratory',
   Supplier = 'supplier',
 }
-
-export type TableName = (typeof DbTableName)[keyof typeof DbTableName];
