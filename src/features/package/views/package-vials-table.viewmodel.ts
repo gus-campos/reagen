@@ -6,21 +6,20 @@ import { Package } from '@/features/package/package.type';
 import { StockFilter } from '@/features/stock-filter/stock-filter.type';
 import { filteredVial } from '@/features/stock-filter/stock-filter.util';
 import { Vial } from '@/features/vial/vial.type';
+import { VialService } from '@/features/vial/vial.service';
 import { useData } from '@/providers/data.provider';
-import { useDependencyInjection } from '@/providers/dependency-injection.provider';
 import { stringToLocalDate } from '@/shared/utils/date';
 import { formattedDate } from '@/shared/utils/formatted-date';
 import { FaCalendar, FaSignOutAlt } from 'react-icons/fa';
 import { MdCancel } from 'react-icons/md';
 import { Tooltip } from '@mantine/core';
+import { PackageVialsTableProps } from '@/features/package/views/package-vials-table.view';
 
-type PackageVialsTableProps = {
-  data: Package;
-  filter?: StockFilter;
+type UsePackageVialsTableProps = PackageVialsTableProps & {
+  vialService: VialService;
 };
 
-export function usePackageVialsTable(props: PackageVialsTableProps) {
-  const { vialService } = useDependencyInjection();
+export function usePackageVialsTable(props: UsePackageVialsTableProps) {
   const { vials, getLaboratoryById } = useData();
   const [modalOpened, setModalOpened] = useState(false);
   const [selectedVialId, setSelectedVialId] = useState<string | null>(null);
@@ -60,7 +59,7 @@ export function usePackageVialsTable(props: PackageVialsTableProps) {
       action: (vial: Vial) => {
         const startOfDay = new Date();
         startOfDay.setHours(0, 0, 0, 0);
-        vialService.update(vial.id, { outDate: null });
+        props.vialService.update(vial.id, { outDate: null });
       },
     },
     {
@@ -72,7 +71,7 @@ export function usePackageVialsTable(props: PackageVialsTableProps) {
       action: (vial: Vial) => {
         const startOfDay = new Date();
         startOfDay.setHours(0, 0, 0, 0);
-        vialService.update(vial.id, { outDate: startOfDay });
+        props.vialService.update(vial.id, { outDate: startOfDay });
       },
     },
     {
@@ -91,7 +90,7 @@ export function usePackageVialsTable(props: PackageVialsTableProps) {
   const handleSubmit = (values: { outDate: Date }) => {
     if (!selectedVialId || !values.outDate) return;
 
-    vialService.update(selectedVialId, {
+    props.vialService.update(selectedVialId, {
       outDate: stringToLocalDate(values.outDate),
     });
     setSelectedVialId(null);

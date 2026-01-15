@@ -4,11 +4,19 @@ import { LoadingOverlay } from '@mantine/core';
 import { DataTable } from '@/features/data-table/data-table.view';
 import { Package } from '@/features/package/package.type';
 import { PackageVialsTable } from '@/features/package/views/package-vials-table.view';
-import { usePackageTable, PackageTableProps } from '@/features/package/views/package-table.viewmodel';
+import { usePackageTable } from '@/features/package/views/package-table.viewmodel';
+import { useDependencyInjection } from '@/providers/dependency-injection.provider';
+import { StockFilter } from '@/features/stock-filter/stock-filter.type';
+import { TableCrudOperations } from '@/features/data-table/data-table.type';
 
-export type { PackageTableProps };
+export type PackageTableProps = {
+  filter?: StockFilter;
+  search?: string;
+  crudOperations?: TableCrudOperations<Package>;
+};
 
 export function PackageTable(props: PackageTableProps) {
+  const { packageService } = useDependencyInjection();
   const {
     packagesError,
     loadingPackages,
@@ -17,7 +25,7 @@ export function PackageTable(props: PackageTableProps) {
     dataFilter,
     mergedCrudOperations,
     getReagentById,
-  } = usePackageTable(props);
+  } = usePackageTable({ ...props, packageService });
 
   return (
     <>

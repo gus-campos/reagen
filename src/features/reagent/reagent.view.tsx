@@ -8,8 +8,10 @@ import { useReagentsView } from '@/features/reagent/reagent.viewmodel';
 import { ReagentEdit } from '@/features/reagent/views/reagent-edit.view';
 import { SearchReagent } from '@/features/stock-filter/views/search-reagent.view';
 import { ConfirmModal } from '@/shared/components/confirm-modal.view';
+import { useDependencyInjection } from '@/providers/dependency-injection.provider';
 
 export function ReagentsView() {
+  const { reagentService } = useDependencyInjection();
   const {
     reagents,
     selectedReagent,
@@ -30,7 +32,7 @@ export function ReagentsView() {
     handleExitConfirmation,
     handleExitEdit,
     crudOperations,
-  } = useReagentsView();
+  } = useReagentsView({ reagentService });
 
   return (
     <>

@@ -1,19 +1,15 @@
-import { TableCrudOperations } from '@/features/data-table/data-table.type';
 import { getInitialCollumns, PackageCollumGetters } from '@/features/package/package.constants';
 import { Package } from '@/features/package/package.type';
-import { StockFilter } from '@/features/stock-filter/stock-filter.type';
+import { PackageService } from '@/features/package/package.service';
 import { filteredPackage } from '@/features/stock-filter/stock-filter.util';
 import { useData } from '@/providers/data.provider';
-import { useDependencyInjection } from '@/providers/dependency-injection.provider';
+import { PackageTableProps } from '@/features/package/views/package-table.view';
 
-export type PackageTableProps = {
-  filter?: StockFilter;
-  search?: string;
-  crudOperations?: TableCrudOperations<Package>;
+type UsePackageTableProps = PackageTableProps & {
+  packageService: PackageService;
 };
 
-export function usePackageTable(props: PackageTableProps) {
-  const { packageService } = useDependencyInjection();
+export function usePackageTable(props: UsePackageTableProps) {
   const {
     packages,
     loadingPackages,
@@ -38,7 +34,7 @@ export function usePackageTable(props: PackageTableProps) {
   const initialCollumns = getInitialCollumns(getters);
 
   const handleDeletePackage = (pkg: Package) => {
-    packageService.delete(pkg.id);
+    props.packageService.delete(pkg.id);
   };
 
   const crudOperations: TableCrudOperations<Package> = {

@@ -1,11 +1,9 @@
 import { Brand } from '@/features/named-option/brand/brand.type';
 import { Package } from '@/features/package/package.type';
 import { useData } from '@/providers/data.provider';
-import { useDependencyInjection } from '@/providers/dependency-injection.provider';
 import { findPackagesOfBrand } from '@/shared/utils/misc';
 
 export function useBrandsView() {
-  const { brandService } = useDependencyInjection();
   const { brands, packages, loadingBrands } = useData();
 
   const generateWarning = (brand: Brand, relatedPkgs: Package[]) => {
@@ -24,7 +22,6 @@ export function useBrandsView() {
   };
 
   return {
-    brandService,
     brands,
     loadingBrands,
     getWarning,

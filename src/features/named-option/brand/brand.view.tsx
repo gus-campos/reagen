@@ -1,8 +1,10 @@
 import { NamedOptionView } from '@/features/named-option/named-option.view';
 import { useBrandsView } from '@/features/named-option/brand/brand.viewmodel';
+import { useDependencyInjection } from '@/providers/dependency-injection.provider';
 
 export function BrandsView() {
-  const { brandService, brands, loadingBrands, getWarning } = useBrandsView();
+  const { brandService } = useDependencyInjection();
+  const { brands, loadingBrands, getWarning } = useBrandsView();
 
   return (
     <NamedOptionView

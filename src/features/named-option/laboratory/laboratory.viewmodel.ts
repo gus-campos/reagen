@@ -1,11 +1,9 @@
 import { Laboratory } from '@/features/named-option/laboratory/laboratory.type';
 import { Vial } from '@/features/vial/vial.type';
 import { useData } from '@/providers/data.provider';
-import { useDependencyInjection } from '@/providers/dependency-injection.provider';
 import { findVialsOfLaboratory } from '@/shared/utils/misc';
 
 export function useLaboratoryView() {
-  const { laboratoryService } = useDependencyInjection();
   const { laboratories, loadingLaboratories, vials } = useData();
 
   const generateWarning = (laboratory: Laboratory, relatedVials: Vial[]) => {
@@ -24,7 +22,6 @@ export function useLaboratoryView() {
   };
 
   return {
-    laboratoryService,
     laboratories,
     loadingLaboratories,
     getWarning,

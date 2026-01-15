@@ -4,16 +4,23 @@ import { CiViewList } from 'react-icons/ci';
 import { IoMdAdd } from 'react-icons/io';
 import { Button, Drawer, Modal, Tabs } from '@mantine/core';
 import { PackageEdit } from '@/features/package/views/package-edit.view';
-import {
-  PackageLayoutProps,
-  usePackageLayout,
-} from '@/features/package/views/package-layout.viewmodel';
+import { Package } from '@/features/package/package.type';
+import { ViewMode } from '@/features/package/package.view';
+import { usePackageLayout } from '@/features/package/views/package-layout.viewmodel';
 import { PackageShow } from '@/features/package/views/package-show.view';
 import { ReagentShow } from '@/features/reagent/views/reagent-show.view';
+import { useDependencyInjection } from '@/providers/dependency-injection.provider';
 
-export type { PackageLayoutProps };
+export type PackageLayoutProps = {
+  mode: ViewMode;
+  onModeChange: (mode: ViewMode) => void;
+  selectedPackage: Package | null;
+  onSelectPackage: (pkg: Package | null) => void;
+  preFilledPackageData?: Partial<Package>;
+};
 
 export function PackageLayout(props: PackageLayoutProps) {
+  const { reagentService, packageService } = useDependencyInjection();
   const {
     selectedPackageReagent,
     isEditModalOpen,
@@ -27,7 +34,7 @@ export function PackageLayout(props: PackageLayoutProps) {
     handleCloseEditModal,
     handleCloseShowModal,
     handleBeginShownPackageEdit,
-  } = usePackageLayout(props);
+  } = usePackageLayout({ ...props, reagentService, packageService });
 
   return (
     <>

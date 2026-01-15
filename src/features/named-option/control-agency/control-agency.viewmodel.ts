@@ -2,11 +2,9 @@ import { ControlAgency } from '@/features/named-option/control-agency/control-ag
 import { Package } from '@/features/package/package.type';
 import { Reagent } from '@/features/reagent/reagent.type';
 import { useData } from '@/providers/data.provider';
-import { useDependencyInjection } from '@/providers/dependency-injection.provider';
 import { findPackagesOfControlAgency, findReagentsOfControlAgency } from '@/shared/utils/misc';
 
 export function useControlAgenciesView() {
-  const { controlAgencyService } = useDependencyInjection();
   const { controlAgencies, loadingControlAgencies, reagents, packages } = useData();
 
   const generateWarning = (
@@ -36,7 +34,6 @@ export function useControlAgenciesView() {
   };
 
   return {
-    controlAgencyService,
     controlAgencies,
     loadingControlAgencies,
     getWarning,

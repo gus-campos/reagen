@@ -1,19 +1,15 @@
-import { Package } from '@/features/package/package.type';
-import { ViewMode } from '@/features/package/package.view';
+import { PackageService } from '@/features/package/package.service';
 import { Reagent } from '@/features/reagent/reagent.type';
+import { ReagentService } from '@/features/reagent/reagent.service';
 import { useData } from '@/providers/data.provider';
-import { useDependencyInjection } from '@/providers/dependency-injection.provider';
+import { PackageLayoutProps } from '@/features/package/views/package-layout.view';
 
-export type PackageLayoutProps = {
-  mode: ViewMode;
-  onModeChange: (mode: ViewMode) => void;
-  selectedPackage: Package | null;
-  onSelectPackage: (pkg: Package | null) => void;
-  preFilledPackageData?: Partial<Package>;
+type UsePackageLayoutProps = PackageLayoutProps & {
+  reagentService: ReagentService;
+  packageService: PackageService;
 };
 
-export function usePackageLayout(props: PackageLayoutProps) {
-  const { reagentService, packageService } = useDependencyInjection();
+export function usePackageLayout(props: UsePackageLayoutProps) {
   const { getReagentById } = useData();
 
   const selectedPackageReagent = props.selectedPackage
@@ -30,16 +26,16 @@ export function usePackageLayout(props: PackageLayoutProps) {
   };
 
   const handleAddReagent = (reagent: Reagent) => {
-    return reagentService.create(reagent);
+    return props.reagentService.create(reagent);
   };
 
   const handleAddPackage = async (pkg: Package) => {
     props.onModeChange('table');
-    return await packageService.create(pkg);
+    return await props.packageService.create(pkg);
   };
 
   const handleEditPackage = (pkg: Package) => {
-    packageService.update(pkg.id, pkg);
+    props.packageService.update(pkg.id, pkg);
     props.onModeChange('table');
   };
 

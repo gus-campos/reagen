@@ -3,12 +3,15 @@ import { TableCrudOperations } from '@/features/data-table/data-table.type';
 import { Package } from '@/features/package/package.type';
 import { getReagentTableInitialColumns } from '@/features/reagent/reagent.constants';
 import { Reagent } from '@/features/reagent/reagent.type';
+import { ReagentService } from '@/features/reagent/reagent.service';
 import { useData } from '@/providers/data.provider';
-import { useDependencyInjection } from '@/providers/dependency-injection.provider';
 import { findPackagesOfReagent } from '@/shared/utils/misc';
 
-export function useReagentsView() {
-  const { reagentService } = useDependencyInjection();
+type UseReagentsViewProps = {
+  reagentService: ReagentService;
+};
+
+export function useReagentsView(props: UseReagentsViewProps) {
   const {
     reagents,
     loadingReagents,
@@ -57,12 +60,12 @@ export function useReagentsView() {
   };
 
   const handleAddReagent = (reagent: Reagent) => {
-    reagentService.create(reagent);
+    props.reagentService.create(reagent);
     setSelectedReagentId(null);
   };
 
   const handleEditReagent = (reagent: Reagent) => {
-    reagentService.update(reagent.id, reagent);
+    props.reagentService.update(reagent.id, reagent);
     setSelectedReagentId(null);
   };
 
@@ -80,12 +83,12 @@ export function useReagentsView() {
       setSelectedReagentId(reagent.id);
       setWarning(getConfirmationMessage(reagent, relatedPackages));
     } else {
-      reagentService.delete(reagent.id);
+      props.reagentService.delete(reagent.id);
     }
   };
 
   const handleConfirmReagentDelete = () => {
-    reagentService.delete(selectedReagentId!);
+    props.reagentService.delete(selectedReagentId!);
     setSelectedReagentId(null);
     setWarning(null);
   };

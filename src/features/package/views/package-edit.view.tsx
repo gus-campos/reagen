@@ -13,14 +13,15 @@ import {
 } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { Package } from '@/features/package/package.type';
+import { usePackageEdit } from '@/features/package/views/package-edit.viewmodel';
 import { PackageSubReagentAddForm } from '@/features/package/views/package-sub-reagent-add-form.view';
 import { Reagent } from '@/features/reagent/reagent.type';
 import { SizeAddForm } from '@/features/reagent/views/size-add-form.view';
 import { formattedSize } from '@/features/size/size.util';
+import { useDependencyInjection } from '@/providers/dependency-injection.provider';
 import { portugueseSearchFilter } from '@/shared/utils/portuguese-search-filter';
-import { usePackageEdit } from '@/features/package/views/package-edit.viewmodel';
 
-type PackageEditProps = {
+export type PackageEditProps = {
   selectedPackage: Package | null;
   packageModalOpened: boolean;
   onClosePackageModal: () => void;
@@ -32,33 +33,36 @@ type PackageEditProps = {
 };
 
 export function PackageEdit(props: PackageEditProps) {
+  const { reagentService, vialService } = useDependencyInjection();
   const {
     reagentAddMode,
     loadingAddReagent,
     sizeAddMode,
     loadingAddSize,
-    labGroups,
+    labGroupsWithNames,
     labIdToAdd,
     packageForm,
     selectedReagent,
-    reagents,
-    suppliers,
-    brands,
-    laboratories,
     setReagentAddMode,
     setCreatedReagentName,
     setLoadingAddReagent,
     setSizeAddMode,
-    setLoadingAddedSize,
     setLabIdToAdd,
-    setLabGroups,
     handleAddSize,
     handleSubmitPackage,
     handleChangeSize,
     handleChangeReagent,
-    getBrandById,
-    getSupplierById,
-  } = usePackageEdit(props);
+    reagentSelectData,
+    sizeSelectData,
+    brandSelectData,
+    supplierSelectData,
+    availableLaboratories,
+    totalVials,
+    handleLabGroupAmountChange,
+    handleAddLabGroup,
+    handleBrandChange,
+    handleSupplierChange,
+  } = usePackageEdit({ ...props, reagentService, vialService });
 
   return (
     <Box>
@@ -90,12 +94,7 @@ export function PackageEdit(props: PackageEditProps) {
                   disabled={sizeAddMode || !!props.selectedPackage}
                   style={{ flex: 1 }}
                   label="Reagente"
-                  data={
-                    reagents?.map((opt) => ({
-                      value: opt.id,
-                      label: opt.name,
-                    })) ?? []
-                  }
+                  data={reagentSelectData}
                   searchable
                   allowDeselect={false}
                   onChange={handleChangeReagent}
@@ -145,9 +144,7 @@ export function PackageEdit(props: PackageEditProps) {
                   placeholder="Selecione ou adicione o tamanho"
                   style={{ flex: 1 }}
                   allowDeselect={false}
-                  data={
-                    selectedReagent ? selectedReagent.sizes.map((s) => formattedSize(s)) : undefined
-                  }
+                  data={sizeSelectData}
                   label="Tamanho"
                   disabled={!selectedReagent || reagentAddMode}
                   // Sinceramente não faço ideia de por que é assim
@@ -190,13 +187,8 @@ export function PackageEdit(props: PackageEditProps) {
               filter={portugueseSearchFilter}
               label="Marca"
               placeholder="Nome da marca"
-              data={brands!.map((b) => {
-                return { value: b.id, label: b.name };
-              })}
-              onChange={(value) => {
-                const brand = value ? getBrandById(value) : null;
-                packageForm.setValues({ brandId: brand?.id ?? '' });
-              }}
+              data={brandSelectData}
+              onChange={handleBrandChange}
               value={packageForm.values.brandId}
               error={packageForm.errors.brandId}
             />
@@ -208,13 +200,8 @@ export function PackageEdit(props: PackageEditProps) {
               filter={portugueseSearchFilter}
               label="Fornecedor"
               placeholder="Nome do fornecedor"
-              data={suppliers!.map((s) => {
-                return { value: s.id, label: s.name };
-              })}
-              onChange={(value) => {
-                const supplier = value ? getSupplierById(value) : null;
-                packageForm.setValues({ supplierId: supplier?.id ?? '' });
-              }}
+              data={supplierSelectData}
+              onChange={handleSupplierChange}
               value={packageForm.values.supplierId}
               error={packageForm.errors.supplierId}
             />
@@ -250,15 +237,15 @@ export function PackageEdit(props: PackageEditProps) {
             <Paper py="md" px="md" withBorder>
               <Stack gap="xl" justify="space-between">
                 {/* Lista de laboratório e quantidades de fracos */}
-                {labGroups.length > 0 && (
+                {labGroupsWithNames.length > 0 && (
                   <Grid>
-                    {labGroups.map((group, index) => (
+                    {labGroupsWithNames.map((group, index) => (
                       <React.Fragment key={index}>
                         <Grid.Col
                           span={{ base: 6 }}
                           style={{ display: 'flex', alignItems: 'center' }}
                         >
-                          {getLaboratoryById(group.laboratoryId).name}
+                          {group.laboratoryName}
                         </Grid.Col>
                         <Grid.Col span={{ base: 6 }}>
                           <NumberInput
@@ -267,21 +254,7 @@ export function PackageEdit(props: PackageEditProps) {
                             allowNegative={false}
                             value={group.amount}
                             prefix="x "
-                            onChange={(value) => {
-                              if (Number(value) === 0) {
-                                setLabGroups(
-                                  labGroups.filter((g) => g.laboratoryId !== group.laboratoryId)
-                                );
-                              } else {
-                                setLabGroups(
-                                  labGroups.map((g) =>
-                                    g.laboratoryId === group.laboratoryId
-                                      ? { ...g, amount: Number(value) }
-                                      : g
-                                  )
-                                );
-                              }
-                            }}
+                            onChange={(value) => handleLabGroupAmountChange(group.laboratoryId, Number(value))}
                           />
                         </Grid.Col>
                       </React.Fragment>
@@ -294,26 +267,14 @@ export function PackageEdit(props: PackageEditProps) {
                   <Select
                     style={{ flex: 1 }}
                     label="Adicionar frascos a a um laboratório"
-                    data={
-                      laboratories
-                        // laboratórios não incluídos
-                        ?.filter((lab) => !labGroups.map((g) => g.laboratoryId).includes(lab.id))
-                        .map((lab) => {
-                          return { value: lab.id, label: lab.name };
-                        }) ?? []
-                    }
+                    data={availableLaboratories}
                     value={labIdToAdd}
                     onChange={(value) => setLabIdToAdd(value)}
                   />
                   <Button
                     disabled={sizeAddMode}
                     variant="filled"
-                    onClick={() => {
-                      if (labIdToAdd) {
-                        setLabGroups([...labGroups, { laboratoryId: labIdToAdd, amount: 1 }]);
-                        setLabIdToAdd(null);
-                      }
-                    }}
+                    onClick={handleAddLabGroup}
                   >
                     +
                   </Button>
@@ -321,7 +282,7 @@ export function PackageEdit(props: PackageEditProps) {
 
                 {/* Soma total de frascos a todos os laboratórios */}
                 <Group justify="center" align="center" w="100%" my="xs">
-                  <Text>Total de frascos: {labGroups.reduce((acc, g) => acc + g.amount, 0)}</Text>
+                  <Text>Total de frascos: {totalVials}</Text>
                 </Group>
               </Stack>
             </Paper>

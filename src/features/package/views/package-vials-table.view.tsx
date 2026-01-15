@@ -4,13 +4,15 @@ import { DataTable } from '@/features/data-table/data-table.view';
 import { Package } from '@/features/package/package.type';
 import { StockFilter } from '@/features/stock-filter/stock-filter.type';
 import { usePackageVialsTable } from '@/features/package/views/package-vials-table.viewmodel';
+import { useDependencyInjection } from '@/providers/dependency-injection.provider';
 
-type PackageVialsTableProps = {
+export type PackageVialsTableProps = {
   data: Package;
   filter?: StockFilter;
 };
 
 export function PackageVialsTable(props: PackageVialsTableProps) {
+  const { vialService } = useDependencyInjection();
   const {
     modalOpened,
     packageVials,
@@ -20,7 +22,7 @@ export function PackageVialsTable(props: PackageVialsTableProps) {
     dataFilter,
     setModalOpened,
     handleSubmit,
-  } = usePackageVialsTable(props);
+  } = usePackageVialsTable({ ...props, vialService });
 
   return (
     <>

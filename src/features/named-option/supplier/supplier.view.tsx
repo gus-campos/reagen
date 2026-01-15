@@ -2,9 +2,11 @@
 
 import { NamedOptionView } from '@/features/named-option/named-option.view';
 import { useSupplierView } from '@/features/named-option/supplier/supplier.viewmodel';
+import { useDependencyInjection } from '@/providers/dependency-injection.provider';
 
 export function SupplierView() {
-  const { supplierService, suppliers, loadingSuppliers, getWarning } = useSupplierView();
+  const { supplierService } = useDependencyInjection();
+  const { suppliers, loadingSuppliers, getWarning } = useSupplierView();
 
   return (
     <NamedOptionView

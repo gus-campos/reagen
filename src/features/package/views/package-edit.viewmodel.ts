@@ -2,31 +2,26 @@ import { useEffect, useState } from 'react';
 import { useForm } from '@mantine/form';
 import { Package } from '@/features/package/package.type';
 import { Reagent } from '@/features/reagent/reagent.type';
+import { ReagentService } from '@/features/reagent/reagent.service';
 import { Size } from '@/features/size/size.type';
 import { formattedSize } from '@/features/size/size.util';
 import Unit from '@/features/size/unit.type';
+import { VialService } from '@/features/vial/vial.service';
 import { useData } from '@/providers/data.provider';
-import { useDependencyInjection } from '@/providers/dependency-injection.provider';
 import { toNullableLocalDate, validateDate } from '@/shared/utils/date';
+import { PackageEditProps } from '@/features/package/views/package-edit.view';
 
-type PackageEditProps = {
-  selectedPackage: Package | null;
-  packageModalOpened: boolean;
-  onClosePackageModal: () => void;
-  onAddPackage: (pkg: Package) => Promise<Package>;
-  onEditPackage: (selectedPackage: Package) => void;
-  onBeginShownPackageEdit?: () => void;
-  onAddReagent: (reagent: Reagent) => void;
-  preFilledPackageData?: Partial<Package>;
+type UsePackageEditProps = PackageEditProps & {
+  reagentService: ReagentService;
+  vialService: VialService;
 };
 
 const nullSize = { amount: 0, unit: Unit.Units };
 
 type LabGroup = { laboratoryId: string; amount: number };
 
-export function usePackageEdit(props: PackageEditProps) {
-  const { reagentService, vialService } = useDependencyInjection();
-  const { reagents, suppliers, brands, laboratories, getReagentById, getBrandById, getSupplierById } =
+export function usePackageEdit(props: UsePackageEditProps) {
+  const { reagents, suppliers, brands, laboratories, getReagentById, getBrandById, getSupplierById, getLaboratoryById } =
     useData();
 
   const [reagentAddMode, setReagentAddMode] = useState(false);
@@ -116,7 +111,7 @@ export function usePackageEdit(props: PackageEditProps) {
 
   const handleAddSize = (size: Size) => {
     const newReagent = { ...selectedReagent!, sizes: [...selectedReagent!.sizes, size] };
-    reagentService.update(selectedReagent!.id, newReagent);
+    props.reagentService.update(selectedReagent!.id, newReagent);
     setAddedSize(size);
     setLoadingAddedSize(true);
   };
@@ -130,7 +125,7 @@ export function usePackageEdit(props: PackageEditProps) {
 
       labGroups.flatMap((group) =>
         Array.from({ length: group.amount }).map(() =>
-          vialService.create({
+          props.vialService.create({
             laboratoryId: group.laboratoryId,
             packageId: pkgCreated.id,
             outDate: null,
@@ -159,6 +154,68 @@ export function usePackageEdit(props: PackageEditProps) {
     packageForm.setFieldValue('size', validReagent?.sizes[0] ?? ('' as any));
   };
 
+  const labGroupsWithNames = labGroups.map((group) => ({
+    ...group,
+    laboratoryName: getLaboratoryById(group.laboratoryId).name,
+  }));
+
+  const reagentSelectData = reagents?.map((opt) => ({
+    value: opt.id,
+    label: opt.name,
+  })) ?? [];
+
+  const sizeSelectData = selectedReagent ? selectedReagent.sizes.map((s) => formattedSize(s)) : undefined;
+
+  const brandSelectData = brands!.map((b) => ({
+    value: b.id,
+    label: b.name,
+  }));
+
+  const supplierSelectData = suppliers!.map((s) => ({
+    value: s.id,
+    label: s.name,
+  }));
+
+  const availableLaboratories = laboratories
+    ?.filter((lab) => !labGroups.map((g) => g.laboratoryId).includes(lab.id))
+    .map((lab) => ({
+      value: lab.id,
+      label: lab.name,
+    })) ?? [];
+
+  const totalVials = labGroups.reduce((acc, g) => acc + g.amount, 0);
+
+  const handleLabGroupAmountChange = (laboratoryId: string, value: number) => {
+    if (value === 0) {
+      setLabGroups(labGroups.filter((g) => g.laboratoryId !== laboratoryId));
+    } else {
+      setLabGroups(
+        labGroups.map((g) =>
+          g.laboratoryId === laboratoryId
+            ? { ...g, amount: value }
+            : g
+        )
+      );
+    }
+  };
+
+  const handleAddLabGroup = () => {
+    if (labIdToAdd) {
+      setLabGroups([...labGroups, { laboratoryId: labIdToAdd, amount: 1 }]);
+      setLabIdToAdd(null);
+    }
+  };
+
+  const handleBrandChange = (value: string | null) => {
+    const brand = value ? getBrandById(value) : null;
+    packageForm.setValues({ brandId: brand?.id ?? '' });
+  };
+
+  const handleSupplierChange = (value: string | null) => {
+    const supplier = value ? getSupplierById(value) : null;
+    packageForm.setValues({ supplierId: supplier?.id ?? '' });
+  };
+
   return {
     reagentAddMode,
     createdReagentName,
@@ -167,6 +224,7 @@ export function usePackageEdit(props: PackageEditProps) {
     addedSize,
     loadingAddSize,
     labGroups,
+    labGroupsWithNames,
     labIdToAdd,
     packageForm,
     selectedReagent,
@@ -187,5 +245,15 @@ export function usePackageEdit(props: PackageEditProps) {
     handleChangeReagent,
     getBrandById,
     getSupplierById,
+    reagentSelectData,
+    sizeSelectData,
+    brandSelectData,
+    supplierSelectData,
+    availableLaboratories,
+    totalVials,
+    handleLabGroupAmountChange,
+    handleAddLabGroup,
+    handleBrandChange,
+    handleSupplierChange,
   };
 }
