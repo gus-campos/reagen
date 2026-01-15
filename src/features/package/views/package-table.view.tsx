@@ -1,13 +1,13 @@
 'use client';
 
 import { LoadingOverlay } from '@mantine/core';
+import { TableCrudOperations } from '@/features/data-table/data-table.type';
 import { DataTable } from '@/features/data-table/data-table.view';
 import { Package } from '@/features/package/package.type';
-import { PackageVialsTable } from '@/features/package/views/package-vials-table.view';
 import { usePackageTable } from '@/features/package/views/package-table.viewmodel';
-import { useDependencyInjection } from '@/providers/dependency-injection.provider';
+import { PackageVialsTable } from '@/features/package/views/package-vials-table.view';
 import { StockFilter } from '@/features/stock-filter/stock-filter.type';
-import { TableCrudOperations } from '@/features/data-table/data-table.type';
+import { useDependencyInjection } from '@/providers/dependency-injection.provider';
 
 export type PackageTableProps = {
   filter?: StockFilter;
@@ -32,7 +32,6 @@ export function PackageTable(props: PackageTableProps) {
       {packagesError ? (
         <p>ERRO</p>
       ) : loadingPackages ? (
-        // TODO: Inserir skeletons
         <LoadingOverlay visible />
       ) : (
         <DataTable<Package>

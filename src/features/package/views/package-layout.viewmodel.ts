@@ -1,8 +1,9 @@
 import { PackageService } from '@/features/package/package.service';
-import { Reagent } from '@/features/reagent/reagent.type';
-import { ReagentService } from '@/features/reagent/reagent.service';
-import { useData } from '@/providers/data.provider';
+import { Package } from '@/features/package/package.type';
 import { PackageLayoutProps } from '@/features/package/views/package-layout.view';
+import { ReagentService } from '@/features/reagent/reagent.service';
+import { Reagent } from '@/features/reagent/reagent.type';
+import { useData } from '@/providers/data.provider';
 
 type UsePackageLayoutProps = PackageLayoutProps & {
   reagentService: ReagentService;

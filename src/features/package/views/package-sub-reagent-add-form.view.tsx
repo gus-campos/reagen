@@ -1,8 +1,8 @@
 import { Box, Button, Flex, Grid, Group, Loader, Select, Text, TextInput } from '@mantine/core';
+import { usePackageSubReagentAddForm } from '@/features/package/views/package-sub-reagent-add-form.viewmodel';
 import { Reagent } from '@/features/reagent/reagent.type';
 import { Dimension } from '@/features/size/unit.type';
 import { portugueseSearchFilter } from '@/shared/utils/portuguese-search-filter';
-import { usePackageSubReagentAddForm } from '@/features/package/views/package-sub-reagent-add-form.viewmodel';
 
 type PackageSubReagentAddFormProps = {
   loadingAddReagent: boolean;
@@ -13,7 +13,7 @@ type PackageSubReagentAddFormProps = {
 };
 
 export function PackageSubReagentAddForm(props: PackageSubReagentAddFormProps) {
-  const { reagentForm, controlAgencies } = usePackageSubReagentAddForm(props);
+  const { reagentForm, controlAgencies } = usePackageSubReagentAddForm();
 
   return (
     <form

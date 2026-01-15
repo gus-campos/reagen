@@ -3,15 +3,7 @@ import { Reagent } from '@/features/reagent/reagent.type';
 import { Dimension } from '@/features/size/unit.type';
 import { useData } from '@/providers/data.provider';
 
-type PackageSubReagentAddFormProps = {
-  loadingAddReagent: boolean;
-  onAddReagent: (reagent: Reagent) => void;
-  setReagentAddMode: (active: boolean) => void;
-  setCreatedReagentName: (name: string) => void;
-  setLoadingAddReagent: (loading: boolean) => void;
-};
-
-export function usePackageSubReagentAddForm(props: PackageSubReagentAddFormProps) {
+export function usePackageSubReagentAddForm() {
   const { reagents, controlAgencies } = useData();
 
   const reagentForm = useForm<Reagent>({

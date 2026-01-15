@@ -1,15 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useForm } from '@mantine/form';
 import { Package } from '@/features/package/package.type';
-import { Reagent } from '@/features/reagent/reagent.type';
+import { PackageEditProps } from '@/features/package/views/package-edit.view';
 import { ReagentService } from '@/features/reagent/reagent.service';
+import { Reagent } from '@/features/reagent/reagent.type';
 import { Size } from '@/features/size/size.type';
 import { formattedSize } from '@/features/size/size.util';
 import Unit from '@/features/size/unit.type';
 import { VialService } from '@/features/vial/vial.service';
 import { useData } from '@/providers/data.provider';
 import { toNullableLocalDate, validateDate } from '@/shared/utils/date';
-import { PackageEditProps } from '@/features/package/views/package-edit.view';
 
 type UsePackageEditProps = PackageEditProps & {
   reagentService: ReagentService;
@@ -21,8 +21,16 @@ const nullSize = { amount: 0, unit: Unit.Units };
 type LabGroup = { laboratoryId: string; amount: number };
 
 export function usePackageEdit(props: UsePackageEditProps) {
-  const { reagents, suppliers, brands, laboratories, getReagentById, getBrandById, getSupplierById, getLaboratoryById } =
-    useData();
+  const {
+    reagents,
+    suppliers,
+    brands,
+    laboratories,
+    getReagentById,
+    getBrandById,
+    getSupplierById,
+    getLaboratoryById,
+  } = useData();
 
   const [reagentAddMode, setReagentAddMode] = useState(false);
   const [createdReagentName, setCreatedReagentName] = useState('');
@@ -117,22 +125,28 @@ export function usePackageEdit(props: UsePackageEditProps) {
   };
 
   const handleSubmitPackage = async (pkg: Package) => {
-    props.onClosePackageModal();
     if (props.selectedPackage) {
       props.onEditPackage(pkg);
     } else {
       const pkgCreated = await props.onAddPackage(pkg);
 
-      labGroups.flatMap((group) =>
-        Array.from({ length: group.amount }).map(() =>
-          props.vialService.create({
-            laboratoryId: group.laboratoryId,
-            packageId: pkgCreated.id,
-            outDate: null,
-          })
-        )
-      );
+      const createVials = async () => {
+        for (const group of labGroups) {
+          for (let i = 0; i < group.amount; i++) {
+            await props.vialService.create({
+              laboratoryId: group.laboratoryId,
+              packageId: pkgCreated.id,
+              outDate: null,
+            });
+          }
+        }
+      };
+
+      // async
+      createVials();
+      return;
     }
+    props.onClosePackageModal();
   };
 
   const handleChangeSize = (value: string | null) => {
@@ -159,12 +173,15 @@ export function usePackageEdit(props: UsePackageEditProps) {
     laboratoryName: getLaboratoryById(group.laboratoryId).name,
   }));
 
-  const reagentSelectData = reagents?.map((opt) => ({
-    value: opt.id,
-    label: opt.name,
-  })) ?? [];
+  const reagentSelectData =
+    reagents?.map((opt) => ({
+      value: opt.id,
+      label: opt.name,
+    })) ?? [];
 
-  const sizeSelectData = selectedReagent ? selectedReagent.sizes.map((s) => formattedSize(s)) : undefined;
+  const sizeSelectData = selectedReagent
+    ? selectedReagent.sizes.map((s) => formattedSize(s))
+    : undefined;
 
   const brandSelectData = brands!.map((b) => ({
     value: b.id,
@@ -176,12 +193,13 @@ export function usePackageEdit(props: UsePackageEditProps) {
     label: s.name,
   }));
 
-  const availableLaboratories = laboratories
-    ?.filter((lab) => !labGroups.map((g) => g.laboratoryId).includes(lab.id))
-    .map((lab) => ({
-      value: lab.id,
-      label: lab.name,
-    })) ?? [];
+  const availableLaboratories =
+    laboratories
+      ?.filter((lab) => !labGroups.map((g) => g.laboratoryId).includes(lab.id))
+      .map((lab) => ({
+        value: lab.id,
+        label: lab.name,
+      })) ?? [];
 
   const totalVials = labGroups.reduce((acc, g) => acc + g.amount, 0);
 
@@ -190,11 +208,7 @@ export function usePackageEdit(props: UsePackageEditProps) {
       setLabGroups(labGroups.filter((g) => g.laboratoryId !== laboratoryId));
     } else {
       setLabGroups(
-        labGroups.map((g) =>
-          g.laboratoryId === laboratoryId
-            ? { ...g, amount: value }
-            : g
-        )
+        labGroups.map((g) => (g.laboratoryId === laboratoryId ? { ...g, amount: value } : g))
       );
     }
   };

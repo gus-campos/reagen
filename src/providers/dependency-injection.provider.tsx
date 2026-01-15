@@ -9,7 +9,7 @@ import { PackageService } from '@/features/package/package.service';
 import { ReagentService } from '@/features/reagent/reagent.service';
 import { VialService } from '@/features/vial/vial.service';
 import { IDatabase } from '@/shared/services/base-repository.service';
-import { LocalStorageDatabase } from '@/shared/services/local-storage.service';
+import { DexieDatabase } from '@/shared/services/dexie.service';
 
 export function useDependencyInjection() {
   const context = useContext(DependencyInjection);
@@ -38,15 +38,7 @@ type DiProviderProps = {
 export function DependencyInjectionProvider(props: DiProviderProps) {
   // DATABASE
 
-  const [localStorage, setLocalStorage] = useState<Storage | null>(null);
-
-  useEffect(() => {
-    setLocalStorage(window.localStorage);
-  }, []);
-
-  if (!localStorage) return null;
-
-  const db: IDatabase = new LocalStorageDatabase(localStorage);
+  const db: IDatabase = new DexieDatabase();
 
   // Services
 

@@ -1,19 +1,17 @@
 import { useState } from 'react';
-import { useForm } from '@mantine/form';
-import { TableCollumn } from '@/features/data-table/data-table.type';
-import { CrudAction } from '@/features/data-table/data-table.view';
-import { Package } from '@/features/package/package.type';
-import { StockFilter } from '@/features/stock-filter/stock-filter.type';
-import { filteredVial } from '@/features/stock-filter/stock-filter.util';
-import { Vial } from '@/features/vial/vial.type';
-import { VialService } from '@/features/vial/vial.service';
-import { useData } from '@/providers/data.provider';
-import { stringToLocalDate } from '@/shared/utils/date';
-import { formattedDate } from '@/shared/utils/formatted-date';
 import { FaCalendar, FaSignOutAlt } from 'react-icons/fa';
 import { MdCancel } from 'react-icons/md';
 import { Tooltip } from '@mantine/core';
+import { useForm } from '@mantine/form';
+import { TableCollumn } from '@/features/data-table/data-table.type';
+import { CrudAction } from '@/features/data-table/data-table.view';
 import { PackageVialsTableProps } from '@/features/package/views/package-vials-table.view';
+import { filteredVial } from '@/features/stock-filter/stock-filter.util';
+import { VialService } from '@/features/vial/vial.service';
+import { Vial } from '@/features/vial/vial.type';
+import { useData } from '@/providers/data.provider';
+import { stringToLocalDate } from '@/shared/utils/date';
+import { formattedDate } from '@/shared/utils/formatted-date';
 
 type UsePackageVialsTableProps = PackageVialsTableProps & {
   vialService: VialService;
@@ -33,6 +31,14 @@ export function usePackageVialsTable(props: UsePackageVialsTableProps) {
   const packageVials = vials?.filter((v) => v.packageId === props.data.id) ?? [];
 
   const collumns = [
+    {
+      name: 'Quantidade ',
+      accessor: (v: Vial) => getLaboratoryById(v.laboratoryId).name,
+      sorter: (a: Vial, b: Vial) =>
+        getLaboratoryById(a.laboratoryId).name.localeCompare(
+          getLaboratoryById(b.laboratoryId).name
+        ),
+    },
     {
       name: 'Laboratório',
       accessor: (v: Vial) => getLaboratoryById(v.laboratoryId).name,
