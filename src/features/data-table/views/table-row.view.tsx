@@ -4,7 +4,7 @@ import {
   DataTableRealContextType,
   useDataTableContext,
 } from '@/features/data-table/data-table.provider';
-import { ActionsRowButtons } from '@/features/data-table/views/ActionsRowButtons';
+import { ActionsRowButtons } from '@/features/data-table/views/actions-row-buttons.view';
 
 type TableRowProps<T> = {
   data: T;

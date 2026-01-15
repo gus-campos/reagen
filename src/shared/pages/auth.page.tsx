@@ -1,5 +1,5 @@
 import { Group, Paper, Title } from '@mantine/core';
-import { AccountInfoForm } from '@/features/auth/AccountInfoForm';
+import { AccountInfoForm } from '@/features/auth/auth.view';
 
 export default function Auth() {
   return (

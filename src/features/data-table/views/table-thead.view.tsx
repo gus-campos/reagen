@@ -4,8 +4,8 @@ import {
   useDataTableContext,
 } from '@/features/data-table/data-table.provider';
 import { TableCollumn } from '@/features/data-table/data-table.type';
-import { ActionsCollumnButtons } from '@/features/data-table/views/ActionsCollumnButtons';
-import { TableExtraOptions } from '@/features/data-table/views/TableExtraOptions';
+import { ActionsCollumnButtons } from '@/features/data-table/views/actions-collumn-buttons.view';
+import { TableExtraOptions } from '@/features/data-table/views/table-extra-options.view';
 
 type VialsTableTheadProps = {
   sortedAscending: boolean | null;

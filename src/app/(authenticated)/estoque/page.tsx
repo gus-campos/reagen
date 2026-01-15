@@ -1,5 +1,5 @@
 'use client';
 
-import StockPage from '@/shared/pages/StockPage';
+import StockPage from '@/shared/pages/stock-page.view';
 
 export default StockPage;

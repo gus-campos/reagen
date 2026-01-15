@@ -1,11 +1,8 @@
-import { useEffect } from 'react';
 import { Accordion, Badge, Grid, Group, Paper, Radio, Select, Text, Title } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
-import { useForm } from '@mantine/form';
 import { StockFilter } from '@/features/stock-filter/stock-filter.type';
-import { useData } from '@/providers/data.provider';
-import { toNullableLocalDate } from '@/shared/utils/date';
 import { portugueseSearchFilter } from '@/shared/utils/portuguese-search-filter';
+import { useFilterOptions } from '@/features/stock-filter/views/filter-options.viewmodel';
 
 type FilterOptionsProps = {
   filter: StockFilter;
@@ -22,38 +19,26 @@ function TouchedBadge(props: { text: string; active: boolean }) {
 }
 
 export function FilterOptions(props: FilterOptionsProps) {
-  const { controlAgencies, brands, suppliers, laboratories } = useData();
-
-  const form = useForm<StockFilter>({
-    initialValues: props.filter,
-    transformValues: (values) => ({
-      ...values,
-      minExpire: toNullableLocalDate(values.minExpire),
-      maxExpire: toNullableLocalDate(values.maxExpire),
-    }),
-  });
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      props.onFilterChange(form.getTransformedValues());
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, [form.values]);
-
-  // TODO: Adicionar opções de filtro por laboratório, fornecedor
-
-  // FIXME: selo indicando opção não nula de filtro
-
-  // Quando A mudar, B vai pro valor deutro e fica desativado
-
-  const dateFieldsDisabled = form.values.expired !== 'all';
-
-  const expiredDisabled = form.values.maxExpire !== null || form.values.minExpire !== null;
-
-  const controlledDisabled = form.values.controlAgencyId !== null;
-
-  const controlAgencyDisabled = form.values.controlled !== 'all';
+  const {
+    form,
+    dateFieldsDisabled,
+    expiredDisabled,
+    controlledDisabled,
+    controlAgencyDisabled,
+    isExpireDateFilterActive,
+    isControlledFilterActive,
+    isBrandFilterActive,
+    isLaboratoryFilterActive,
+    isSupplierFilterActive,
+    controlAgencyOptions,
+    brandOptions,
+    laboratoryOptions,
+    supplierOptions,
+    handleControlAgencyChange,
+    handleBrandChange,
+    handleLaboratoryChange,
+    handleSupplierChange,
+  } = useFilterOptions(props);
 
   return (
     <Paper withBorder radius="sm" py="md" px="md">
@@ -67,14 +52,7 @@ export function FilterOptions(props: FilterOptionsProps) {
           <Accordion.Item value="expire-date">
             <Accordion.Control>
               <Group>
-                <TouchedBadge
-                  active={
-                    form.values.expired !== 'all' ||
-                    !!form.values.minExpire ||
-                    !!form.values.maxExpire
-                  }
-                  text="Por vencimento"
-                />
+                <TouchedBadge active={isExpireDateFilterActive} text="Por vencimento" />
               </Group>
             </Accordion.Control>
             <Accordion.Panel>
@@ -113,10 +91,7 @@ export function FilterOptions(props: FilterOptionsProps) {
 
           <Accordion.Item value="controlled">
             <Accordion.Control>
-              <TouchedBadge
-                active={form.values.controlled !== 'all' || !!form.values.controlAgencyId}
-                text="Por controle"
-              />
+              <TouchedBadge active={isControlledFilterActive} text="Por controle" />
             </Accordion.Control>
             <Accordion.Panel>
               <Radio.Group label="Mostrar" defaultValue="all" {...form.getInputProps('controlled')}>
@@ -139,19 +114,15 @@ export function FilterOptions(props: FilterOptionsProps) {
                 label="Orgão de controle"
                 placeholder="Escolha o orgão de controle"
                 disabled={controlAgencyDisabled}
-                data={controlAgencies!.map((c) => {
-                  return { value: c.id, label: c.name };
-                })}
-                onChange={(value) => {
-                  form.setValues({ controlAgencyId: value ? value : null });
-                }}
+                data={controlAgencyOptions}
+                onChange={handleControlAgencyChange}
                 filter={portugueseSearchFilter}
               />
             </Accordion.Panel>
           </Accordion.Item>
           <Accordion.Item value="byBrand">
             <Accordion.Control>
-              <TouchedBadge active={form.values.brandId !== null} text="Por marca" />
+              <TouchedBadge active={isBrandFilterActive} text="Por marca" />
             </Accordion.Control>
             <Accordion.Panel>
               <Select
@@ -159,12 +130,8 @@ export function FilterOptions(props: FilterOptionsProps) {
                 mt="md"
                 label="Marca"
                 placeholder="Escolha a marca"
-                data={brands!.map((b) => {
-                  return { value: b.id, label: b.name };
-                })}
-                onChange={(value) => {
-                  form.setValues({ brandId: value ? value : null });
-                }}
+                data={brandOptions}
+                onChange={handleBrandChange}
                 filter={portugueseSearchFilter}
               />
             </Accordion.Panel>
@@ -172,7 +139,7 @@ export function FilterOptions(props: FilterOptionsProps) {
 
           <Accordion.Item value="byLaboratory">
             <Accordion.Control>
-              <TouchedBadge active={form.values.laboratoryId !== null} text="Por laboratório" />
+              <TouchedBadge active={isLaboratoryFilterActive} text="Por laboratório" />
             </Accordion.Control>
             <Accordion.Panel>
               <Select
@@ -180,12 +147,8 @@ export function FilterOptions(props: FilterOptionsProps) {
                 mt="md"
                 label="Laboratório"
                 placeholder="Escolha o laboratório"
-                data={laboratories!.map((l) => {
-                  return { value: l.id, label: l.name };
-                })}
-                onChange={(value) => {
-                  form.setValues({ laboratoryId: value ? value : null });
-                }}
+                data={laboratoryOptions}
+                onChange={handleLaboratoryChange}
                 filter={portugueseSearchFilter}
               />
             </Accordion.Panel>
@@ -193,7 +156,7 @@ export function FilterOptions(props: FilterOptionsProps) {
 
           <Accordion.Item value="bySupplier">
             <Accordion.Control>
-              <TouchedBadge active={form.values.supplierId !== null} text="Por fornecedor" />
+              <TouchedBadge active={isSupplierFilterActive} text="Por fornecedor" />
             </Accordion.Control>
             <Accordion.Panel>
               <Select
@@ -201,12 +164,8 @@ export function FilterOptions(props: FilterOptionsProps) {
                 mt="md"
                 label="Fornecedor"
                 placeholder="Escolha o fornecedor"
-                data={suppliers!.map((s) => {
-                  return { value: s.id, label: s.name };
-                })}
-                onChange={(value) => {
-                  form.setValues({ supplierId: value ? value : null });
-                }}
+                data={supplierOptions}
+                onChange={handleSupplierChange}
                 filter={portugueseSearchFilter}
               />
             </Accordion.Panel>

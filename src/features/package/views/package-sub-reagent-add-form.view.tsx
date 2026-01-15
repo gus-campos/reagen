@@ -1,9 +1,8 @@
 import { Box, Button, Flex, Grid, Group, Loader, Select, Text, TextInput } from '@mantine/core';
-import { useForm } from '@mantine/form';
 import { Reagent } from '@/features/reagent/reagent.type';
 import { Dimension } from '@/features/size/unit.type';
-import { useData } from '@/providers/data.provider';
 import { portugueseSearchFilter } from '@/shared/utils/portuguese-search-filter';
+import { usePackageSubReagentAddForm } from '@/features/package/views/package-sub-reagent-add-form.viewmodel';
 
 type PackageSubReagentAddFormProps = {
   loadingAddReagent: boolean;
@@ -14,26 +13,7 @@ type PackageSubReagentAddFormProps = {
 };
 
 export function PackageSubReagentAddForm(props: PackageSubReagentAddFormProps) {
-  const { reagents, controlAgencies } = useData();
-
-  const reagentForm = useForm<Reagent>({
-    initialValues: {
-      name: '',
-      id: '',
-      dimension: Dimension.Mass,
-      sizes: [],
-      controlAgencyId: null,
-    },
-    validate: {
-      // FIXME: tipagem
-      name: (value) =>
-        value === ''
-          ? 'Dê um nome pro reagente'
-          : reagents?.some((reag) => value.toLowerCase() === reag.name.toLocaleLowerCase())
-            ? 'Este reagente já existe'
-            : null,
-    },
-  });
+  const { reagentForm, controlAgencies } = usePackageSubReagentAddForm(props);
 
   return (
     <form

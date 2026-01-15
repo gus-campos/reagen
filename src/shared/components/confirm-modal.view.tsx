@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import { Button, Group, Modal, Text } from '@mantine/core';
+import { useConfirmModal } from '@/shared/components/confirm-modal.viewmodel';
 
 type ConfirmModalProps = {
   opened: boolean;
@@ -9,6 +10,8 @@ type ConfirmModalProps = {
 };
 
 export function ConfirmModal(props: ConfirmModalProps) {
+  const { handleConfirmAndClose } = useConfirmModal(props);
+
   return (
     <Modal opened={props.opened} onClose={props.onClose} title="AVISO" centered>
       <Text style={{ whiteSpace: 'pre-line' }}>{props.children}</Text>
@@ -16,13 +19,7 @@ export function ConfirmModal(props: ConfirmModalProps) {
         <Button variant="default" onClick={props.onClose}>
           Cancelar
         </Button>
-        <Button
-          color="blue"
-          onClick={() => {
-            props.onConfirm();
-            props.onClose();
-          }}
-        >
+        <Button color="blue" onClick={handleConfirmAndClose}>
           Confirmar
         </Button>
       </Group>

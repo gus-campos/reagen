@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import {
   Box,
   Button,
@@ -12,18 +12,13 @@ import {
   Text,
 } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
-import { useForm } from '@mantine/form';
 import { Package } from '@/features/package/package.type';
-import { PackageSubReagentAddForm } from '@/features/package/views/PackageSubReagentAddForm';
+import { PackageSubReagentAddForm } from '@/features/package/views/package-sub-reagent-add-form.view';
 import { Reagent } from '@/features/reagent/reagent.type';
-import { SizeAddForm } from '@/features/reagent/views/SizeAddForm';
-import { Size } from '@/features/size/size.type';
+import { SizeAddForm } from '@/features/reagent/views/size-add-form.view';
 import { formattedSize } from '@/features/size/size.util';
-import Unit from '@/features/size/unit.type';
-import { useData } from '@/providers/data.provider';
-import { useDependencyInjection } from '@/providers/dependency-injection.provider';
-import { toNullableLocalDate, validateDate } from '@/shared/utils/date';
 import { portugueseSearchFilter } from '@/shared/utils/portuguese-search-filter';
+import { usePackageEdit } from '@/features/package/views/package-edit.viewmodel';
 
 type PackageEditProps = {
   selectedPackage: Package | null;
@@ -36,184 +31,34 @@ type PackageEditProps = {
   preFilledPackageData?: Partial<Package>;
 };
 
-// FIXME: Melhorar, reduzir
-
-const nullSize = { amount: 0, unit: Unit.Units };
-
-// FIXME: Ao editar, tamanho é exibido, mas não aceita salvar, pois não está setado no estado
-
-type LabGroup = { laboratoryId: string; amount: number };
-
 export function PackageEdit(props: PackageEditProps) {
-  const { reagentService, vialService } = useDependencyInjection();
   const {
+    reagentAddMode,
+    loadingAddReagent,
+    sizeAddMode,
+    loadingAddSize,
+    labGroups,
+    labIdToAdd,
+    packageForm,
+    selectedReagent,
     reagents,
     suppliers,
     brands,
     laboratories,
-    getReagentById,
+    setReagentAddMode,
+    setCreatedReagentName,
+    setLoadingAddReagent,
+    setSizeAddMode,
+    setLoadingAddedSize,
+    setLabIdToAdd,
+    setLabGroups,
+    handleAddSize,
+    handleSubmitPackage,
+    handleChangeSize,
+    handleChangeReagent,
     getBrandById,
-    getLaboratoryById,
     getSupplierById,
-  } = useData();
-
-  // Adição de reagente
-
-  const [reagentAddMode, setReagentAddMode] = useState(false);
-  const [createdReagentName, setCreatedReagentName] = useState('');
-  const [loadingAddReagent, setLoadingAddReagent] = useState(false);
-
-  // Adição de tamanho
-
-  const [sizeAddMode, setSizeAddMode] = useState(false);
-  const [addedSize, setAddedSize] = useState<Size | null>(null);
-  const [loadingAddSize, setLoadingAddedSize] = useState(false);
-
-  // Adição de frascos
-
-  const [labGroups, setLabGroups] = useState<LabGroup[]>([]);
-  const [labIdToAdd, setLabIdToAdd] = useState<string | null>(null);
-
-  // ================= Forms e validação
-
-  const packageForm = useForm<Package>({
-    initialValues: props.selectedPackage ?? {
-      inDate: new Date(),
-      expireDate: new Date(),
-      size: nullSize,
-      purity: 0,
-      id: '',
-      reagentId: '',
-      brandId: '',
-      supplierId: '',
-
-      // Sobrescrevendo campos pré definidos
-      ...props.preFilledPackageData,
-    },
-
-    // FIXME: tipagem
-    transformValues: (values: Package) => ({
-      ...values,
-      expireDate: toNullableLocalDate(values.expireDate)!,
-      inDate: toNullableLocalDate(values.inDate)!,
-      // Começa como string vazia indicadora de null, e converte pra null se necessário
-      brandId: values.brandId !== '' ? values.brandId : null,
-    }),
-
-    validate: {
-      reagentId: (id) => (id !== '' || reagentAddMode ? null : 'Inserir um reagente'),
-      purity: (value) => (value >= 1 && value <= 100 ? null : 'Insira uma pureza entre 1 e 100 %'),
-      // Se já tiver selecionado reagente, e
-      size: (value: Size, values: Package) =>
-        values.reagentId !== '' && (value === ('' as any) || value.amount === 0)
-          ? 'Selecione um tamanho válido'
-          : null,
-      expireDate: (date: Date | null) => validateDate(date, false),
-      inDate: (date: Date | null) => validateDate(date, false),
-    },
-  });
-
-  const selectedReagent: Reagent | null =
-    packageForm.values.reagentId !== '' ? getReagentById(packageForm.values.reagentId) : null;
-
-  // ================= Define e atualiza as opções de unidade
-
-  // EFFECTS
-
-  // Conclui a adição do reagente
-  useEffect(() => {
-    if (reagentAddMode && loadingAddReagent) {
-      setReagentAddMode(false);
-      setLoadingAddReagent(false);
-    }
-  }, [reagents]);
-
-  // Conclui a adição do tamanho
-  useEffect(() => {
-    if (sizeAddMode && loadingAddSize) {
-      setSizeAddMode(false);
-      setLoadingAddedSize(false);
-    }
-  }, [reagents]);
-
-  // Seleciona o reagente recém criado e reseta o tamanho
-  useEffect(() => {
-    if (!reagentAddMode && !loadingAddReagent && createdReagentName !== '') {
-      const reagent = reagents?.find((reag) => createdReagentName.trim() === reag.name.trim());
-      if (!reagent) {
-        return;
-      }
-      packageForm.setValues({ reagentId: reagent.id });
-      setCreatedReagentName('');
-    }
-
-    packageForm.setFieldValue('size', '' as any);
-  }, [loadingAddReagent]);
-
-  // Seleciona o tamanho recém-criado
-  useEffect(() => {
-    if (!sizeAddMode && !loadingAddSize && addedSize !== null) {
-      const selectedSize = selectedReagent?.sizes.find(
-        (size: Size) => formattedSize(size) === formattedSize(addedSize)
-      );
-      if (!sizeAddMode && !loadingAddSize && addedSize) {
-        packageForm.setValues({ size: selectedSize });
-        setAddedSize(null);
-      }
-    }
-  }, [loadingAddSize]);
-
-  // HANDLES
-
-  const handleAddSize = (size: Size) => {
-    const newReagent = { ...selectedReagent!, sizes: [...selectedReagent!.sizes, size] };
-    reagentService.update(selectedReagent!.id, newReagent);
-    setAddedSize(size);
-    setLoadingAddedSize(true);
-  };
-
-  const handleSubmitPackage = async (pkg: Package) => {
-    props.onClosePackageModal();
-    if (props.selectedPackage) {
-      props.onEditPackage(pkg);
-    } else {
-      const pkgCreated = await props.onAddPackage(pkg);
-
-      // Adicionar todos os frascos
-      labGroups.flatMap((group) =>
-        Array.from({ length: group.amount }).map(() =>
-          vialService.create({
-            laboratoryId: group.laboratoryId,
-            packageId: pkgCreated.id,
-            outDate: null,
-          })
-        )
-      );
-    }
-  };
-
-  const handleChangeSize = (value: string | null) => {
-    if (value === null || value === '') {
-      packageForm.setFieldValue('size', '' as any);
-      packageForm.setTouched({ ...packageForm.isTouched, size: false });
-    } else {
-      const sizeObj = selectedReagent?.sizes.find((s) => formattedSize(s) === value);
-      packageForm.setFieldValue('size', sizeObj ?? ('' as any));
-    }
-  };
-  // FIXME: ERRO AO DESMARCAR MARCA!!!
-
-  const handleChangeReagent = (value: string | null) => {
-    const validReagent = reagents?.find((r) => r.id === value);
-    packageForm.setValues({
-      reagentId: validReagent?.id ?? undefined,
-    });
-
-    packageForm.setFieldValue('size', validReagent?.sizes[0] ?? ('' as any));
-  };
-
-  // Buscar todos os laboratórios inclusos
-  // Contar quantidade de cada
+  } = usePackageEdit(props);
 
   return (
     <Box>

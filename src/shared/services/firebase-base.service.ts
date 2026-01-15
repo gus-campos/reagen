@@ -46,7 +46,9 @@ export abstract class FirebaseBaseDatabase implements IDatabase {
   }
 
   listen<T extends WithId>(table: DatabaseTableName, callback: (data: T[]) => void) {
-    const colRef = collection(db, table).withConverter(FirestoreConverters.get(table));
+    const colRef = collection(db, table).withConverter(
+      FirestoreConverters.get(table) as FirestoreDataConverter<T>
+    );
 
     const unsubscribe = onSnapshot(colRef, (snapshot) => {
       callback(snapshot.docs.map((doc) => doc.data()));
@@ -112,7 +114,7 @@ class FirestoreConverters {
   };
 
   // FIXME: Converter do firabse poderia aprovitar os revivers
-  static FIRESTORE_CONVERTERS: Record<DatabaseTableName, FirestoreDataConverter<any>> = {
+  static FIRESTORE_CONVERTERS: Record<DatabaseTableName, FirestoreDataConverter<unknown>> = {
     [DatabaseTableName.Vial]: FirestoreConverters.createFirestoreConverter<Vial>(),
     [DatabaseTableName.Package]: FirestoreConverters.createFirestoreConverter<Package>(),
     [DatabaseTableName.Reagent]: FirestoreConverters.createFirestoreConverter<Reagent>(),

@@ -1,5 +1,5 @@
 import { Box, Button, Group, TextInput } from '@mantine/core';
-import { useForm } from '@mantine/form';
+import { useNameDataEdit } from '@/shared/components/name-data-edit.viewmodel';
 import { NameData } from '@/shared/types/name-data';
 
 type NameDataEditProps<T extends NameData> = {
@@ -10,24 +10,7 @@ type NameDataEditProps<T extends NameData> = {
 };
 
 export function NameDataEdit<T extends NameData>(props: NameDataEditProps<T>) {
-  const dataForm = useForm<NameData>({
-    initialValues: {
-      name: props.selectedData?.name ?? '',
-      id: props.selectedData?.id ?? '',
-    },
-    validate: {
-      name: (value: string) => (value.trim() === '' ? 'Nome não deve ser vazio' : null),
-    },
-  });
-
-  const handleSubmit = (values: NameData) => {
-    const formData = values as unknown as T;
-    if (props.selectedData) {
-      props.onEditData(formData);
-    } else {
-      props.onAddData(formData);
-    }
-  };
+  const { dataForm, submitButtonText, handleSubmit } = useNameDataEdit(props);
 
   return (
     <form onSubmit={dataForm.onSubmit(handleSubmit)}>
@@ -38,7 +21,7 @@ export function NameDataEdit<T extends NameData>(props: NameDataEditProps<T>) {
           <Button variant="outline" onClick={props.onCancel}>
             Cancelar
           </Button>
-          <Button type="submit">{props.selectedData ? 'Editar' : 'Adicionar'}</Button>
+          <Button type="submit">{submitButtonText}</Button>
         </Group>
       </Box>
     </form>

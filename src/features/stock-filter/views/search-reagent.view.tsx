@@ -16,17 +16,19 @@ export function SearchReagent(props: SearchBarProps) {
   const sortedReagents = reagents?.sort((a, b) => a.name.trim().localeCompare(b.name.trim())) ?? [];
   const options = sortedReagents.map((reag) => ({ value: reag.id, label: reag.name }));
 
+  const handleChangeSearch = (value: string) => {
+    const reagent = reagents?.find((reag) => reag.name === value) ?? null;
+    props.onChangeSearch(value);
+    if (props.onChangeReagent) props.onChangeReagent(reagent);
+  };
+
   return (
     <Box style={{ padding: '0 0 10px 0' }}>
       <Autocomplete
         rightSection={<FaMagnifyingGlass />}
         placeholder={props.placeholder}
         data={options}
-        onChange={(value) => {
-          const reagent = reagents?.find((reag) => reag.name === value) ?? null;
-          props.onChangeSearch(value);
-          if (props.onChangeReagent) props.onChangeReagent(reagent);
-        }}
+        onChange={handleChangeSearch}
         radius="sm"
       />
     </Box>

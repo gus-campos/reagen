@@ -1,12 +1,12 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Box, Button, LoadingOverlay, Modal } from '@mantine/core';
-import { TableCrudOperations } from '@/features/data-table/data-table.type';
 import { DataTable } from '@/features/data-table/data-table.view';
 import { NamedOption } from '@/features/named-option/named-option.type';
-import { ConfirmModal } from '@/shared/components/ConfirmModal';
-import { NameDataEdit } from '@/shared/components/NameDataEdit';
+import { useNamedOptionView } from '@/features/named-option/named-option.viewmodel';
+import { ConfirmModal } from '@/shared/components/confirm-modal.view';
+import { NameDataEdit } from '@/shared/components/name-data-edit.view';
 import { BaseRepository } from '@/shared/services/base-repository.service';
 
 type NameDataViewProps<T extends NamedOption> = {
@@ -18,102 +18,42 @@ type NameDataViewProps<T extends NamedOption> = {
 };
 
 export function NamedOptionView<T extends NamedOption>(props: NameDataViewProps<T>) {
-  const initialCollumns = [
-    {
-      name: 'Nome',
-      accessor: (data: T) => data.name,
-      fixed: true,
-      sorter: (a: T, b: T) => a.name.trim().localeCompare(b.name.trim()),
-    },
-  ];
-
-  // STATES
-
-  const [mode, setMode] = useState<'edit' | 'table'>('table');
-  const [selectedDataId, setSelectedDataId] = useState<string | null>(null);
-  const [warning, setWarning] = useState<string | null>(null);
-
-  const selectedData =
-    selectedDataId && !props.loadingData
-      ? props.datas!.find((data) => data.id === selectedDataId)!
-      : null;
-
-  // HANDLERS
-
-  const handleBeginDataAdd = () => {
-    setSelectedDataId(null);
-    setMode('edit');
-  };
-
-  const handleBeginDataEdit = (data: T) => {
-    setSelectedDataId(data.id);
-    setMode('edit');
-  };
-
-  const handleAddData = (data: T) => {
-    props.repositoryService.create(data);
-    setSelectedDataId(null);
-    setMode('table');
-  };
-
-  const handleEditData = (data: T) => {
-    props.repositoryService.update(data.id, data);
-    setSelectedDataId(null);
-    setMode('table');
-  };
-
-  const handleDeleteData = (data: T) => {
-    const message = props.getDeleteWarning(data);
-
-    if (message !== null) {
-      // Mensagem
-      setWarning(message);
-      setSelectedDataId(data.id);
-    } else {
-      // Deleta
-      props.repositoryService.delete(data.id!);
-    }
-  };
-
-  const handleConfirmDataDelete = () => {
-    props.repositoryService.delete(selectedDataId!);
-    handleExitConfirmation();
-    setWarning(null);
-  };
-
-  const handleExitConfirmation = () => {
-    setSelectedDataId(null);
-    setWarning(null);
-  };
-
-  const handleExitEdit = () => {
-    setSelectedDataId(null);
-    setMode('table');
-  };
-
-  const crudOperations: TableCrudOperations<T> = {
-    handleBeginDataEdit,
-    handleDeleteData,
-  };
+  const {
+    selectedData,
+    warning,
+    initialCollumns,
+    isEditModalOpen,
+    isConfirmModalOpen,
+    modalTitle,
+    shouldShowLoading,
+    shouldShowContent,
+    datas,
+    dataName,
+    handleBeginDataAdd,
+    handleAddData,
+    handleEditData,
+    handleConfirmDataDelete,
+    handleExitConfirmation,
+    handleExitEdit,
+    crudOperations,
+  } = useNamedOptionView(props);
 
   return (
     <>
-      {props.loadingData ? (
-        <LoadingOverlay visible />
-      ) : (
+      {shouldShowLoading && <LoadingOverlay visible />}
+      {shouldShowContent && (
         <>
           <span style={{ position: 'relative' }}>
-            <h1>{props.dataName}</h1>
+            <h1>{dataName}</h1>
 
             <Box pb="80px">
               <DataTable<T>
-                datas={props.datas!}
+                datas={datas!}
                 collumns={initialCollumns}
                 crudOperations={crudOperations}
               />
             </Box>
 
-            {/* FIXME: BOtão fica mal posicionado no firefox */}
             <Button
               style={{
                 position: 'absolute',
@@ -127,14 +67,9 @@ export function NamedOptionView<T extends NamedOption>(props: NameDataViewProps<
               + Adicionar marca
             </Button>
 
-            {/* FIXME: Dados são apagados por fechamento "clicar fora" */}
             <Modal
-              title={
-                <strong>
-                  {selectedDataId ? `Editar ${props.dataName}` : `Adicionar ${props.dataName}`}
-                </strong>
-              }
-              opened={mode === 'edit'}
+              title={<strong>{modalTitle}</strong>}
+              opened={isEditModalOpen}
               onClose={handleExitEdit}
             >
               <NameDataEdit
@@ -146,7 +81,7 @@ export function NamedOptionView<T extends NamedOption>(props: NameDataViewProps<
             </Modal>
           </span>
           <ConfirmModal
-            opened={warning !== null}
+            opened={isConfirmModalOpen}
             onClose={handleExitConfirmation}
             onConfirm={handleConfirmDataDelete}
           >

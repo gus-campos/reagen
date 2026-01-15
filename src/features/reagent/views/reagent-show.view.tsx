@@ -1,19 +1,13 @@
 import { Grid, Stack, Text } from '@mantine/core';
-import { useData } from '@/providers/data.provider';
 import { Reagent } from '../reagent.type';
+import { useReagentShow } from '@/features/reagent/views/reagent-show.viewmodel';
 
 type VialShowProps = {
   reagent: Reagent;
 };
 
 export function ReagentShow(props: VialShowProps) {
-  /* TODO: Incluir botão de edição do nome */
-
-  const { getControlAgencyById } = useData();
-
-  const controlAgency = props.reagent.controlAgencyId
-    ? getControlAgencyById(props.reagent.controlAgencyId)
-    : null;
+  const { controlAgencyDisplay } = useReagentShow(props);
 
   return (
     <Stack p="md">
@@ -38,7 +32,7 @@ export function ReagentShow(props: VialShowProps) {
           <Text size="sm" c="dimmed">
             Orgão de Controle
           </Text>
-          <Text fw={500}>{controlAgency?.name ?? '--'}</Text>
+          <Text fw={500}>{controlAgencyDisplay}</Text>
         </Grid.Col>
       </Grid>
     </Stack>

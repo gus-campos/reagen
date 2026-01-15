@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { Box, Grid, LoadingOverlay } from '@mantine/core';
 import { PackageView } from '@/features/package/package.view';
 import { StockFilter } from '@/features/stock-filter/stock-filter.type';
-import { FilterOptions } from '@/features/stock-filter/views/FilterOptions';
-import { SearchReagent } from '@/features/stock-filter/views/SearchReagent';
+import { FilterOptions } from '@/features/stock-filter/views/filter-options.view';
+import { SearchReagent } from '@/features/stock-filter/views/search-reagent.view';
 import { useData } from '@/providers/data.provider';
 
 // PRecisa ser inicializado aqui
@@ -36,14 +36,16 @@ export default function StockPage() {
     setFilter(filter);
   };
 
+  const loading = loadingVials || loadingControlAgencies;
+  const error = vialsError || controlAgenciesError;
+
   return (
     <>
       <h1>Estoque</h1>
 
-      {vialsError || controlAgenciesError ? (
+      {error ? (
         <p>ERRO</p>
-      ) : loadingVials || loadingControlAgencies ? (
-        // TODO: Inserir skeletons
+      ) : loading ? (
         <LoadingOverlay visible />
       ) : (
         <>

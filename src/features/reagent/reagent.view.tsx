@@ -1,151 +1,36 @@
 'use client';
 
-import React, { useMemo, useState } from 'react';
-import { Box, Button, LoadingOverlay, Modal, Pill } from '@mantine/core';
-import { TableCrudOperations } from '@/features/data-table/data-table.type';
+import React from 'react';
+import { Box, Button, LoadingOverlay, Modal } from '@mantine/core';
 import { DataTable } from '@/features/data-table/data-table.view';
-import { Package } from '@/features/package/package.type';
 import { Reagent } from '@/features/reagent/reagent.type';
-import { ReagentEdit } from '@/features/reagent/views/ReagentEdit';
-import { formattedSize } from '@/features/size/size.util';
-import { SearchReagent } from '@/features/stock-filter/views/SearchReagent';
-import { useData } from '@/providers/data.provider';
-import { useDependencyInjection } from '@/providers/dependency-injection.provider';
-import { ConfirmModal } from '@/shared/components/ConfirmModal';
-import { findPackagesOfReagent } from '@/shared/utils/misc';
+import { useReagentsView } from '@/features/reagent/reagent.viewmodel';
+import { ReagentEdit } from '@/features/reagent/views/reagent-edit.view';
+import { SearchReagent } from '@/features/stock-filter/views/search-reagent.view';
+import { ConfirmModal } from '@/shared/components/confirm-modal.view';
 
 export function ReagentsView() {
-  const { reagentService } = useDependencyInjection();
-
   const {
     reagents,
-    loadingReagents,
-    reagentsError,
-    packages,
-    getReagentById,
-    getControlAgencyById,
-  } = useData();
-
-  const getAgencyName = (reagent: Reagent) => {
-    return reagent.controlAgencyId ? getControlAgencyById(reagent.controlAgencyId).name : '--';
-  };
-
-  const initialCollumns = [
-    {
-      name: 'Nome',
-      accessor: (reagent: Reagent) => reagent.name,
-      fixed: true,
-      sorter: (a: Reagent, b: Reagent) => a.name.trim().localeCompare(b.name.trim()),
-      sortingPriority: 0,
-    },
-    {
-      name: 'Dimensão',
-      accessor: (reagent: Reagent) => reagent.dimension,
-      fixed: false,
-      sorter: (a: Reagent, b: Reagent) => a.dimension.trim().localeCompare(b.dimension.trim()),
-      sortingPriority: null,
-    },
-    {
-      name: 'Tamanhos',
-      accessor: (reagent: Reagent) =>
-        reagent.sizes.map((size, index) => <Pill key={index}>{formattedSize(size)}</Pill>),
-      fixed: false,
-      sortingPriority: null,
-    },
-    {
-      name: 'Orgão de Controle',
-      accessor: (reagent: Reagent) => getAgencyName(reagent),
-      fixed: false,
-      sorter: (a: Reagent, b: Reagent) =>
-        getAgencyName(a).trim().localeCompare(getAgencyName(b).trim()),
-      sortingPriority: null,
-    },
-  ];
-
-  // STATES
-
-  const [mode, setMode] = useState<'show' | 'edit' | 'table'>('table');
-  const [selectedReagentId, setSelectedReagentId] = useState<string | null>(null);
-  const [search, setSearch] = useState('');
-  const [warning, setWarning] = useState<string | null>(null);
-
-  const selectedReagent = useMemo(() => {
-    return selectedReagentId ? getReagentById(selectedReagentId) : null;
-  }, [reagents, selectedReagentId]);
-
-  // HANDLERS
-
-  const handleSearchChange = (search: string) => {
-    setSearch(search);
-  };
-
-  const handleBeginReagentAddition = () => {
-    setSelectedReagentId(null);
-    setMode('edit');
-  };
-
-  const handleShowReagent = (reagent: Reagent) => {
-    setSelectedReagentId(reagent.id);
-    setMode('show');
-  };
-
-  const handleBeginReagentEdit = (reagent: Reagent) => {
-    setSelectedReagentId(reagent.id);
-    setMode('edit');
-  };
-
-  const handleAddReagent = (reagent: Reagent) => {
-    reagentService.create(reagent);
-    setSelectedReagentId(null);
-  };
-
-  const handleEditReagent = (reagent: Reagent) => {
-    reagentService.update(reagent.id, reagent);
-    setSelectedReagentId(null);
-  };
-
-  const handleDeleteReagent = (reagent: Reagent) => {
-    const relatedPackages = findPackagesOfReagent(reagent, packages!);
-
-    if (relatedPackages.length > 0) {
-      setSelectedReagentId(reagent.id);
-      setWarning(getConfirmationMessage(reagent, relatedPackages));
-    } else {
-      reagentService.delete(reagent.id);
-    }
-  };
-
-  const handleConfirmReagentDelete = () => {
-    reagentService.delete(selectedReagentId!);
-    setSelectedReagentId(null);
-    setWarning(null);
-  };
-
-  const handleExitConfirmation = () => {
-    setWarning(null);
-    setSelectedReagentId(null);
-  };
-
-  const handleExitEdit = () => {
-    setSelectedReagentId(null);
-    setMode('table');
-  };
-
-  const crudOperations: TableCrudOperations<Reagent> = {
-    handleClickRow: handleShowReagent,
-    handleBeginDataEdit: handleBeginReagentEdit,
-    handleDeleteData: handleDeleteReagent,
-  };
-
-  // AUX
-
-  const getConfirmationMessage = (reagent: Reagent, relatedPackages: Package[]) => {
-    return `Excluir o reagente: ${reagent.name}
-      Causará a exclusão dos seguintes pacotes: 
-      ${relatedPackages.map((vial) => `* ${vial.id}`).join('\n')}
-      `;
-    // FIXME: que causará a exclusão dos seguintes frascos...
-  };
+    selectedReagent,
+    search,
+    warning,
+    initialCollumns,
+    isEditModalOpen,
+    isConfirmModalOpen,
+    modalTitle,
+    shouldShowTable,
+    shouldShowError,
+    shouldShowLoading,
+    handleSearchChange,
+    handleBeginReagentAddition,
+    handleAddReagent,
+    handleEditReagent,
+    handleConfirmReagentDelete,
+    handleExitConfirmation,
+    handleExitEdit,
+    crudOperations,
+  } = useReagentsView();
 
   return (
     <>
@@ -157,12 +42,11 @@ export function ReagentsView() {
           placeholder="Busque por nome de reagentes..."
           onChangeSearch={handleSearchChange}
         />
+
         <Box pb="80px">
-          {reagentsError ? (
-            <p>ERRO</p>
-          ) : loadingReagents ? (
-            <LoadingOverlay visible />
-          ) : (
+          {shouldShowError && <p>ERRO</p>}
+          {shouldShowLoading && <LoadingOverlay visible />}
+          {shouldShowTable && (
             <DataTable<Reagent>
               datas={reagents!}
               collumns={initialCollumns}
@@ -186,23 +70,22 @@ export function ReagentsView() {
           + Adicionar reagente
         </Button>
 
-        {/* FIXME: Dados são apagados por fechamento "clicar fora" */}
         <Modal
-          title={<strong>{selectedReagentId ? `Editar reagente` : `Adicionar reagente`}</strong>}
-          opened={mode === 'edit'}
+          title={<strong>{modalTitle}</strong>}
+          opened={isEditModalOpen}
           onClose={handleExitEdit}
         >
           <ReagentEdit
             selectedReagent={selectedReagent}
             onAddReagent={handleAddReagent}
-            vialModalOpened={mode === 'edit'}
+            vialModalOpened={isEditModalOpen}
             onEditReagent={handleEditReagent}
             onClose={handleExitEdit}
           />
         </Modal>
       </span>
       <ConfirmModal
-        opened={warning !== null}
+        opened={isConfirmModalOpen}
         onClose={handleExitConfirmation}
         onConfirm={handleConfirmReagentDelete}
       >

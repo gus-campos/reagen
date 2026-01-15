@@ -1,6 +1,6 @@
 import { usePackageView } from '@/features/package/package.modelview';
-import { PackageLayout } from '@/features/package/views/PackageLayout';
-import { PackageTable } from '@/features/package/views/PackageTable';
+import { PackageLayout } from '@/features/package/views/package-layout.view';
+import { PackageTable } from '@/features/package/views/package-table.view';
 import { StockFilter } from '@/features/stock-filter/stock-filter.type';
 
 export type PackageViewProps = {

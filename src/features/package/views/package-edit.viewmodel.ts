@@ -1,0 +1,191 @@
+import { useEffect, useState } from 'react';
+import { useForm } from '@mantine/form';
+import { Package } from '@/features/package/package.type';
+import { Reagent } from '@/features/reagent/reagent.type';
+import { Size } from '@/features/size/size.type';
+import { formattedSize } from '@/features/size/size.util';
+import Unit from '@/features/size/unit.type';
+import { useData } from '@/providers/data.provider';
+import { useDependencyInjection } from '@/providers/dependency-injection.provider';
+import { toNullableLocalDate, validateDate } from '@/shared/utils/date';
+
+type PackageEditProps = {
+  selectedPackage: Package | null;
+  packageModalOpened: boolean;
+  onClosePackageModal: () => void;
+  onAddPackage: (pkg: Package) => Promise<Package>;
+  onEditPackage: (selectedPackage: Package) => void;
+  onBeginShownPackageEdit?: () => void;
+  onAddReagent: (reagent: Reagent) => void;
+  preFilledPackageData?: Partial<Package>;
+};
+
+const nullSize = { amount: 0, unit: Unit.Units };
+
+type LabGroup = { laboratoryId: string; amount: number };
+
+export function usePackageEdit(props: PackageEditProps) {
+  const { reagentService, vialService } = useDependencyInjection();
+  const { reagents, suppliers, brands, laboratories, getReagentById, getBrandById, getSupplierById } =
+    useData();
+
+  const [reagentAddMode, setReagentAddMode] = useState(false);
+  const [createdReagentName, setCreatedReagentName] = useState('');
+  const [loadingAddReagent, setLoadingAddReagent] = useState(false);
+
+  const [sizeAddMode, setSizeAddMode] = useState(false);
+  const [addedSize, setAddedSize] = useState<Size | null>(null);
+  const [loadingAddSize, setLoadingAddedSize] = useState(false);
+
+  const [labGroups, setLabGroups] = useState<LabGroup[]>([]);
+  const [labIdToAdd, setLabIdToAdd] = useState<string | null>(null);
+
+  const packageForm = useForm<Package>({
+    initialValues: props.selectedPackage ?? {
+      inDate: new Date(),
+      expireDate: new Date(),
+      size: nullSize,
+      purity: 0,
+      id: '',
+      reagentId: '',
+      brandId: '',
+      supplierId: '',
+      ...props.preFilledPackageData,
+    },
+
+    transformValues: (values: Package) => ({
+      ...values,
+      expireDate: toNullableLocalDate(values.expireDate)!,
+      inDate: toNullableLocalDate(values.inDate)!,
+      brandId: values.brandId !== '' ? values.brandId : null,
+    }),
+
+    validate: {
+      reagentId: (id) => (id !== '' || reagentAddMode ? null : 'Inserir um reagente'),
+      purity: (value) => (value >= 1 && value <= 100 ? null : 'Insira uma pureza entre 1 e 100 %'),
+      size: (value: Size, values: Package) =>
+        values.reagentId !== '' && (value === ('' as any) || value.amount === 0)
+          ? 'Selecione um tamanho válido'
+          : null,
+      expireDate: (date: Date | null) => validateDate(date, false),
+      inDate: (date: Date | null) => validateDate(date, false),
+    },
+  });
+
+  const selectedReagent: Reagent | null =
+    packageForm.values.reagentId !== '' ? getReagentById(packageForm.values.reagentId) : null;
+
+  useEffect(() => {
+    if (reagentAddMode && loadingAddReagent) {
+      setReagentAddMode(false);
+      setLoadingAddReagent(false);
+    }
+  }, [reagents]);
+
+  useEffect(() => {
+    if (sizeAddMode && loadingAddSize) {
+      setSizeAddMode(false);
+      setLoadingAddedSize(false);
+    }
+  }, [reagents]);
+
+  useEffect(() => {
+    if (!reagentAddMode && !loadingAddReagent && createdReagentName !== '') {
+      const reagent = reagents?.find((reag) => createdReagentName.trim() === reag.name.trim());
+      if (!reagent) {
+        return;
+      }
+      packageForm.setValues({ reagentId: reagent.id });
+      setCreatedReagentName('');
+    }
+
+    packageForm.setFieldValue('size', '' as any);
+  }, [loadingAddReagent]);
+
+  useEffect(() => {
+    if (!sizeAddMode && !loadingAddSize && addedSize !== null) {
+      const selectedSize = selectedReagent?.sizes.find(
+        (size: Size) => formattedSize(size) === formattedSize(addedSize)
+      );
+      if (!sizeAddMode && !loadingAddSize && addedSize) {
+        packageForm.setValues({ size: selectedSize });
+        setAddedSize(null);
+      }
+    }
+  }, [loadingAddSize]);
+
+  const handleAddSize = (size: Size) => {
+    const newReagent = { ...selectedReagent!, sizes: [...selectedReagent!.sizes, size] };
+    reagentService.update(selectedReagent!.id, newReagent);
+    setAddedSize(size);
+    setLoadingAddedSize(true);
+  };
+
+  const handleSubmitPackage = async (pkg: Package) => {
+    props.onClosePackageModal();
+    if (props.selectedPackage) {
+      props.onEditPackage(pkg);
+    } else {
+      const pkgCreated = await props.onAddPackage(pkg);
+
+      labGroups.flatMap((group) =>
+        Array.from({ length: group.amount }).map(() =>
+          vialService.create({
+            laboratoryId: group.laboratoryId,
+            packageId: pkgCreated.id,
+            outDate: null,
+          })
+        )
+      );
+    }
+  };
+
+  const handleChangeSize = (value: string | null) => {
+    if (value === null || value === '') {
+      packageForm.setFieldValue('size', '' as any);
+      packageForm.setTouched({ ...packageForm.isTouched, size: false });
+    } else {
+      const sizeObj = selectedReagent?.sizes.find((s) => formattedSize(s) === value);
+      packageForm.setFieldValue('size', sizeObj ?? ('' as any));
+    }
+  };
+
+  const handleChangeReagent = (value: string | null) => {
+    const validReagent = reagents?.find((r) => r.id === value);
+    packageForm.setValues({
+      reagentId: validReagent?.id ?? undefined,
+    });
+
+    packageForm.setFieldValue('size', validReagent?.sizes[0] ?? ('' as any));
+  };
+
+  return {
+    reagentAddMode,
+    createdReagentName,
+    loadingAddReagent,
+    sizeAddMode,
+    addedSize,
+    loadingAddSize,
+    labGroups,
+    labIdToAdd,
+    packageForm,
+    selectedReagent,
+    reagents,
+    suppliers,
+    brands,
+    laboratories,
+    setReagentAddMode,
+    setCreatedReagentName,
+    setLoadingAddReagent,
+    setSizeAddMode,
+    setLoadingAddedSize,
+    setLabIdToAdd,
+    setLabGroups,
+    handleAddSize,
+    handleSubmitPackage,
+    handleChangeSize,
+    handleChangeReagent,
+    getBrandById,
+    getSupplierById,
+  };
+}
