@@ -6,12 +6,23 @@ import { DataTableContext } from '@/features/data-table/data-table.provider';
 import { TableCollumn, TableCrudOperations } from '@/features/data-table/data-table.type';
 import { useDataTable } from '@/features/data-table/data-table.viewmodel';
 
-export type CrudAction<T> = {
-  icon: ReactNode;
-  action: (data: T) => void;
+export type PopoverRenderProps<T> = {
+  closePopover?: () => void;
+  data: T;
 };
 
-type TableProps<T> = {
+export type CrudAction<T> = {
+  icon: ReactNode;
+  action?: (data: T) => void;
+  show?: (data: T) => boolean;
+  popover?: {
+    render: (props: PopoverRenderProps<T>) => ReactNode;
+    onClose?: (data: T) => void;
+    onOpen?: (data: T) => void;
+  };
+};
+
+export type TableProps<T> = {
   datas: T[];
   collumns: TableCollumn<T>[];
   crudOperations?: TableCrudOperations<T>;

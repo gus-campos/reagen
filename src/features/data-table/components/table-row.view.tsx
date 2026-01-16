@@ -44,7 +44,7 @@ export function TableRow<T>(props: TableRowProps<T>) {
         ))}
         {actionsCollumnNeeded && (
           <Table.Td>
-            <ActionsRowButtons ishovered={hovered} data={props.data} />
+            <ActionsRowButtons isHovered={hovered} data={props.data} />
           </Table.Td>
         )}
       </Table.Tr>

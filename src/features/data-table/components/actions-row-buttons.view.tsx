@@ -1,5 +1,6 @@
+import { useState } from 'react';
 import { IconEdit, IconTrash } from '@tabler/icons-react';
-import { ActionIcon, Group } from '@mantine/core';
+import { ActionIcon, Group, Popover } from '@mantine/core';
 import {
   DataTableRealContextType,
   useDataTableContext,
@@ -7,11 +8,12 @@ import {
 
 type ActionsRowButtonsProps<T> = {
   data: T;
-  ishovered: boolean;
+  isHovered: boolean;
 };
 
 export function ActionsRowButtons<T>(props: ActionsRowButtonsProps<T>) {
   const { crudOperations, extraActions } = useDataTableContext() as DataTableRealContextType<T>;
+  const [popoverOpened, setPopoverOpened] = useState<number | null>(null);
 
   const handleBeginDataEdit = crudOperations?.handleBeginDataEdit
     ? () => crudOperations.handleBeginDataEdit!(props.data)
@@ -21,13 +23,16 @@ export function ActionsRowButtons<T>(props: ActionsRowButtonsProps<T>) {
     ? () => crudOperations.handleDeleteData!(props.data)
     : null;
 
+  const actionActive =
+    extraActions?.filter((action) => !action.show || action.show(props.data)) ?? [];
+
   return (
     <>
       <Group gap="xs" justify="center">
         {handleBeginDataEdit && (
           <ActionIcon
             variant="transparent"
-            color={props.ishovered ? 'blue' : 'lightgrey'}
+            color={props.isHovered ? 'blue' : 'lightgrey'}
             onClick={handleBeginDataEdit}
             size="20px"
           >
@@ -37,23 +42,47 @@ export function ActionsRowButtons<T>(props: ActionsRowButtonsProps<T>) {
         {handleDeleteData && (
           <ActionIcon
             variant="transparent"
-            color={props.ishovered ? 'red' : 'lightgrey'}
+            color={props.isHovered ? 'red' : 'lightgrey'}
             onClick={handleDeleteData}
             size="20px"
           >
             <IconTrash />
           </ActionIcon>
         )}
-        {extraActions?.map((action, index) => (
-          <ActionIcon
-            variant="transparent"
-            color={props.ishovered ? 'blue' : 'lightgrey'}
-            onClick={() => action.action(props.data)}
-            size="20px"
+        {actionActive.map((action, index) => (
+          <Popover
             key={index}
+            opened={popoverOpened === index}
+            onOpen={action.popover?.onOpen ? () => action.popover!.onOpen!(props.data) : undefined}
+            onChange={(opened) => setPopoverOpened(opened ? index : null)}
+            onClose={() => action.popover?.onClose && action.popover.onClose(props.data)}
+            shadow="xl"
+            radius="lg"
+            withArrow
+            arrowSize={28}
           >
-            {action.icon}
-          </ActionIcon>
+            <Popover.Target>
+              <ActionIcon
+                variant="transparent"
+                color={props.isHovered ? 'blue' : 'lightgrey'}
+                size="20px"
+                onClick={() => {
+                  // Execução da action
+                  action.action && action.action(props.data);
+                  // para abrir, e para fechar se clicar de novo
+                  if (action.popover) setPopoverOpened(popoverOpened === null ? index : null);
+                }}
+              >
+                {action.icon}
+              </ActionIcon>
+            </Popover.Target>
+            <Popover.Dropdown>
+              {action.popover?.render({
+                closePopover: () => setPopoverOpened(null),
+                data: props.data,
+              })}
+            </Popover.Dropdown>
+          </Popover>
         ))}
       </Group>
     </>

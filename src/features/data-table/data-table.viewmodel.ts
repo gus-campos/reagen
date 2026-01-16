@@ -1,24 +1,7 @@
-import { ReactNode, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { DataTableContextType } from '@/features/data-table/data-table.provider';
-import { TableCollumn, TableCrudOperations } from '@/features/data-table/data-table.type';
 import { searchMatch } from '@/features/data-table/data-table.util';
-
-type CrudAction<T> = {
-  icon: ReactNode;
-  action: (data: T) => void;
-};
-
-type TableProps<T> = {
-  datas: T[];
-  collumns: TableCollumn<T>[];
-  crudOperations?: TableCrudOperations<T>;
-  search?: string;
-  searched?: (data: T) => string;
-  dataFilter?: (data: T) => boolean;
-  getExpandedComponent?: (data: T) => ReactNode;
-  smallHeading?: boolean;
-  extraActions?: CrudAction<T>[];
-};
+import { TableProps } from '@/features/data-table/data-table.view';
 
 export function useDataTable<T>(props: TableProps<T>) {
   const [sortedBy, setSortedBy] = useState<string | null>(null);
