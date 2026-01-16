@@ -3,12 +3,12 @@
 import React from 'react';
 import { Box, Button, LoadingOverlay, Modal } from '@mantine/core';
 import { DataTable } from '@/features/data-table/data-table.view';
+import { ReagentEdit } from '@/features/reagent/components/reagent-edit.view';
 import { Reagent } from '@/features/reagent/reagent.type';
 import { useReagentsView } from '@/features/reagent/reagent.viewmodel';
-import { ReagentEdit } from '@/features/reagent/views/reagent-edit.view';
-import { SearchReagent } from '@/features/stock-filter/views/search-reagent.view';
-import { ConfirmModal } from '@/shared/components/confirm-modal.view';
+import { SearchReagent } from '@/features/stock-filter/components/search-reagent.view';
 import { useDependencyInjection } from '@/providers/dependency-injection.provider';
+import { ConfirmModal } from '@/shared/components/confirm-modal.view';
 
 export function ReagentsView() {
   const { reagentService } = useDependencyInjection();

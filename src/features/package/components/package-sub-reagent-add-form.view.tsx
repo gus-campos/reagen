@@ -1,5 +1,5 @@
 import { Box, Button, Flex, Grid, Group, Loader, Select, Text, TextInput } from '@mantine/core';
-import { usePackageSubReagentAddForm } from '@/features/package/views/package-sub-reagent-add-form.viewmodel';
+import { usePackageSubReagentAddForm } from '@/features/package/components/package-sub-reagent-add-form.viewmodel';
 import { Reagent } from '@/features/reagent/reagent.type';
 import { Dimension } from '@/features/size/unit.type';
 import { portugueseSearchFilter } from '@/shared/utils/portuguese-search-filter';

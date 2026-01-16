@@ -1,8 +1,8 @@
 import { TableCrudOperations } from '@/features/data-table/data-table.type';
+import { PackageTableProps } from '@/features/package/components/package-table.view';
 import { getInitialCollumns, PackageCollumGetters } from '@/features/package/package.constants';
 import { PackageService } from '@/features/package/package.service';
 import { Package } from '@/features/package/package.type';
-import { PackageTableProps } from '@/features/package/views/package-table.view';
 import { filteredPackage } from '@/features/stock-filter/stock-filter.util';
 import { useData } from '@/providers/data.provider';
 

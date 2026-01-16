@@ -1,8 +1,8 @@
 import { Accordion, Badge, Grid, Group, Paper, Radio, Select, Text, Title } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
+import { useFilterOptions } from '@/features/stock-filter/components/filter-options.viewmodel';
 import { StockFilter } from '@/features/stock-filter/stock-filter.type';
 import { portugueseSearchFilter } from '@/shared/utils/portuguese-search-filter';
-import { useFilterOptions } from '@/features/stock-filter/views/filter-options.viewmodel';
 
 type FilterOptionsProps = {
   filter: StockFilter;

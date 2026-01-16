@@ -1,7 +1,7 @@
 import { Box, Button, Grid, Group, InputBase, Pill, Select, TextInput } from '@mantine/core';
+import { useReagentEdit } from '@/features/reagent/components/reagent-edit.viewmodel';
+import { SizeAddForm } from '@/features/reagent/components/size-add-form.view';
 import { Reagent } from '@/features/reagent/reagent.type';
-import { useReagentEdit } from '@/features/reagent/views/reagent-edit.viewmodel';
-import { SizeAddForm } from '@/features/reagent/views/size-add-form.view';
 import { formattedSize } from '@/features/size/size.util';
 import { Dimension } from '@/features/size/unit.type';
 import { ConfirmModal } from '@/shared/components/confirm-modal.view';

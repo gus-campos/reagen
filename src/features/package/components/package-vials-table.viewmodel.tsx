@@ -5,7 +5,7 @@ import { Tooltip } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { TableCollumn } from '@/features/data-table/data-table.type';
 import { CrudAction } from '@/features/data-table/data-table.view';
-import { PackageVialsTableProps } from '@/features/package/views/package-vials-table.view';
+import { PackageVialsTableProps } from '@/features/package/components/package-vials-table.view';
 import { filteredVial } from '@/features/stock-filter/stock-filter.util';
 import { VialService } from '@/features/vial/vial.service';
 import { Vial } from '@/features/vial/vial.type';

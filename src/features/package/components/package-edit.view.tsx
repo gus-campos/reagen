@@ -12,11 +12,11 @@ import {
   Text,
 } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
+import { usePackageEdit } from '@/features/package/components/package-edit.viewmodel';
+import { PackageSubReagentAddForm } from '@/features/package/components/package-sub-reagent-add-form.view';
 import { Package } from '@/features/package/package.type';
-import { usePackageEdit } from '@/features/package/views/package-edit.viewmodel';
-import { PackageSubReagentAddForm } from '@/features/package/views/package-sub-reagent-add-form.view';
+import { SizeAddForm } from '@/features/reagent/components/size-add-form.view';
 import { Reagent } from '@/features/reagent/reagent.type';
-import { SizeAddForm } from '@/features/reagent/views/size-add-form.view';
 import { formattedSize } from '@/features/size/size.util';
 import { useDependencyInjection } from '@/providers/dependency-injection.provider';
 import { portugueseSearchFilter } from '@/shared/utils/portuguese-search-filter';

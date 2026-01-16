@@ -1,8 +1,8 @@
 import { Button, Modal, Paper, Stack } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { DataTable } from '@/features/data-table/data-table.view';
+import { usePackageVialsTable } from '@/features/package/components/package-vials-table.viewmodel';
 import { Package } from '@/features/package/package.type';
-import { usePackageVialsTable } from '@/features/package/views/package-vials-table.viewmodel';
 import { StockFilter } from '@/features/stock-filter/stock-filter.type';
 import { useDependencyInjection } from '@/providers/dependency-injection.provider';
 

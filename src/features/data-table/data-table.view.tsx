@@ -1,9 +1,9 @@
 import React, { ReactNode } from 'react';
 import { Paper, Table } from '@mantine/core';
+import { TableRow } from '@/features/data-table/components/table-row.view';
+import { TableThead } from '@/features/data-table/components/table-thead.view';
 import { DataTableContext } from '@/features/data-table/data-table.provider';
 import { TableCollumn, TableCrudOperations } from '@/features/data-table/data-table.type';
-import { TableRow } from '@/features/data-table/views/table-row.view';
-import { TableThead } from '@/features/data-table/views/table-thead.view';
 import { useDataTable } from '@/features/data-table/data-table.viewmodel';
 
 export type CrudAction<T> = {

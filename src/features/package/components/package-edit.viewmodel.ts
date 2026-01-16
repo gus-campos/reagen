@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useForm } from '@mantine/form';
+import { PackageEditProps } from '@/features/package/components/package-edit.view';
 import { Package } from '@/features/package/package.type';
-import { PackageEditProps } from '@/features/package/views/package-edit.view';
 import { ReagentService } from '@/features/reagent/reagent.service';
 import { Reagent } from '@/features/reagent/reagent.type';
 import { Size } from '@/features/size/size.type';
