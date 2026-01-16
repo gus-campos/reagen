@@ -8,6 +8,10 @@ export function filteredPackage(
   filter: StockFilter,
   getReagentById: (reagentId: string) => Reagent
 ): boolean {
+  // Observação: dentro da package view, está implementado que
+  // o package além de retornar true desta função, deve também
+  // conter pelo menos um vial que retorna true em filteredVial
+
   const matchesExpiredFilter =
     // Filtro não ativado
     filter.expired === 'all' ||
@@ -46,16 +50,9 @@ export function filteredPackage(
 }
 
 function isInsideDateRange(pkg: Package, minExpire: Date | null, maxExpire: Date | null): boolean {
-  if (!pkg.expireDate) {
-    return false;
-  }
-
-  if (minExpire && pkg.expireDate < minExpire) {
-    return false;
-  }
-  if (maxExpire && pkg.expireDate > maxExpire) {
-    return false;
-  }
+  if (!pkg.expireDate) return false;
+  if (minExpire && pkg.expireDate < minExpire) return false;
+  if (maxExpire && pkg.expireDate > maxExpire) return false;
 
   return true;
 }

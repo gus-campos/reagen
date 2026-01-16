@@ -98,7 +98,7 @@ export function usePackageVialsTable(props: UsePackageVialsTableProps) {
         <Group>
           {getLaboratoryById(group.laboratoryId).name}{' '}
           <Badge size="sm" color={group.outDate ? 'grey' : 'teal'}>
-            x{group.vials.length}
+            x {group.vials.length}
           </Badge>
         </Group>
       ),

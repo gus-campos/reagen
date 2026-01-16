@@ -8,6 +8,7 @@ import { PackageVialsTable } from '@/features/package/components/package-vials-t
 import { Package } from '@/features/package/package.type';
 import { StockFilter } from '@/features/stock-filter/stock-filter.type';
 import { useDependencyInjection } from '@/providers/dependency-injection.provider';
+import { ConfirmModal } from '@/shared/components/confirm-modal.view';
 
 export type PackageTableProps = {
   filter?: StockFilter;
@@ -25,6 +26,10 @@ export function PackageTable(props: PackageTableProps) {
     dataFilter,
     mergedCrudOperations,
     getReagentById,
+    handleDeletePackage,
+    confirmModalOpen,
+    exitConfirmModal,
+    warning,
   } = usePackageTable({ ...props, packageService });
 
   return (
@@ -44,6 +49,14 @@ export function PackageTable(props: PackageTableProps) {
           getExpandedComponent={(data) => <PackageVialsTable data={data} filter={props.filter} />}
         />
       )}
+
+      <ConfirmModal
+        opened={confirmModalOpen}
+        onClose={exitConfirmModal}
+        onConfirm={handleDeletePackage}
+      >
+        {warning}
+      </ConfirmModal>
     </>
   );
 }

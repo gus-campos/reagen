@@ -1,10 +1,14 @@
+import { useState } from 'react';
 import { TableCrudOperations } from '@/features/data-table/data-table.type';
 import { PackageTableProps } from '@/features/package/components/package-table.view';
 import { getInitialCollumns, PackageCollumGetters } from '@/features/package/package.constants';
 import { PackageService } from '@/features/package/package.service';
 import { Package } from '@/features/package/package.type';
+import { formattedSize } from '@/features/size/size.util';
 import { filteredPackage, filteredVial } from '@/features/stock-filter/stock-filter.util';
+import { Vial } from '@/features/vial/vial.type';
 import { useData } from '@/providers/data.provider';
+import { findVialsOfPackage } from '@/shared/utils/misc';
 
 type UsePackageTableProps = PackageTableProps & {
   packageService: PackageService;
@@ -33,14 +37,22 @@ export function usePackageTable(props: UsePackageTableProps) {
     getSupplierById,
   };
 
-  const initialCollumns = getInitialCollumns(getters);
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false);
+  const [selectedPackage, setSelectedPackage] = useState<Package | null>();
 
-  const handleDeletePackage = (pkg: Package) => {
-    props.packageService.delete(pkg.id);
+  const exitConfirmModal = () => setConfirmModalOpen(false);
+
+  const handleStartDeletePackage = (pkg: Package) => {
+    setSelectedPackage(pkg);
+    setConfirmModalOpen(true);
+  };
+
+  const handleDeletePackage = () => {
+    if (selectedPackage) props.packageService.delete(selectedPackage.id);
   };
 
   const crudOperations: TableCrudOperations<Package> = {
-    handleDeleteData: handleDeletePackage,
+    handleDeleteData: handleStartDeletePackage,
   };
 
   const mergedCrudOperations = { ...crudOperations, ...props.crudOperations };
@@ -58,6 +70,23 @@ export function usePackageTable(props: UsePackageTableProps) {
         getPackageVials(pkg).some((vial) => filteredVial(vial, props.filter!))
     : undefined;
 
+  const generateWarning = (pkg: Package, relatedVials: Vial[]) => {
+    const message = `Excluir o pacote ${getReagentById(pkg.reagentId).name} - ${formattedSize(pkg.size)},
+          Causará a exclusão de seus ${relatedVials.length} frascos.`;
+
+    return message;
+  };
+
+  const getWarning = (pkg: Package) => {
+    const relatedVials = findVialsOfPackage(pkg, vials!);
+    if (relatedVials.length === 0) return null;
+    return generateWarning(pkg, relatedVials);
+  };
+
+  const warning = selectedPackage ? getWarning(selectedPackage) : '';
+
+  const initialCollumns = getInitialCollumns(getters);
+
   return {
     packagesError,
     loadingPackages,
@@ -66,5 +95,9 @@ export function usePackageTable(props: UsePackageTableProps) {
     dataFilter,
     mergedCrudOperations,
     getReagentById,
+    handleDeletePackage,
+    confirmModalOpen,
+    exitConfirmModal,
+    warning,
   };
 }

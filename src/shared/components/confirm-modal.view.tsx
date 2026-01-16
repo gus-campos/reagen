@@ -19,7 +19,7 @@ export function ConfirmModal(props: ConfirmModalProps) {
         <Button variant="default" onClick={props.onClose}>
           Cancelar
         </Button>
-        <Button color="blue" onClick={handleConfirmAndClose}>
+        <Button color="red" onClick={handleConfirmAndClose}>
           Confirmar
         </Button>
       </Group>

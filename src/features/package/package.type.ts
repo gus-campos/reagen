@@ -1,5 +1,4 @@
 import { Size } from '@/features/size/size.type';
-import { Vial } from '@/features/vial/vial.type';
 
 export type Package = {
   id: string;
@@ -15,5 +14,3 @@ export type Package = {
   brandId: string | null;
   supplierId: string | null;
 };
-
-export type PackageWithVials = Package & { vials: Vial[] };

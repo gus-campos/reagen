@@ -41,6 +41,10 @@ export function findVialsOfLaboratory(laboratory: Laboratory, vials: Vial[]) {
   return vials.filter((vial) => vial.laboratoryId === laboratory.id);
 }
 
+export function findVialsOfPackage(pkg: Package, vials: Vial[]) {
+  return vials.filter((vial) => vial.packageId === pkg.id);
+}
+
 export function findReagentsOfControlAgency(controlAgency: ControlAgency, reagents: Reagent[]) {
   return reagents.filter((reag) => reag.controlAgencyId === controlAgency.id);
 }

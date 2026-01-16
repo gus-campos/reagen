@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { IconEdit, IconTrash } from '@tabler/icons-react';
-import { ActionIcon, Group, Popover } from '@mantine/core';
+import { ActionIcon, Group, Popover, Tooltip } from '@mantine/core';
 import {
   DataTableRealContextType,
   useDataTableContext,
@@ -30,24 +30,28 @@ export function ActionsRowButtons<T>(props: ActionsRowButtonsProps<T>) {
     <>
       <Group gap="xs" justify="center">
         {handleBeginDataEdit && (
-          <ActionIcon
-            variant="transparent"
-            color={props.isHovered ? 'blue' : 'lightgrey'}
-            onClick={handleBeginDataEdit}
-            size="20px"
-          >
-            <IconEdit />
-          </ActionIcon>
+          <Tooltip label="Editar">
+            <ActionIcon
+              variant="transparent"
+              color={props.isHovered ? 'blue' : 'lightgrey'}
+              onClick={handleBeginDataEdit}
+              size="20px"
+            >
+              <IconEdit />
+            </ActionIcon>
+          </Tooltip>
         )}
         {handleDeleteData && (
-          <ActionIcon
-            variant="transparent"
-            color={props.isHovered ? 'red' : 'lightgrey'}
-            onClick={handleDeleteData}
-            size="20px"
-          >
-            <IconTrash />
-          </ActionIcon>
+          <Tooltip label="Deletar">
+            <ActionIcon
+              variant="transparent"
+              color={props.isHovered ? 'red' : 'lightgrey'}
+              onClick={handleDeleteData}
+              size="20px"
+            >
+              <IconTrash />
+            </ActionIcon>
+          </Tooltip>
         )}
         {actionActive.map((action, index) => (
           <Popover

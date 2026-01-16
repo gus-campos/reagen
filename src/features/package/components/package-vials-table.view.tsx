@@ -48,7 +48,7 @@ export type OutVialFormViewProps = {
 export function OutVialFormView(props: OutVialFormViewProps) {
   const outVialsForm = useForm<OutVialsFormType>({
     initialValues: {
-      amount: 1,
+      amount: props.maxAmount,
       outDate: new Date(),
     },
     validate: {
