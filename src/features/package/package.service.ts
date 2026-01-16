@@ -33,15 +33,15 @@ export class PackageService extends BaseRepository<Package> {
 
   async create(pkg: OmitId<Package>) {
     this.checkLateInjection();
-    const relatedReagent = await this.reagentService!.getById(pkg.reagentId);
 
+    const relatedReagent = await this.reagentService!.getById(pkg.reagentId);
     if (!relatedReagent) throw new Error('Não foi possível encontrar o reagente relacionado');
 
     if (!PackageService.isSizeValidInReagent(pkg.size, relatedReagent))
       throw new Error('O tamanho não é válido para o reagente referenciado.');
 
-    const pkgId = await super.create(pkg);
-    return pkgId;
+    const pkgCreated = await super.create(pkg);
+    return pkgCreated;
   }
 
   async update(id: string, data: Partial<OmitId<Package>>) {

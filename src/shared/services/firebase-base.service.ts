@@ -32,7 +32,7 @@ export class FirebaseBaseDatabase implements IDatabase {
   async create<T extends WithId>(table: DatabaseTableName, data: OmitId<T>) {
     const colRef = collection(db, table).withConverter(FirestoreConverters.get(table));
     const docRef = await addDoc(colRef, data as DocumentData);
-    return { id: docRef.id, ...data } as T;
+    return { ...data, id: docRef.id } as T;
   }
 
   async update<T extends WithId>(table: DatabaseTableName, id: string, data: Partial<OmitId<T>>) {

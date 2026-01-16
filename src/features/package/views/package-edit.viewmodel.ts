@@ -43,6 +43,8 @@ export function usePackageEdit(props: UsePackageEditProps) {
   const [labGroups, setLabGroups] = useState<LabGroup[]>([]);
   const [labIdToAdd, setLabIdToAdd] = useState<string | null>(null);
 
+  const [vialError, setVialsError] = useState<string | null>(null);
+
   const packageForm = useForm<Package>({
     initialValues: props.selectedPackage ?? {
       inDate: new Date(),
@@ -63,15 +65,34 @@ export function usePackageEdit(props: UsePackageEditProps) {
       brandId: values.brandId !== '' ? values.brandId : null,
     }),
 
-    validate: {
-      reagentId: (id) => (id !== '' || reagentAddMode ? null : 'Inserir um reagente'),
-      purity: (value) => (value >= 1 && value <= 100 ? null : 'Insira uma pureza entre 1 e 100 %'),
-      size: (value: Size, values: Package) =>
-        values.reagentId !== '' && (value === ('' as any) || value.amount === 0)
-          ? 'Selecione um tamanho válido'
-          : null,
-      expireDate: (date: Date | null) => validateDate(date, false),
-      inDate: (date: Date | null) => validateDate(date, false),
+    validate: (values) => {
+      const errors: Record<string, React.ReactNode> = {};
+
+      if (!reagentAddMode && !values.reagentId) errors.reagentId = 'Inserir um reagente';
+
+      if (values.purity === undefined || values.purity < 1 || values.purity > 100)
+        errors.purity = 'Insira uma pureza entre 1 e 100 %';
+
+      const isSizeInvalid = !values.size || (values.size as any) === '' || values.size.amount === 0;
+
+      if (values.reagentId && isSizeInvalid) errors.size = 'Selecione um tamanho válido';
+
+      const expireError = validateDate(values.expireDate, false);
+      if (expireError) errors.expireDate = expireError;
+
+      const inError = validateDate(values.inDate, false);
+      if (inError) errors.inDate = inError;
+
+      // Esse tem que ser o último
+      const vialsSum = labGroups.reduce((sum, group) => sum + group.amount, 0);
+
+      if (vialsSum === 0) {
+        const labGroupsError = 'É necessário adicionar pelo menos um frasco.';
+        errors.labGroups = labGroupsError;
+        setVialsError(labGroupsError);
+      }
+
+      return errors;
     },
   });
 
@@ -130,21 +151,19 @@ export function usePackageEdit(props: UsePackageEditProps) {
     } else {
       const pkgCreated = await props.onAddPackage(pkg);
 
-      const createVials = async () => {
-        for (const group of labGroups) {
-          for (let i = 0; i < group.amount; i++) {
-            await props.vialService.create({
+      console.log({ pkgCreated });
+
+      Promise.all(
+        labGroups.flatMap((group) =>
+          Array.from({ length: group.amount }).map(() =>
+            props.vialService.create({
               laboratoryId: group.laboratoryId,
               packageId: pkgCreated.id,
               outDate: null,
-            });
-          }
-        }
-      };
-
-      // async
-      createVials();
-      return;
+            })
+          )
+        )
+      );
     }
     props.onClosePackageModal();
   };
@@ -265,6 +284,7 @@ export function usePackageEdit(props: UsePackageEditProps) {
     supplierSelectData,
     availableLaboratories,
     totalVials,
+    vialError,
     handleLabGroupAmountChange,
     handleAddLabGroup,
     handleBrandChange,

@@ -58,6 +58,7 @@ export function PackageEdit(props: PackageEditProps) {
     supplierSelectData,
     availableLaboratories,
     totalVials,
+    vialError,
     handleLabGroupAmountChange,
     handleAddLabGroup,
     handleBrandChange,
@@ -233,36 +234,33 @@ export function PackageEdit(props: PackageEditProps) {
         </Grid>
 
         {!props.selectedPackage && (
-          <InputWrapper label="Frascos por laboratório" mt="md">
+          <InputWrapper label="Frascos por laboratório" mt="md" error={vialError}>
             <Paper py="md" px="md" withBorder>
               <Stack gap="xl" justify="space-between">
-                {/* Lista de laboratório e quantidades de frascos */}
-                {labGroupsWithNames.length > 0 && (
-                  <Grid>
-                    {labGroupsWithNames.map((group, index) => (
-                      <React.Fragment key={index}>
-                        <Grid.Col
-                          span={{ base: 6 }}
-                          style={{ display: 'flex', alignItems: 'center' }}
-                        >
-                          {group.laboratoryName}
-                        </Grid.Col>
-                        <Grid.Col span={{ base: 6 }}>
-                          <NumberInput
-                            allowDecimal={false}
-                            allowLeadingZeros={false}
-                            allowNegative={false}
-                            value={group.amount}
-                            prefix="x "
-                            onChange={(value) =>
-                              handleLabGroupAmountChange(group.laboratoryId, Number(value))
-                            }
-                          />
-                        </Grid.Col>
-                      </React.Fragment>
-                    ))}
-                  </Grid>
-                )}
+                <Grid>
+                  {labGroupsWithNames.map((group, index) => (
+                    <React.Fragment key={index}>
+                      <Grid.Col
+                        span={{ base: 6 }}
+                        style={{ display: 'flex', alignItems: 'center' }}
+                      >
+                        {group.laboratoryName}
+                      </Grid.Col>
+                      <Grid.Col span={{ base: 6 }}>
+                        <NumberInput
+                          allowDecimal={false}
+                          allowLeadingZeros={false}
+                          allowNegative={false}
+                          value={group.amount}
+                          prefix="x "
+                          onChange={(value) =>
+                            handleLabGroupAmountChange(group.laboratoryId, Number(value))
+                          }
+                        />
+                      </Grid.Col>
+                    </React.Fragment>
+                  ))}
+                </Grid>
 
                 {/* Adição frasco ao novo laboratório */}
                 <Group justify="space-between" align="end">
@@ -272,6 +270,7 @@ export function PackageEdit(props: PackageEditProps) {
                     data={availableLaboratories}
                     value={labIdToAdd}
                     onChange={(value) => setLabIdToAdd(value)}
+                    placeholder="Selecione um laboratório de destino"
                   />
                   <Button disabled={sizeAddMode} variant="filled" onClick={handleAddLabGroup}>
                     +
