@@ -3,8 +3,9 @@
 import { ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 import { IconHome, IconTable, IconTestPipe } from '@tabler/icons-react';
-import { AppShell, Burger, Group, Menu, Text } from '@mantine/core';
+import { AppShell, Burger, Button, Group, Menu, Stack, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+import { useAuth } from '@/shared/hooks/useAuth';
 
 type ReagenShellProps = {
   children: ReactNode[];
@@ -12,6 +13,7 @@ type ReagenShellProps = {
 
 export function ReagenShell(props: ReagenShellProps) {
   const [opened, { toggle }] = useDisclosure();
+  const { logout } = useAuth();
   const router = useRouter();
 
   return (
@@ -29,44 +31,52 @@ export function ReagenShell(props: ReagenShellProps) {
       </AppShell.Header>
 
       <AppShell.Navbar p="md">
-        <strong>Menu</strong>
-        <Menu>
-          <Menu.Item
-            onClick={() => {
-              toggle();
-              router.push('/dashboard');
-            }}
-          >
-            <Group>
-              <IconHome size={20} />
-              <Text size="md">Dashboard</Text>
-            </Group>
-          </Menu.Item>
+        <Stack style={{ height: '100%' }}>
+          <strong>Menu</strong>
+          <Menu>
+            <Menu.Item
+              onClick={() => {
+                toggle();
+                router.push('/dashboard');
+              }}
+            >
+              <Group>
+                <IconHome size={20} />
+                <Text size="md">Dashboard</Text>
+              </Group>
+            </Menu.Item>
 
-          <Menu.Item
-            onClick={() => {
-              toggle();
-              router.push('/estoque');
-            }}
-          >
-            <Group>
-              <IconTable size={20} />
-              <Text size="md">Estoque</Text>
-            </Group>
-          </Menu.Item>
+            <Menu.Item
+              onClick={() => {
+                toggle();
+                router.push('/estoque');
+              }}
+            >
+              <Group>
+                <IconTable size={20} />
+                <Text size="md">Estoque</Text>
+              </Group>
+            </Menu.Item>
 
-          <Menu.Item
-            onClick={() => {
-              toggle();
-              router.push('/definicoes');
-            }}
+            <Menu.Item
+              onClick={() => {
+                toggle();
+                router.push('/definicoes');
+              }}
+            >
+              <Group>
+                <IconTable size={20} />
+                <Text size="md">Definições</Text>
+              </Group>
+            </Menu.Item>
+          </Menu>
+          <Button
+            style={{ marginTop: 'auto', borderRadius: '999px', backgroundColor: 'red' }}
+            onClick={logout}
           >
-            <Group>
-              <IconTable size={20} />
-              <Text size="md">Definições</Text>
-            </Group>
-          </Menu.Item>
-        </Menu>
+            Sair
+          </Button>
+        </Stack>
       </AppShell.Navbar>
       <AppShell.Main>{props.children}</AppShell.Main>
     </AppShell>

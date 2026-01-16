@@ -236,7 +236,7 @@ export function PackageEdit(props: PackageEditProps) {
           <InputWrapper label="Frascos por laboratório" mt="md">
             <Paper py="md" px="md" withBorder>
               <Stack gap="xl" justify="space-between">
-                {/* Lista de laboratório e quantidades de fracos */}
+                {/* Lista de laboratório e quantidades de frascos */}
                 {labGroupsWithNames.length > 0 && (
                   <Grid>
                     {labGroupsWithNames.map((group, index) => (
@@ -254,7 +254,9 @@ export function PackageEdit(props: PackageEditProps) {
                             allowNegative={false}
                             value={group.amount}
                             prefix="x "
-                            onChange={(value) => handleLabGroupAmountChange(group.laboratoryId, Number(value))}
+                            onChange={(value) =>
+                              handleLabGroupAmountChange(group.laboratoryId, Number(value))
+                            }
                           />
                         </Grid.Col>
                       </React.Fragment>
@@ -271,11 +273,7 @@ export function PackageEdit(props: PackageEditProps) {
                     value={labIdToAdd}
                     onChange={(value) => setLabIdToAdd(value)}
                   />
-                  <Button
-                    disabled={sizeAddMode}
-                    variant="filled"
-                    onClick={handleAddLabGroup}
-                  >
+                  <Button disabled={sizeAddMode} variant="filled" onClick={handleAddLabGroup}>
                     +
                   </Button>
                 </Group>

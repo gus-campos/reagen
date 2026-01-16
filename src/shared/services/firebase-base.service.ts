@@ -22,7 +22,7 @@ import { IDatabase } from '@/shared/services/base-repository.service';
 import { OmitId, WithId } from '@/shared/types/id.type';
 import { DatabaseTableName } from '@/shared/types/table-name.type';
 
-export abstract class FirebaseBaseDatabase implements IDatabase {
+export class FirebaseBaseDatabase implements IDatabase {
   async get<T extends WithId>(table: DatabaseTableName) {
     const colRef = collection(db, table).withConverter(FirestoreConverters.get(table));
     const snapshot = await getDocs(colRef);
@@ -82,7 +82,7 @@ class FirestoreConverters {
     if (typeof obj === 'object') {
       const converted: any = {};
       for (const key in obj) {
-        if (obj.hasOwn(key)) {
+        if (Object.hasOwn(obj, key)) {
           converted[key] = FirestoreConverters.convertTimestampsToDate(obj[key]);
         }
       }

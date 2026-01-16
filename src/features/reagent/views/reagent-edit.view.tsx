@@ -3,6 +3,7 @@ import { Reagent } from '@/features/reagent/reagent.type';
 import { useReagentEdit } from '@/features/reagent/views/reagent-edit.viewmodel';
 import { SizeAddForm } from '@/features/reagent/views/size-add-form.view';
 import { formattedSize } from '@/features/size/size.util';
+import { Dimension } from '@/features/size/unit.type';
 import { ConfirmModal } from '@/shared/components/confirm-modal.view';
 import { portugueseSearchFilter } from '@/shared/utils/portuguese-search-filter';
 
@@ -45,6 +46,7 @@ export function ReagentEdit(props: VialModalProps) {
                 label="Nome"
                 {...reagentForm.getInputProps('name')}
                 disabled={isDisabled}
+                placeholder="Digite o nome do reagente"
               />
             </Grid.Col>
 
@@ -54,11 +56,10 @@ export function ReagentEdit(props: VialModalProps) {
                   filter={portugueseSearchFilter}
                   label="Dimensão"
                   allowDeselect={false}
-                  data={Object.values(
-                    reagentForm.values.dimension ? [reagentForm.values.dimension] : []
-                  )}
+                  data={Object.values(Dimension)}
                   {...reagentForm.getInputProps('dimension')}
                   disabled={isDisabled}
+                  placeholder="Escolha a dimensão"
                 />
               </Grid.Col>
             )}

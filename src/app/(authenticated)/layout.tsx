@@ -1,16 +1,22 @@
+'use client';
+
 import React, { ReactNode } from 'react';
 import { redirect } from 'next/navigation';
+import { LoadingOverlay } from '@mantine/core';
 import { ReagenShell } from '@/features/app-shell/app-shell.view';
 import { DataProvider } from '@/providers/data.provider';
+import { useAuth } from '@/shared/hooks/useAuth';
 
 type RootLayoutProps = {
   children: ReactNode[];
 };
 
 export default function AuthenticatedLayout({ children }: RootLayoutProps) {
-  const authenticated = true;
+  const { user, loading } = useAuth();
 
-  if (!authenticated) {
+  if (loading) return <LoadingOverlay visible />;
+
+  if (!user) {
     redirect('/autenticar');
   }
 

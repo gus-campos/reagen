@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
+import { createContext, ReactNode, useContext } from 'react';
 import { BrandService } from '@/features/named-option/brand/brand.service';
 import { ControlAgencyService } from '@/features/named-option/control-agency/control-agency.service';
 import { LaboratoryService } from '@/features/named-option/laboratory/laboratory.service';
@@ -9,7 +9,7 @@ import { PackageService } from '@/features/package/package.service';
 import { ReagentService } from '@/features/reagent/reagent.service';
 import { VialService } from '@/features/vial/vial.service';
 import { IDatabase } from '@/shared/services/base-repository.service';
-import { DexieDatabase } from '@/shared/services/dexie.service';
+import { FirebaseBaseDatabase } from '@/shared/services/firebase-base.service';
 
 export function useDependencyInjection() {
   const context = useContext(DependencyInjection);
@@ -31,14 +31,15 @@ type ServicesSet = {
 
 const DependencyInjection = createContext<ServicesSet | null>(null);
 
-type DiProviderProps = {
+type DependencyInjectionProviderProps = {
   children: ReactNode;
 };
 
-export function DependencyInjectionProvider(props: DiProviderProps) {
+export function DependencyInjectionProvider(props: DependencyInjectionProviderProps) {
   // DATABASE
 
-  const db: IDatabase = new DexieDatabase();
+  // const db: IDatabase = new DexieDatabase();
+  const db: IDatabase = new FirebaseBaseDatabase();
 
   // Services
 
