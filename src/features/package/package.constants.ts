@@ -17,7 +17,7 @@ export type PackageCollumGetters = {
   getSupplierById: (id: string) => Supplier;
 };
 
-export function getInitialCollumns(getters: PackageCollumGetters): TableCollumn<Package>[] {
+export function getPackageInitialCollumns(getters: PackageCollumGetters): TableCollumn<Package>[] {
   /* Retorna as colunas da tabela de packages. */
 
   // Funções de acesso usando os getters
@@ -50,7 +50,6 @@ export function getInitialCollumns(getters: PackageCollumGetters): TableCollumn<
       sorter: (a: Package, b: Package) =>
         getReagentName(a).trim().localeCompare(getReagentName(b).trim()),
       fixed: true,
-      sortingPriority: 0,
     },
     {
       name: 'Tamanho',
@@ -62,14 +61,12 @@ export function getInitialCollumns(getters: PackageCollumGetters): TableCollumn<
           : unitsDiff;
       },
       fixed: false,
-      sortingPriority: null,
     },
     {
       name: 'Pureza',
       accessor: (pkg: Package) => getPurity(pkg),
       sorter: (a: Package, b: Package) => a.purity - b.purity,
       fixed: false,
-      sortingPriority: null,
     },
     {
       name: 'Marca',
@@ -77,7 +74,6 @@ export function getInitialCollumns(getters: PackageCollumGetters): TableCollumn<
       sorter: (a: Package, b: Package) =>
         getBrandName(a).trim().localeCompare(getBrandName(b).trim()),
       fixed: false,
-      sortingPriority: 0,
     },
     // {
     //   name: 'Laboratório',
@@ -85,7 +81,6 @@ export function getInitialCollumns(getters: PackageCollumGetters): TableCollumn<
     //   sorter: (a: Package, b: Package) =>
     //     getLaboratoryName(a).trim().localeCompare(getLaboratoryName(b).trim()),
     //   fixed: false,
-    //   sortingPriority: 0,
     // },
     {
       name: 'Fornecedor',
@@ -93,7 +88,6 @@ export function getInitialCollumns(getters: PackageCollumGetters): TableCollumn<
       sorter: (a: Package, b: Package) =>
         getSupplierName(a).trim().localeCompare(getSupplierName(b).trim()),
       fixed: false,
-      sortingPriority: 0,
     },
     {
       name: 'Entrada',
@@ -101,7 +95,6 @@ export function getInitialCollumns(getters: PackageCollumGetters): TableCollumn<
       sorter: (a: Package, b: Package) =>
         (a.expireDate?.getTime() ?? Infinity) - (b.expireDate?.getTime() ?? Infinity),
       fixed: false,
-      sortingPriority: null,
     },
     {
       name: 'Vencimento',
@@ -109,7 +102,6 @@ export function getInitialCollumns(getters: PackageCollumGetters): TableCollumn<
       sorter: (a: Package, b: Package) =>
         (a.inDate?.getTime() ?? Infinity) - (b.inDate?.getTime() ?? Infinity),
       fixed: false,
-      sortingPriority: null,
     },
   ];
 

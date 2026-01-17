@@ -16,8 +16,6 @@ export default function AuthenticatedLayout({ children }: RootLayoutProps) {
 
   if (loading) return <LoadingOverlay visible />;
 
-  console.log({ user });
-
   if (!user) {
     redirect('/autenticar');
   }

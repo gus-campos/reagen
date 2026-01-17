@@ -1,5 +1,5 @@
-import { Title } from '@mantine/core';
+import { DashboardView } from '@/features/dashboard/components/dashboard.view';
 
 export default function Dashboard() {
-  return <Title order={1}>Dashboard</Title>;
+  return <DashboardView />;
 }

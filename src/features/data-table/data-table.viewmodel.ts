@@ -14,15 +14,31 @@ export function useDataTable<T>(props: TableProps<T>) {
   const isSearched = (data: T) =>
     props.searched && props.search ? searchMatch(props.searched(data), props.search) : () => true;
 
+  const sorter = (a: T, b: T) => {
+    if (props.sort) {
+      const collumn = props.collumns.find((c) => c.name === props.sort?.colunmName);
+      if (!collumn) throw new Error(`A coluna ${props.sort.colunmName} não existe`);
+      const sorter = collumn.sorter;
+      if (!sorter) throw new Error(`A coluna ${props.sort.colunmName} não possui ordenador`);
+      return sorter(a, b);
+    }
+    // coluna escolhida para ordenação (pode não existir)
+    const sortCol = props.collumns.find((c) => c.name === sortedBy) ?? null;
+    // coluna padrão usada como critério de desempate
+    const defaultCol = props.collumns[0];
+    // tentativa de ordenação pela coluna escolhida
+    const primary = sortCol?.sorter ? sortCol.sorter(a, b) : 0;
+    // se a coluna escolhida decidir a ordem, usa esse resultado
+    if (primary !== 0) return primary;
+    // caso contrário, aplica o sorter da coluna padrão
+    return defaultCol.sorter ? defaultCol.sorter(a, b) : 0;
+  };
+
   const sortedDatas = props.datas.sort((a, b) => {
-    const sortByCollumn = props.collumns.find((collum) => collum.name === sortedBy) ?? null;
-    const defaultSortingCollumn = props.collumns[0];
-
-    const sortByOrder = sortByCollumn ? sortByCollumn.sorter!(a, b) : 0;
-    const defaultOrder = defaultSortingCollumn.sorter ? defaultSortingCollumn.sorter(a, b) : 0;
-
-    const absoluteOrder = sortByOrder === 0 ? defaultOrder : sortByOrder;
-    return sortedAscending ? -absoluteOrder : absoluteOrder;
+    const order = sorter(a, b);
+    const fixedSoertedAscending = props.sort?.sortedAscending;
+    const finalSortedAscending = fixedSoertedAscending ?? sortedAscending;
+    return finalSortedAscending ? -order : order;
   });
 
   const actionsCollumnsNeeded =

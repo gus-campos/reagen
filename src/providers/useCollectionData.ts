@@ -24,7 +24,7 @@ export function useCollectionData<
   }, [service]);
 
   const getDataById = (id: string) => {
-    if (!data) throw new Error('Dados não foram carregados ainda');
+    if (loadingData) throw new Error('Dados não foram carregados ainda');
     const found = data.find((d) => d.id === id);
     if (!found) {
       throw new Error('O dado não foi encontrado');

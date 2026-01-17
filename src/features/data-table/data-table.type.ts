@@ -5,7 +5,6 @@ export type TableCollumn<T> = {
   accessor: (data: T) => ReactNode;
   fixed?: boolean;
   sorter?: (a: T, b: T) => number;
-  sortingPriority?: number | null;
 };
 
 export type TableCrudOperations<T> = {

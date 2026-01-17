@@ -28,32 +28,14 @@ type CompleteVial = Vial & {
   brand: Brand | null;
 };
 
-type ReportOptions = {
-  startDate: Date;
-  endDate: Date;
-};
-
 export function ReportPage() {
   const { packages, vials, getReagentById, getSupplierById, getLaboratoryById, getBrandById } =
     useData();
-  const [modalOpened, setModalOpened] = useState(false);
+
+  const { onSubmit, openModal, closeModal, modalOpened, reportOptions } = useConfigReportModal();
 
   const contentRef = useRef<HTMLDivElement>(null);
   const reactToPrintFn = useReactToPrint({ contentRef });
-
-  const handleCloseModal = () => setModalOpened(false);
-  const handleOpenModal = () => setModalOpened(true);
-
-  const today = new Date();
-
-  // TODO: Data pode estar errada pelo offset do dia?
-  const form = useForm<ReportOptions>({
-    // Obs: O mês é guardado como o primeiro dia daquele mês
-    initialValues: {
-      startDate: firstDayOfMonth(today),
-      endDate: firstDayOffsettedMonth(today, 1),
-    },
-  });
 
   const collumns: TableCollumn<CompleteVial>[] = [
     {
@@ -96,8 +78,8 @@ export function ReportPage() {
     const inRangePackageVials = packageVials.filter((vial) => {
       // Se entrada ou saída estiver fora do range, desconsiderar
       // Obs: para verificar pertencimento ao intervalo, é preciso considerar até o início do prox mês
-      const minDate = new Date(form.values.startDate);
-      const maxDate = firstDayOffsettedMonth(new Date(form.values.endDate), 1);
+      const minDate = firstDayOfMonth(reportOptions.startDate);
+      const maxDate = firstDayOffsettedMonth(reportOptions.endDate, 1);
       return [pkg.inDate, vial.outDate].some((date) => isInsideDateRange(date, minDate, maxDate));
     });
 
@@ -124,8 +106,8 @@ export function ReportPage() {
       >
         <Group justify="center" my="lg  ">
           <Title order={1} my="lg">
-            Relatório de Reagentes - {formatDate(form.values.startDate, 'MM/YY')} a{' '}
-            {formatDate(form.values.endDate, 'MM/YY')}
+            Relatório de Reagentes - {formatDate(reportOptions.startDate, 'MM/YY')} a{' '}
+            {formatDate(reportOptions.endDate, 'MM/YY')}
           </Title>
         </Group>
         <Stack my="lg">
@@ -134,7 +116,77 @@ export function ReportPage() {
       </Paper>
 
       {/* Modal de opções */}
-      <Modal title="Opções do relatório" opened={modalOpened} onClose={handleCloseModal}>
+      <ConfigReportModal
+        onClose={closeModal}
+        opened={modalOpened}
+        onSubmit={onSubmit}
+        initialValues={reportOptions}
+      />
+
+      {/* Botões de acesso */}
+      <Group
+        style={{
+          position: 'absolute',
+          bottom: '30px',
+          right: '30px',
+          height: '40px',
+        }}
+      >
+        <Button variant="light" radius="50px" onClick={openModal}>
+          Editar opções
+        </Button>
+        <Button radius="50px" onClick={reactToPrintFn}>
+          Imprimir
+        </Button>
+      </Group>
+    </>
+  );
+}
+
+export type ReportOptions = {
+  startDate: Date;
+  endDate: Date;
+};
+
+export function useConfigReportModal() {
+  const [modalOpened, setModalOpened] = useState(false);
+  const today = new Date();
+  // Obs: O mês é guardado como o primeiro dia daquele mês
+  const [reportOptions, setReportOptions] = useState<ReportOptions>({
+    startDate: firstDayOfMonth(today),
+    endDate: firstDayOffsettedMonth(today, 1),
+  });
+
+  const closeModal = () => setModalOpened(false);
+  const openModal = () => setModalOpened(true);
+  const onSubmit = (reportOptions: ReportOptions) => setReportOptions(reportOptions);
+
+  return { reportOptions, modalOpened, closeModal, openModal, onSubmit };
+}
+
+type ConfigReportProps = {
+  onSubmit: (values: ReportOptions) => void;
+  onClose: () => void;
+  opened: boolean;
+  initialValues: ReportOptions;
+};
+
+export function ConfigReportModal(props: ConfigReportProps) {
+  const form = useForm<ReportOptions>({
+    initialValues: props.initialValues,
+  });
+
+  return (
+    <form
+      onSubmit={form.onSubmit((values) => {
+        props.onSubmit({
+          startDate: new Date(values.startDate),
+          endDate: new Date(values.endDate),
+        });
+        props.onClose;
+      })}
+    >
+      <Modal title="Opções do relatório" opened={props.opened} onClose={props.onClose}>
         <Grid>
           <Grid.Col span={{ base: 6 }}>
             <MonthPickerInput
@@ -151,27 +203,10 @@ export function ReportPage() {
             />
           </Grid.Col>
         </Grid>
-        <Button fullWidth mt="sm" onClick={handleCloseModal}>
+        <Button fullWidth mt="sm" type="submit">
           Confirmar
         </Button>
       </Modal>
-
-      {/* Botões de acesso */}
-      <Group
-        style={{
-          position: 'absolute',
-          bottom: '30px',
-          right: '30px',
-          height: '40px',
-        }}
-      >
-        <Button variant="light" radius="50px" onClick={handleOpenModal}>
-          Editar opções
-        </Button>
-        <Button radius="50px" onClick={reactToPrintFn}>
-          Imprimir
-        </Button>
-      </Group>
-    </>
+    </form>
   );
 }

@@ -16,21 +16,18 @@ export const getReagentTableInitialColumns = (
       accessor: (reagent: Reagent) => reagent.name,
       fixed: true,
       sorter: (a: Reagent, b: Reagent) => a.name.trim().localeCompare(b.name.trim()),
-      sortingPriority: 0,
     },
     {
       name: 'Dimensão',
       accessor: (reagent: Reagent) => reagent.dimension,
       fixed: false,
       sorter: (a: Reagent, b: Reagent) => a.dimension.trim().localeCompare(b.dimension.trim()),
-      sortingPriority: null,
     },
     {
       name: 'Tamanhos',
       accessor: (reagent: Reagent) =>
         reagent.sizes.map((size, index) => <Pill key={index}>{formattedSize(size)}</Pill>),
       fixed: false,
-      sortingPriority: null,
     },
     {
       name: 'Orgão de Controle',
@@ -38,7 +35,6 @@ export const getReagentTableInitialColumns = (
       fixed: false,
       sorter: (a: Reagent, b: Reagent) =>
         getAgencyName(a).trim().localeCompare(getAgencyName(b).trim()),
-      sortingPriority: null,
     },
   ];
 };

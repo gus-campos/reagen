@@ -32,6 +32,11 @@ export type TableProps<T> = {
   getExpandedComponent?: (data: T) => ReactNode;
   smallHeading?: boolean;
   extraActions?: CrudAction<T>[];
+  headless?: boolean;
+  sort?: {
+    colunmName: string;
+    sortedAscending: boolean | null;
+  };
 };
 
 export function DataTable<T>(props: TableProps<T>) {
@@ -51,11 +56,13 @@ export function DataTable<T>(props: TableProps<T>) {
     <DataTableContext.Provider value={dataTableContextValues}>
       <Paper radius="sm" withBorder style={{ overflow: 'hidden' }}>
         <Table tabularNums striped={shouldBeStriped} highlightOnHover>
-          <TableThead
-            sortedAscending={sortedAscending}
-            sortedBy={sortedBy}
-            smallHeding={props.smallHeading}
-          />
+          {!props.headless && (
+            <TableThead
+              sortedAscending={sortedAscending}
+              sortedBy={sortedBy}
+              smallHeding={props.smallHeading}
+            />
+          )}
 
           <Table.Tbody>
             {sortedDatas
