@@ -7,7 +7,7 @@ import { ColorSchemeScript, mantineHtmlProps, MantineProvider } from '@mantine/c
 import { DependencyInjectionProvider } from '@/providers/dependency-injection.provider';
 
 export const metadata = {
-  title: 'Controle de Reagentes',
+  title: 'Reagen - Controle de Reagentes',
   description: 'Controle fácil de reagentes químicos!',
 };
 

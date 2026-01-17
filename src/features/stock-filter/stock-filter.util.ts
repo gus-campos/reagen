@@ -20,7 +20,11 @@ export function filteredPackage(
     // Não deve estar vencido e não está vencido
     (filter.expired === 'not-expired' && !isExpired(pkg));
 
-  const macthesExpireRangeFilter = isInsideDateRange(pkg, filter.minExpire, filter.maxExpire);
+  const macthesExpireRangeFilter = isInsideDateRange(
+    pkg.expireDate,
+    filter.minExpire,
+    filter.maxExpire
+  );
 
   const pkgControlAgencyId = getReagentById(pkg.reagentId).controlAgencyId;
   const pkgIsControlled = pkgControlAgencyId !== null;
@@ -49,10 +53,14 @@ export function filteredPackage(
   );
 }
 
-function isInsideDateRange(pkg: Package, minExpire: Date | null, maxExpire: Date | null): boolean {
-  if (!pkg.expireDate) return false;
-  if (minExpire && pkg.expireDate < minExpire) return false;
-  if (maxExpire && pkg.expireDate > maxExpire) return false;
+export function isInsideDateRange(
+  date: Date | null,
+  minExpire: Date | null,
+  maxExpire: Date | null
+): boolean {
+  if (!date) return false;
+  if (minExpire && date < minExpire) return false;
+  if (maxExpire && date > maxExpire) return false;
 
   return true;
 }

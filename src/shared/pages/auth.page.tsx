@@ -2,7 +2,7 @@
 import { Group, Paper, Title } from '@mantine/core';
 import { AccountInfoForm } from '@/features/auth/auth.view';
 
-export default function Auth() {
+export function Auth() {
   return (
     <Group justify="center" align="center" style={{ height: '100vh' }}>
       <Paper withBorder radius="sm" p="xl" miw="400px">

@@ -1,3 +1,5 @@
+import dayjs from 'dayjs';
+
 export function toNullableLocalDate(dateStr: Date | null) {
   if (!dateStr) {
     return null;
@@ -26,4 +28,16 @@ export function stringToLocalDate(dateString: string | Date): Date {
   }
   const [year, month, day] = dateString.split('-').map(Number);
   return new Date(year, month - 1, day);
+}
+
+export function firstDayOfMonth(date: Date): Date {
+  return firstDayOffsettedMonth(date, 0);
+}
+
+export function firstDayOffsettedMonth(date: Date, monthOffset: number): Date {
+  return new Date(date.getFullYear(), date.getMonth() + monthOffset, 1);
+}
+
+export function formatDate(date: Date, format = 'DD/MM/YY') {
+  return dayjs(date).format(format);
 }

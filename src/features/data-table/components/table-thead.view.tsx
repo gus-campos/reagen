@@ -1,10 +1,7 @@
 import { Group, Table, Text } from '@mantine/core';
 import { ActionsCollumnButtons } from '@/features/data-table/components/actions-collumn-buttons.view';
 import { TableExtraOptions } from '@/features/data-table/components/table-extra-options.view';
-import {
-  DataTableRealContextType,
-  useDataTableContext,
-} from '@/features/data-table/data-table.provider';
+import { useDataTableContext } from '@/features/data-table/data-table.provider';
 import { TableCollumn } from '@/features/data-table/data-table.type';
 
 type VialsTableTheadProps = {
@@ -21,7 +18,7 @@ export function TableThead<T>(props: VialsTableTheadProps) {
     onHideCollumn,
     onToggleSorting,
     onShowCollumn,
-  } = useDataTableContext() as DataTableRealContextType<T>;
+  } = useDataTableContext();
 
   const fontSize = props.smallHeding ? 'sm' : 'md';
 
