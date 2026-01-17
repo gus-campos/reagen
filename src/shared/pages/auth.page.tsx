@@ -1,14 +1,17 @@
-// src/features/auth/LoginPage.tsx
+'use client';
 
+import { useEffect } from 'react';
 import { redirect } from 'next/navigation';
 import { Group, Paper, Title } from '@mantine/core';
 import { AccountInfoForm } from '@/features/auth/auth.view';
-import { useAuth } from '@/shared/hooks/useAuth';
+import { useAppAuth } from '@/providers/auth.provider';
 
 export function Auth() {
-  const { user } = useAuth();
+  const { user } = useAppAuth();
 
-  if (user) redirect('/estoque');
+  useEffect(() => {
+    if (user) redirect('/estoque');
+  }, [user]);
 
   return (
     <Group justify="center" align="center" style={{ height: '100vh' }}>

@@ -8,7 +8,7 @@ import { ReagentsView } from '@/features/reagent/reagent.view';
 export default function DefinitionsPage() {
   return (
     <>
-      <Title order={1}>Definições</Title>
+      <Title order={1}>Cadastros</Title>
       <Paper radius="md" withBorder shadow="sm" my="md" px="md">
         <Tabs defaultValue="reagents" my="lg">
           <Tabs.List defaultValue="reagents">

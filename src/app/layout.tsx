@@ -4,6 +4,7 @@ import '@mantine/dates/styles.css';
 import React, { ReactNode } from 'react';
 import { theme } from 'theme';
 import { ColorSchemeScript, mantineHtmlProps, MantineProvider } from '@mantine/core';
+import { AppAuthProvider } from '@/providers/auth.provider';
 import { DependencyInjectionProvider } from '@/providers/dependency-injection.provider';
 
 export const metadata = {
@@ -28,7 +29,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
       </head>
       <body>
         <MantineProvider theme={theme} defaultColorScheme="light">
-          <DependencyInjectionProvider>{children}</DependencyInjectionProvider>
+          <DependencyInjectionProvider>
+            <AppAuthProvider>{children}</AppAuthProvider>
+          </DependencyInjectionProvider>
         </MantineProvider>
       </body>
     </html>

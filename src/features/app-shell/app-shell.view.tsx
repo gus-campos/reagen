@@ -8,7 +8,7 @@ import { MdForklift, MdOutlineDashboard } from 'react-icons/md';
 import { TbReportAnalytics } from 'react-icons/tb';
 import { AppShell, Burger, Button, Group, Menu, Stack, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { useAuth } from '@/shared/hooks/useAuth';
+import { useAppAuth } from '@/providers/auth.provider';
 
 type ReagenShellProps = {
   children: ReactNode[];
@@ -16,7 +16,7 @@ type ReagenShellProps = {
 
 export function ReagenShell(props: ReagenShellProps) {
   const [opened, { toggle }] = useDisclosure();
-  const { logout } = useAuth();
+  const { logout } = useAppAuth();
   const router = useRouter();
 
   return (

@@ -2,8 +2,8 @@ import { useMemo, useState } from 'react';
 import { TableCrudOperations } from '@/features/data-table/data-table.type';
 import { Package } from '@/features/package/package.type';
 import { getReagentTableInitialColumns } from '@/features/reagent/reagent.constants';
-import { Reagent } from '@/features/reagent/reagent.type';
 import { ReagentService } from '@/features/reagent/reagent.service';
+import { Reagent } from '@/features/reagent/reagent.type';
 import { useData } from '@/providers/data.provider';
 import { findPackagesOfReagent } from '@/shared/utils/misc';
 
@@ -34,7 +34,7 @@ export function useReagentsView(props: UseReagentsViewProps) {
 
   const isEditModalOpen = mode === 'edit';
   const isConfirmModalOpen = warning !== null;
-  const modalTitle = selectedReagentId ? 'Editar reagente' : 'Adicionar reagente';
+  const modalTitle = selectedReagentId ? 'Editar Reagente' : 'Adicionar Reagente';
 
   const shouldShowTable = !reagentsError && !loadingReagents;
   const shouldShowError = reagentsError;

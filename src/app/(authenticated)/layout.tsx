@@ -4,15 +4,15 @@ import React, { ReactNode } from 'react';
 import { redirect } from 'next/navigation';
 import { LoadingOverlay } from '@mantine/core';
 import { ReagenShell } from '@/features/app-shell/app-shell.view';
+import { useAppAuth } from '@/providers/auth.provider';
 import { DataProvider } from '@/providers/data.provider';
-import { useAuth } from '@/shared/hooks/useAuth';
 
 type RootLayoutProps = {
   children: ReactNode[];
 };
 
 export default function AuthenticatedLayout({ children }: RootLayoutProps) {
-  const { user, loading } = useAuth();
+  const { user, loading } = useAppAuth();
 
   if (loading) return <LoadingOverlay visible />;
 

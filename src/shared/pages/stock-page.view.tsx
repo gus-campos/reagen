@@ -6,7 +6,7 @@ import { SearchReagent } from '@/features/stock-filter/components/search-reagent
 import { StockFilter } from '@/features/stock-filter/stock-filter.type';
 import { useData } from '@/providers/data.provider';
 
-// PRecisa ser inicializado aqui
+// Precisa ser inicializado aqui
 const initialFilter: StockFilter = {
   outStatus: 'all',
   controlled: 'all',

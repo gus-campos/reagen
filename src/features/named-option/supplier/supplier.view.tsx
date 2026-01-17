@@ -12,7 +12,7 @@ export function SupplierView() {
     <NamedOptionView
       loadingData={loadingSuppliers}
       datas={suppliers}
-      dataName="Fornecedores"
+      dataName="Fornecedor"
       repositoryService={supplierService}
       getDeleteWarning={getWarning}
     />

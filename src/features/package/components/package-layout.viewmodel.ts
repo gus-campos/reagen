@@ -19,7 +19,7 @@ export function usePackageLayout(props: UsePackageLayoutProps) {
 
   const isEditModalOpen = props.mode === 'edit';
   const isShowModalOpen = props.mode === 'show';
-  const modalTitle = props.selectedPackage ? 'Editar pkg' : 'Adicionar pkg';
+  const modalTitle = props.selectedPackage ? 'Editar pacote' : 'Adicionar pacote';
 
   const handleBeginPackageEdit = (pkg: Package) => {
     props.onSelectPackage(pkg);

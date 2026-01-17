@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button, Stack, Text, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { useAuth } from '@/shared/hooks/useAuth';
+import { useAppAuth } from '@/providers/auth.provider';
 
 type AccountInfo = {
   email: string;
@@ -14,7 +14,7 @@ type AccountInfoFormProps = {
 };
 
 export function AccountInfoForm(_props: AccountInfoFormProps) {
-  const { login } = useAuth();
+  const { login } = useAppAuth();
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 

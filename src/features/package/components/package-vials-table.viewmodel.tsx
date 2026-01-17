@@ -83,8 +83,7 @@ export function usePackageVialsTable(props: UsePackageVialsTableProps) {
     setSelectedGroupIndex(null);
   };
 
-  // Obs: Não é necessário separar frascos que estão agrupados, já que são idênticos, e é
-  // impossível filtrar de forma que parte fique dentro, outra fora
+  // Obs: Não é necessário separar frascos que estão agrupados, já que não divergem em nada
   const dataFilter = props.filter
     ? (group: VialGroup) => group.vials.some((vial) => filteredVial(vial, props.filter!))
     : undefined;
@@ -119,7 +118,7 @@ export function usePackageVialsTable(props: UsePackageVialsTableProps) {
     },
   ];
 
-  // Duplicação de código necessária à baixo
+  // Duplicação de código necessária a baixo, cuidado ao modificar
   const extraActions: CrudAction<VialGroup>[] = [
     {
       icon: (
@@ -180,5 +179,7 @@ export function usePackageVialsTable(props: UsePackageVialsTableProps) {
     collumns,
     extraActions,
     dataFilter,
+    // Para testes
+    outVialsSubmit,
   };
 }
