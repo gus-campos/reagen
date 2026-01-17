@@ -8,6 +8,7 @@ import { useData } from '@/providers/data.provider';
 
 // PRecisa ser inicializado aqui
 const initialFilter: StockFilter = {
+  outStatus: 'all',
   controlled: 'all',
   expired: 'all',
   maxExpire: null,

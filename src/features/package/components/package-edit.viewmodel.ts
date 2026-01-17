@@ -151,8 +151,6 @@ export function usePackageEdit(props: UsePackageEditProps) {
     } else {
       const pkgCreated = await props.onAddPackage(pkg);
 
-      console.log({ pkgCreated });
-
       Promise.all(
         labGroups.flatMap((group) =>
           Array.from({ length: group.amount }).map(() =>
