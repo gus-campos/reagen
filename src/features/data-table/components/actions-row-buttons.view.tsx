@@ -62,9 +62,9 @@ export function ActionsRowButtons<T>(props: ActionsRowButtonsProps<T>) {
             onClose={() => action.popover?.onClose && action.popover.onClose(props.data)}
             withinPortal={false}
             trapFocus={false}
-            shadow="xl"
-            radius="lg"
+            radius="md"
             withArrow
+            arrowPosition="side"
             arrowSize={28}
           >
             <Popover.Target>
@@ -82,9 +82,15 @@ export function ActionsRowButtons<T>(props: ActionsRowButtonsProps<T>) {
                 {action.icon}
               </ActionIcon>
             </Popover.Target>
-            <Popover.Dropdown>
-              {/* Para impedir que o click no conteúdo feche o popover */}
-              <Stack onMouseDown={(e) => e.stopPropagation()}>
+            <Popover.Dropdown
+              style={{
+                boxShadow: '0 0 20px rgba(0,0,0,0.40)',
+              }}
+            >
+              <Stack
+                // Para impedir que o click no conteúdo feche o popover
+                onMouseDown={(e) => e.stopPropagation()}
+              >
                 {action.popover?.render({
                   closePopover: () => setPopoverOpened(null),
                   data: props.data,
