@@ -70,8 +70,16 @@ function isExpired(pkg: Package): boolean {
 }
 
 export function filteredVial(vial: Vial, filter: StockFilter): boolean {
+  const matchesIsOutFilter =
+    // Filtro não ativado
+    filter.outStatus === 'all' ||
+    // Deve estar fora e está fora
+    (filter.outStatus === 'is-out' && vial.outDate) ||
+    // Não deve estar fora e não está fora
+    (filter.outStatus === 'not-out' && !vial.outDate);
+
   const matchesLaboratoryFilter =
     filter.laboratoryId === null || filter.laboratoryId === vial.laboratoryId;
 
-  return matchesLaboratoryFilter;
+  return matchesIsOutFilter && matchesLaboratoryFilter;
 }

@@ -2,7 +2,10 @@
 
 import { ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
-import { IconHome, IconTable, IconTestPipe } from '@tabler/icons-react';
+import { IconTestPipe } from '@tabler/icons-react';
+import { GrCatalog } from 'react-icons/gr';
+import { MdForklift, MdOutlineDashboard } from 'react-icons/md';
+import { TbReportAnalytics } from 'react-icons/tb';
 import { AppShell, Burger, Button, Group, Menu, Stack, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { useAuth } from '@/shared/hooks/useAuth';
@@ -41,7 +44,7 @@ export function ReagenShell(props: ReagenShellProps) {
               }}
             >
               <Group>
-                <IconHome size={20} />
+                <MdOutlineDashboard size={20} />
                 <Text size="md">Dashboard</Text>
               </Group>
             </Menu.Item>
@@ -53,7 +56,7 @@ export function ReagenShell(props: ReagenShellProps) {
               }}
             >
               <Group>
-                <IconTable size={20} />
+                <MdForklift size={20} />
                 <Text size="md">Estoque</Text>
               </Group>
             </Menu.Item>
@@ -65,8 +68,8 @@ export function ReagenShell(props: ReagenShellProps) {
               }}
             >
               <Group>
-                <IconTable size={20} />
-                <Text size="md">Definições</Text>
+                <GrCatalog size={20} />
+                <Text size="md">Cadastros</Text>
               </Group>
             </Menu.Item>
 
@@ -77,7 +80,7 @@ export function ReagenShell(props: ReagenShellProps) {
               }}
             >
               <Group>
-                <IconTable size={20} />
+                <TbReportAnalytics size={20} />
                 <Text size="md">Relatório</Text>
               </Group>
             </Menu.Item>

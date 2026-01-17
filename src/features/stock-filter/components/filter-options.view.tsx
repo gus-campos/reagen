@@ -48,6 +48,24 @@ export function FilterOptions(props: FilterOptionsProps) {
 
       <form>
         <Accordion variant="default" chevronPosition="left">
+          {/* Saída */}
+          <Accordion.Item value="out-status">
+            <Accordion.Control>
+              <Group>
+                <TouchedBadge active={isExpireDateFilterActive} text="Por saída" />
+              </Group>
+            </Accordion.Control>
+            <Accordion.Panel>
+              {/* Range de data */}
+              {/* FIXME: Apagar o outro campo quando mudar */}
+              <Radio.Group label="Mostrar" defaultValue="all" {...form.getInputProps('outStatus')}>
+                <Radio disabled={expiredDisabled} label="Todos" value="all" />
+                <Radio disabled={expiredDisabled} label="Apenas com saída" value="is-out" />
+                <Radio disabled={expiredDisabled} label="Apenas sem saída" value="not-out" />
+              </Radio.Group>
+            </Accordion.Panel>
+          </Accordion.Item>
+
           {/* Vencimento */}
           <Accordion.Item value="expire-date">
             <Accordion.Control>

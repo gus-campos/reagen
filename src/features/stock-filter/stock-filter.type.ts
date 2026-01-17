@@ -17,6 +17,7 @@ export interface StockFilter {
   minExpire: Date | null;
   maxExpire: Date | null;
 
+  outStatus: 'is-out' | 'not-out' | 'all';
   expired: 'expired' | 'not-expired' | 'all';
   controlled: 'controlled' | 'not-controlled' | 'all';
 
