@@ -26,6 +26,7 @@ export function useFilterOptions(props: FilterOptionsProps) {
   const controlledDisabled = form.values.controlAgencyId !== null;
   const controlAgencyDisabled = form.values.controlled !== 'all';
 
+  const isOutFilterActive = form.values.outStatus !== 'all';
   const isExpireDateFilterActive =
     form.values.expired !== 'all' || !!form.values.minExpire || !!form.values.maxExpire;
   const isControlledFilterActive =
@@ -78,6 +79,7 @@ export function useFilterOptions(props: FilterOptionsProps) {
     expiredDisabled,
     controlledDisabled,
     controlAgencyDisabled,
+    isOutFilterActive,
     isExpireDateFilterActive,
     isControlledFilterActive,
     isBrandFilterActive,

@@ -61,7 +61,7 @@ export function ReagentsView() {
 
         <Button
           style={{
-            position: 'absolute',
+            position: 'fixed',
             bottom: '5px',
             right: '30px',
             height: '40px',

@@ -49,11 +49,11 @@ export function DashboardView() {
         opened={modalOpened}
       />
       <Button
-        variant="light"
+        variant="outline"
         radius="50px"
         onClick={openModal}
         style={{
-          position: 'absolute',
+          position: 'fixed',
           bottom: '30px',
           right: '30px',
           height: '40px',

@@ -126,7 +126,7 @@ export function ReportPage() {
       {/* Botões de acesso */}
       <Group
         style={{
-          position: 'absolute',
+          position: 'fixed',
           bottom: '30px',
           right: '30px',
           height: '40px',

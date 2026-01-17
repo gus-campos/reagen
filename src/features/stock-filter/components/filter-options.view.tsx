@@ -25,6 +25,7 @@ export function FilterOptions(props: FilterOptionsProps) {
     expiredDisabled,
     controlledDisabled,
     controlAgencyDisabled,
+    isOutFilterActive,
     isExpireDateFilterActive,
     isControlledFilterActive,
     isBrandFilterActive,
@@ -52,7 +53,7 @@ export function FilterOptions(props: FilterOptionsProps) {
           <Accordion.Item value="out-status">
             <Accordion.Control>
               <Group>
-                <TouchedBadge active={isExpireDateFilterActive} text="Por saída" />
+                <TouchedBadge active={isOutFilterActive} text="Por saída" />
               </Group>
             </Accordion.Control>
             <Accordion.Panel>
