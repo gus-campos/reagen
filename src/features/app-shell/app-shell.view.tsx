@@ -29,7 +29,9 @@ export function ReagenShell(props: ReagenShellProps) {
         <Group h="100%" px="md">
           <Burger opened={opened} onClick={toggle} size="sm" />
           <IconTestPipe size={28} />
-          <Text size="xl">Reagen - Controle de Reagentes</Text>
+          <Text size="xl" fw="bold">
+            Reagen - Controle de Reagentes
+          </Text>
         </Group>
       </AppShell.Header>
 

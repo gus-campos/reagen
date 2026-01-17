@@ -9,11 +9,7 @@ type AccountInfo = {
   password: string;
 };
 
-type AccountInfoFormProps = {
-  isSignUp?: boolean;
-};
-
-export function AccountInfoForm(_props: AccountInfoFormProps) {
+export function AccountInfoForm() {
   const { login } = useAppAuth();
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
