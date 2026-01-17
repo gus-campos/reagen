@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { IconEdit, IconTrash } from '@tabler/icons-react';
-import { ActionIcon, Group, Popover, Tooltip } from '@mantine/core';
+import { ActionIcon, Group, Popover, Stack, Tooltip } from '@mantine/core';
 import {
   DataTableRealContextType,
   useDataTableContext,
@@ -60,6 +60,8 @@ export function ActionsRowButtons<T>(props: ActionsRowButtonsProps<T>) {
             onOpen={action.popover?.onOpen ? () => action.popover!.onOpen!(props.data) : undefined}
             onChange={(opened) => setPopoverOpened(opened ? index : null)}
             onClose={() => action.popover?.onClose && action.popover.onClose(props.data)}
+            withinPortal={false}
+            trapFocus={false}
             shadow="xl"
             radius="lg"
             withArrow
@@ -81,10 +83,13 @@ export function ActionsRowButtons<T>(props: ActionsRowButtonsProps<T>) {
               </ActionIcon>
             </Popover.Target>
             <Popover.Dropdown>
-              {action.popover?.render({
-                closePopover: () => setPopoverOpened(null),
-                data: props.data,
-              })}
+              {/* Para impedir que o click no conteúdo feche o popover */}
+              <Stack onMouseDown={(e) => e.stopPropagation()}>
+                {action.popover?.render({
+                  closePopover: () => setPopoverOpened(null),
+                  data: props.data,
+                })}
+              </Stack>
             </Popover.Dropdown>
           </Popover>
         ))}
