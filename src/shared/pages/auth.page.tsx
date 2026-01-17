@@ -1,17 +1,14 @@
 // src/features/auth/LoginPage.tsx
 
 import { redirect } from 'next/navigation';
-import { Group, LoadingOverlay, Paper, Title } from '@mantine/core';
+import { Group, Paper, Title } from '@mantine/core';
 import { AccountInfoForm } from '@/features/auth/auth.view';
 import { useAuth } from '@/shared/hooks/useAuth';
 
 export function Auth() {
   const { user } = useAuth();
 
-  if (user) {
-    redirect('/estoque');
-    return <LoadingOverlay visible />;
-  }
+  if (user) redirect('/estoque');
 
   return (
     <Group justify="center" align="center" style={{ height: '100vh' }}>
