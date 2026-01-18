@@ -12,6 +12,9 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],
+    env: {
+      ['NEXT_PUBLIC_FIREBASE_API_KEY']: 'AIzaSyCaldii3iEgvnubFwjL93F3YofhPnSERC8',
+    },
     globals: true,
   },
 } as UserConfig);

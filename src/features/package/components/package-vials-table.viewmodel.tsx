@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { FaCalendar } from 'react-icons/fa6';
 import { MdCancel } from 'react-icons/md';
 import { Badge, Group, Tooltip } from '@mantine/core';
@@ -27,12 +26,12 @@ type VialGroup = {
   outDate: Date | null;
 };
 
+type OutMode = 'out' | 'cancel';
+
 export function usePackageVialsTable(props: UsePackageVialsTableProps) {
   const { vials, getLaboratoryById } = useData();
-  const [modalMode, setModalMode] = useState<'out' | 'cancel'>('out');
-  const [selectedGroupIndex, setSelectedGroupIndex] = useState<number | null>(null);
 
-  const packageVials = vials?.filter((v) => v.packageId === props.data.id) ?? [];
+  const packageVials = vials?.filter((v) => v.packageId === props.pkg.id) ?? [];
 
   const packageVialGroups = packageVials.reduce((groups, vial) => {
     for (const group of groups) {
@@ -57,30 +56,19 @@ export function usePackageVialsTable(props: UsePackageVialsTableProps) {
     // Criar o grupo
   }, [] as VialGroup[]);
 
-  const outVialsSubmit = (values: OutVialsFormType) => {
-    // Não deveria acontecer
-    if (selectedGroupIndex === null) return;
-    const selectedGroup = packageVialGroups.find((group) => selectedGroupIndex === group.index);
-    // Não deveria acontecer
-    if (!selectedGroup) return;
+  const outVialsSubmit = (values: OutVialsFormType, mode: OutMode, group: VialGroup) => {
     // Quantidade inválida: não deveria acontecer
-    if (values.amount < 0 || values.amount > selectedGroup?.vials.length) return;
+    if (values.amount < 0 || values.amount > group.vials.length) return;
     const date = values.outDate ? stringToLocalDate(values.outDate) : null;
 
     // TODO: Precisa mudar data pra bater com o início do dia? Ver no agrupamento
 
     for (let i = 0; i < values.amount; i++) {
-      const vial = selectedGroup.vials[i];
+      const vial = group.vials[i];
       props.vialService.update(vial.id, {
-        outDate: modalMode === 'cancel' ? null : date,
+        outDate: mode === 'cancel' ? null : date,
       });
     }
-
-    setSelectedGroupIndex(null);
-  };
-
-  const onCloseForm = () => {
-    setSelectedGroupIndex(null);
   };
 
   // Obs: Não é necessário separar frascos que estão agrupados, já que não divergem em nada
@@ -128,17 +116,12 @@ export function usePackageVialsTable(props: UsePackageVialsTableProps) {
       ),
       show: (group) => !!group.outDate,
       popover: {
-        onOpen: (group) => {
-          setSelectedGroupIndex(group.index);
-          setModalMode('cancel');
-        },
-        onClose: onCloseForm,
         render: ({ closePopover, data }) => (
           <OutVialFormView
             // eslint-disable-next-line react/jsx-boolean-value
             modalIncludeDate={true}
             onSubmit={(values) => {
-              outVialsSubmit(values);
+              outVialsSubmit(values, 'cancel', data);
               closePopover && closePopover();
             }}
             maxAmount={data.vials.length}
@@ -154,17 +137,12 @@ export function usePackageVialsTable(props: UsePackageVialsTableProps) {
       ),
       show: (group) => !group.outDate,
       popover: {
-        onOpen: (group) => {
-          setSelectedGroupIndex(group.index);
-          setModalMode('out');
-        },
-        onClose: onCloseForm,
         render: ({ closePopover, data }) => (
           <OutVialFormView
             // eslint-disable-next-line react/jsx-boolean-value
             modalIncludeDate={true}
             onSubmit={(values) => {
-              outVialsSubmit(values);
+              outVialsSubmit(values, 'out', data);
               closePopover && closePopover();
             }}
             maxAmount={data.vials.length}
@@ -180,6 +158,6 @@ export function usePackageVialsTable(props: UsePackageVialsTableProps) {
     extraActions,
     dataFilter,
     // Para testes
-    outVialsSubmit,
+    test_outVialsSubmit: outVialsSubmit,
   };
 }

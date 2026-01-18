@@ -46,7 +46,7 @@ export function PackageTable(props: PackageTableProps) {
           searched={(pkg: Package) => getReagentById(pkg.reagentId).name}
           dataFilter={dataFilter}
           crudOperations={mergedCrudOperations}
-          getExpandedComponent={(data) => <PackageVialsTable data={data} filter={props.filter} />}
+          getExpandedComponent={(data) => <PackageVialsTable pkg={data} filter={props.filter} />}
         />
       )}
 

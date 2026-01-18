@@ -8,7 +8,7 @@ import { StockFilter } from '@/features/stock-filter/stock-filter.type';
 import { useDependencyInjection } from '@/providers/dependency-injection.provider';
 
 export type PackageVialsTableProps = {
-  data: Package;
+  pkg: Package;
   filter?: StockFilter;
 };
 

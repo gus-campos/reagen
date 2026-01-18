@@ -23,6 +23,8 @@ export interface IRepository<T extends WithId> {
   update: (id: string, item: Partial<OmitId<T>>) => Promise<void>;
   delete: (id: string) => Promise<void>;
   listen: (callback: (data: T[]) => void) => () => void;
+  clear: () => Promise<void>;
+  insert: (items: OmitId<T>[]) => Promise<void>;
 }
 
 // Implementação base do repositório para aproveitar comportamento comum
@@ -56,5 +58,14 @@ export abstract class BaseRepository<T extends WithId> implements IRepository<T>
 
   listen(callback: (data: T[]) => void) {
     return this.db.listen(this.tableName, callback);
+  }
+
+  async clear() {
+    const allItems = await this.getAll();
+    await Promise.all(allItems.map((item) => this.delete(item.id)));
+  }
+
+  async insert(items: OmitId<T>[]) {
+    await Promise.all(items.map((item) => this.create(item)));
   }
 }
