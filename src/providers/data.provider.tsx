@@ -105,15 +105,17 @@ export const DataProvider = (props: DataProviderProps) => {
     SupplierService
   >(supplierService);
 
-  console.log('useData', {
-    packages: packages?.map((r) => sortKeys(r)),
-    vials: vials?.map((r) => sortKeys(r)),
-    reagents: reagents?.map((op) => sortKeys(op)),
-    brands: brands?.map((b) => sortKeys(b)),
-    controlAgency: controlAgencies?.map((c) => sortKeys(c)),
-    laboratories: laboratories?.map((l) => sortKeys(l)),
-  });
-  console.log('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<');
+  if (process.env.MODE === 'test') {
+    console.log('useData', {
+      packages: packages?.map((r) => sortKeys(r)),
+      vials: vials?.map((r) => sortKeys(r)),
+      reagents: reagents?.map((op) => sortKeys(op)),
+      brands: brands?.map((b) => sortKeys(b)),
+      controlAgency: controlAgencies?.map((c) => sortKeys(c)),
+      laboratories: laboratories?.map((l) => sortKeys(l)),
+    });
+    console.log('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<');
+  }
 
   return (
     <DataContext.Provider
