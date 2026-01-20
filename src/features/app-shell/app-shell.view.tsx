@@ -26,6 +26,7 @@ export function ReagenShell(props: ReagenShellProps) {
       padding="md"
     >
       <AppShell.Header>
+        {/*  */}
         <Group h="100%" px="md">
           <Burger opened={opened} onClick={toggle} size="sm" />
           <IconTestPipe size={28} />
