@@ -105,7 +105,7 @@ export const DataProvider = (props: DataProviderProps) => {
     SupplierService
   >(supplierService);
 
-  if (process.env.MODE === 'test') {
+  if (process.env.NEXT_PUBLIC_MODE === 'test') {
     console.log('useData', {
       packages: packages?.map((r) => sortKeys(r)),
       vials: vials?.map((r) => sortKeys(r)),

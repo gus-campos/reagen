@@ -13,7 +13,7 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],
     env: {
-      ['MODE']: 'test',
+      ['NEXT_PUBLIC_MODE']: 'test',
       ['NEXT_PUBLIC_FIREBASE_TEST_API_KEY']: 'AIzaSyDnxkpxxwHpmtLlAcG1VbJSbt5OgWgNL2g',
     },
     globals: true,

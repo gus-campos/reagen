@@ -4,7 +4,7 @@ import { getFirestore } from 'firebase/firestore';
 import { firebaseConfigProd } from '@/core/config/firebase.prod';
 import { firebaseConfigTest } from '@/core/config/firebase.tests';
 
-const env = process.env.MODE;
+const env = process.env.NEXT_PUBLIC_MODE;
 
 export const firebaseConfig = env === 'test' ? firebaseConfigTest : firebaseConfigProd;
 
