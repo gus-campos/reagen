@@ -188,6 +188,7 @@ export function PackageEdit(props: PackageEditProps) {
               filter={portugueseSearchFilter}
               label="Marca"
               placeholder="Nome da marca"
+              allowDeselect
               data={brandSelectData}
               onChange={handleBrandChange}
               value={packageForm.values.brandId}

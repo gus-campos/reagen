@@ -86,7 +86,8 @@ export function usePackageEdit(props: UsePackageEditProps) {
       // Esse tem que ser o último
       const vialsSum = labGroups.reduce((sum, group) => sum + group.amount, 0);
 
-      if (vialsSum === 0) {
+      // Só avaliar se estiver no modo adição (sem reagente selecionado)
+      if (!selectedReagent && vialsSum === 0) {
         const labGroupsError = 'É necessário adicionar pelo menos um frasco.';
         errors.labGroups = labGroupsError;
         setVialsError(labGroupsError);
@@ -123,7 +124,8 @@ export function usePackageEdit(props: UsePackageEditProps) {
       setCreatedReagentName('');
     }
 
-    packageForm.setFieldValue('size', '' as any);
+    // Se no modo adição, não sobrescrever valor
+    if (!selectedReagent) packageForm.setFieldValue('size', '' as any);
   }, [loadingAddReagent]);
 
   useEffect(() => {
@@ -246,6 +248,8 @@ export function usePackageEdit(props: UsePackageEditProps) {
     const supplier = value ? getSupplierById(value) : null;
     packageForm.setValues({ supplierId: supplier?.id ?? '' });
   };
+
+  console.log(packageForm.values);
 
   return {
     reagentAddMode,
