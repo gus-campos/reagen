@@ -13,6 +13,8 @@ Stack:
 
 ## Como rodar localmente
 
+Para executar esse projeto é necessário ter o Node instalado no ambiente. Instruções de instalação [aqui](https://nodejs.org/pt/download).
+
 Execute os seguintes comandos:
 
 ```bash
