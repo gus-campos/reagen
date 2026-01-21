@@ -1,19 +1,15 @@
 # Reagen - Controle Fácil de Reagentes Químicos
 
-Software em desenvolvimento com o objetivo de gerenciar estoque de reagentes químicos, permitindo adicionar, buscar, filtrar, dar saída, visualizar resumos e etc. Usa uma validação rica dos dados, garantindo que diferentes laboratórios, substâncias e tamanhos sempre serão identificados de forma inequívoca. 
+Software em desenvolvimento com o objetivo de gerenciar estoque de reagentes químicos, permitindo adicionar, buscar, filtrar, dar saída, visualizar resumos e etc. Usa uma validação rica dos dados, garantindo que diferentes laboratórios, substâncias e tamanhos sempre serão identificados de forma inequívoca.
 
-Pode ser testado através do seguinte [deploy](https://reagen-xi.vercel.app/estoque).
+Pode ser testado através do seguinte [deploy](https://reagen-control.vercel.app/estoque).
 
-Stack: 
-* React
-* TypeScript
-* Firebase
-* Mantine
+Stack:
 
-## Próximas funcionalidades
-- [ ] Dashboard
-- [ ] Visualização por **pacotes**
-- [ ] Dar saída em lote de itens
+- React
+- TypeScript
+- Firebase
+- Mantine
 
 ## Como rodar localmente
 
@@ -21,17 +17,17 @@ Stack:
 git clone https://github.com/gus-campos/reagen
 cd reagen
 yarn
-npm run dev
+cp .env.example .env
+npm run build
+npm run start
 ```
 
 ## Captura de tela
 
 | <img width="1278" height="962" alt="image" src="https://github.com/user-attachments/assets/41b2d7b9-8e60-4b1d-a16d-fa8cd26123ac" /> | <img width="1278" height="962" alt="image" src="https://github.com/user-attachments/assets/79cb7c74-1837-4736-98de-9ff12c596cb1" /> |
-|-|-|
-
-
+| ----------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
 
 ## Notas
 
-* Por ser desenvolvido unicamente por mim, não me preocupei com o controle de versão, commitando conforme desejava salvar progresso e atualizar o deploy.
-* Como os requisitos funcionais ainda não estão completamente claros por parte do stakeholder, os testes automatizados não foi considerada uma prioridade pro momento, já que grandes mudanças ainda podem ocorrer. 
+- Por ser desenvolvido unicamente por mim, não me preocupei com o controle de versão, commitando conforme desejava salvar progresso e atualizar o deploy.
+- Como os requisitos funcionais ainda não estão completamente claros por parte do stakeholder, os testes automatizados não foi considerada uma prioridade pro momento, já que grandes mudanças ainda podem ocorrer.
