@@ -249,8 +249,6 @@ export function usePackageEdit(props: UsePackageEditProps) {
     packageForm.setValues({ supplierId: supplier?.id ?? '' });
   };
 
-  console.log(packageForm.values);
-
   return {
     reagentAddMode,
     createdReagentName,

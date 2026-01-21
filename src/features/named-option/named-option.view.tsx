@@ -57,14 +57,14 @@ export function NamedOptionView<T extends NamedOption>(props: NameDataViewProps<
             <Button
               style={{
                 position: 'fixed',
-                bottom: '5px',
+                bottom: '20px',
                 right: '30px',
                 height: '40px',
                 borderRadius: '50px',
               }}
               onClick={handleBeginDataAdd}
             >
-              + Adicionar marca
+              + Adicionar {props.dataName}
             </Button>
 
             <Modal

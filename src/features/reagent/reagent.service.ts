@@ -38,7 +38,7 @@ export class ReagentService extends BaseRepository<Reagent> {
     if (!currentReagent) throw new Error('reagente não encontrado para atualização');
 
     if (data.sizes) {
-      // Verificando diplicatas
+      // Verificando duplicatas
       if (new Set(data.sizes).size !== data.sizes.length)
         throw new Error('Reagente não pode ter tamanho duplicado.');
 

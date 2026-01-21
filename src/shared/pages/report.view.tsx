@@ -177,16 +177,16 @@ export function ConfigReportModal(props: ConfigReportProps) {
   });
 
   return (
-    <form
-      onSubmit={form.onSubmit((values) => {
-        props.onSubmit({
-          startDate: new Date(values.startDate),
-          endDate: new Date(values.endDate),
-        });
-        props.onClose;
-      })}
-    >
-      <Modal title="Opções do relatório" opened={props.opened} onClose={props.onClose}>
+    <Modal title="Opções do relatório" opened={props.opened} onClose={props.onClose}>
+      <form
+        onSubmit={form.onSubmit((values) => {
+          props.onSubmit({
+            startDate: new Date(values.startDate),
+            endDate: new Date(values.endDate),
+          });
+          props.onClose();
+        })}
+      >
         <Grid>
           <Grid.Col span={{ base: 6 }}>
             <MonthPickerInput
@@ -203,10 +203,10 @@ export function ConfigReportModal(props: ConfigReportProps) {
             />
           </Grid.Col>
         </Grid>
-        <Button fullWidth mt="sm" type="submit">
+        <Button type="submit" fullWidth mt="sm">
           Confirmar
         </Button>
-      </Modal>
-    </form>
+      </form>
+    </Modal>
   );
 }
