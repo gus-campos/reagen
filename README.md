@@ -16,10 +16,9 @@ Stack:
 ```bash
 git clone https://github.com/gus-campos/reagen
 cd reagen
-yarn
+npm install
 cp .env.example .env
-npm run build
-npm run start
+npm run dev
 ```
 
 ## Captura de tela
