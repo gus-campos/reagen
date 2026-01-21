@@ -2,7 +2,7 @@
 
 Software em desenvolvimento com o objetivo de gerenciar estoque de reagentes químicos, permitindo adicionar, buscar, filtrar, dar saída, visualizar resumos e etc. Usa uma validação rica dos dados, garantindo que diferentes laboratórios, substâncias e tamanhos sempre serão identificados de forma inequívoca.
 
-Pode ser testado através do seguinte [deploy](https://reagen-control.vercel.app/estoque).
+Pode ser testado através do seguinte [deploy](https://reagen-control.vercel.app/).
 
 Stack:
 
@@ -13,6 +13,8 @@ Stack:
 
 ## Como rodar localmente
 
+Execute os seguintes comandos:
+
 ```bash
 git clone https://github.com/gus-campos/reagen
 cd reagen
@@ -20,6 +22,11 @@ npm install
 cp .env.example .env
 npm run dev
 ```
+
+Credenciais de teste:
+
+Email: teste@email.com
+Senha: senhaforte
 
 ## Captura de tela
 
