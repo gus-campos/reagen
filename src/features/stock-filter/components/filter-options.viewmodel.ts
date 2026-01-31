@@ -18,6 +18,10 @@ export function useFilterOptions(props: FilterOptionsProps) {
       ...values,
       minExpire: toNullableLocalDate(values.minExpire),
       maxExpire: toNullableLocalDate(values.maxExpire),
+      minInDate: toNullableLocalDate(values.minInDate),
+      maxInDate: toNullableLocalDate(values.maxInDate),
+      minOutDate: toNullableLocalDate(values.minOutDate),
+      maxOutDate: toNullableLocalDate(values.maxOutDate),
     }),
   });
 
@@ -26,7 +30,9 @@ export function useFilterOptions(props: FilterOptionsProps) {
   const controlledDisabled = form.values.controlAgencyId !== null;
   const controlAgencyDisabled = form.values.controlled !== 'all';
 
-  const isOutFilterActive = form.values.outStatus !== 'all';
+  const isInDateFilterActive = !!form.values.minInDate || !!form.values.maxInDate;
+  const isOutDateFilterActive =
+    form.values.outStatus !== 'all' || !!form.values.minOutDate || !!form.values.maxOutDate;
   const isExpireDateFilterActive =
     form.values.expired !== 'all' || !!form.values.minExpire || !!form.values.maxExpire;
   const isControlledFilterActive =
@@ -79,7 +85,8 @@ export function useFilterOptions(props: FilterOptionsProps) {
     expiredDisabled,
     controlledDisabled,
     controlAgencyDisabled,
-    isOutFilterActive,
+    isInDateFilterActive,
+    isOutDateFilterActive,
     isExpireDateFilterActive,
     isControlledFilterActive,
     isBrandFilterActive,

@@ -8,7 +8,7 @@ import {
 import { PackageService } from '@/features/package/package.service';
 import { Package } from '@/features/package/package.type';
 import { formattedSize } from '@/features/size/size.util';
-import { filteredPackage, filteredVial } from '@/features/stock-filter/stock-filter.util';
+import { filteredPackage } from '@/features/stock-filter/stock-filter.util';
 import { Vial } from '@/features/vial/vial.type';
 import { useData } from '@/providers/data.provider';
 import { findVialsOfPackage } from '@/shared/utils/misc';
@@ -66,11 +66,7 @@ export function usePackageTable(props: UsePackageTableProps) {
     vials?.filter((vial) => vial.packageId === pkg.id) ?? [];
 
   const dataFilter = props.filter
-    ? (pkg: Package) =>
-        // O pacote precisa passar no filtro
-        filteredPackage(pkg, props.filter!, getReagentById) &&
-        // E pelo menos um de seus frascos
-        getPackageVials(pkg).some((vial) => filteredVial(vial, props.filter!))
+    ? (pkg: Package) => filteredPackage(pkg, props.filter!, getPackageVials, getReagentById)
     : undefined;
 
   const generateWarning = (pkg: Package, relatedVials: Vial[]) => {

@@ -14,14 +14,20 @@
 export interface StockFilter {
   /* Filtra de forma geral pacotes e frascos */
 
+  outStatus: 'is-out' | 'not-out' | 'all';
+  minOutDate: Date | null;
+  maxOutDate: Date | null;
+
+  expired: 'expired' | 'not-expired' | 'all';
   minExpire: Date | null;
   maxExpire: Date | null;
 
-  outStatus: 'is-out' | 'not-out' | 'all';
-  expired: 'expired' | 'not-expired' | 'all';
-  controlled: 'controlled' | 'not-controlled' | 'all';
+  minInDate: Date | null;
+  maxInDate: Date | null;
 
+  controlled: 'controlled' | 'not-controlled' | 'all';
   controlAgencyId: string | null;
+
   brandId: string | null;
   supplierId: string | null;
   laboratoryId: string | null;

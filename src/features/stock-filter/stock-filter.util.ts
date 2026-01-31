@@ -6,11 +6,11 @@ import { Vial } from '@/features/vial/vial.type';
 export function filteredPackage(
   pkg: Package,
   filter: StockFilter,
+  getPackageVials: (pkg: Package) => Vial[],
   getReagentById: (reagentId: string) => Reagent
 ): boolean {
-  // Observação: dentro da package view, está implementado que
-  // o package além de retornar true desta função, deve também
-  // conter pelo menos um vial que retorna true em filteredVial
+  const hasAnyVialMatchingFilter = getPackageVials(pkg).some((vial) => filteredVial(vial, filter!));
+  if (!hasAnyVialMatchingFilter) return false;
 
   const isPkgExpired = isPackageExpired(pkg);
   const matchesExpiredFilter =
@@ -20,12 +20,21 @@ export function filteredPackage(
     (filter.expired === 'expired' && isPkgExpired) ||
     // Não deve estar vencido e não está vencido
     (filter.expired === 'not-expired' && !isPkgExpired);
+  if (!matchesExpiredFilter) return false;
 
   const macthesExpireRangeFilter = isInsideDateRange(
     pkg.expireDate,
     filter.minExpire,
     filter.maxExpire
   );
+  if (!macthesExpireRangeFilter) return false;
+
+  const macthesInDateRangeFilter = isInsideDateRange(
+    pkg.inDate,
+    filter.minInDate,
+    filter.maxInDate
+  );
+  if (!macthesInDateRangeFilter) return false;
 
   const pkgControlAgencyId = getReagentById(pkg.reagentId).controlAgencyId;
   const pkgIsControlled = pkgControlAgencyId !== null;
@@ -36,22 +45,19 @@ export function filteredPackage(
     (filter.controlled === 'controlled' && pkgIsControlled) ||
     // Não deve ser controlado e não é controlado
     (filter.controlled === 'not-controlled' && !pkgIsControlled);
+  if (!matchesControlledFilter) return false;
 
   const matchesControlAgencyFilter =
     filter.controlAgencyId === null || filter.controlAgencyId === pkgControlAgencyId;
+  if (!matchesControlAgencyFilter) return false;
 
   const matchesBrandFilter = filter.brandId === null || filter.brandId === pkg.brandId;
+  if (!matchesBrandFilter) return false;
 
   const macthesSupplierFilter = filter.supplierId === null || filter.supplierId === pkg.supplierId;
+  if (!macthesSupplierFilter) return false;
 
-  return (
-    matchesExpiredFilter &&
-    macthesExpireRangeFilter &&
-    matchesControlledFilter &&
-    matchesControlAgencyFilter &&
-    matchesBrandFilter &&
-    macthesSupplierFilter
-  );
+  return true;
 }
 
 export function isInsideDateRange(
@@ -79,8 +85,16 @@ export function filteredVial(vial: Vial, filter: StockFilter): boolean {
     // Não deve estar fora e não está fora
     (filter.outStatus === 'not-out' && !vial.outDate);
 
+  if (!matchesIsOutFilter) return false;
+
+  const macthesOutDateRangeFilter =
+    !!vial.outDate && isInsideDateRange(vial.outDate, filter.minOutDate, filter.maxOutDate);
+  if (!macthesOutDateRangeFilter) return false;
+
   const matchesLaboratoryFilter =
     filter.laboratoryId === null || filter.laboratoryId === vial.laboratoryId;
 
-  return matchesIsOutFilter && matchesLaboratoryFilter;
+  if (!matchesLaboratoryFilter) return false;
+
+  return true;
 }

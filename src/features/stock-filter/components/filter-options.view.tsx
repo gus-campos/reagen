@@ -25,7 +25,8 @@ export function FilterOptions(props: FilterOptionsProps) {
     expiredDisabled,
     controlledDisabled,
     controlAgencyDisabled,
-    isOutFilterActive,
+    isInDateFilterActive,
+    isOutDateFilterActive,
     isExpireDateFilterActive,
     isControlledFilterActive,
     isBrandFilterActive,
@@ -49,11 +50,45 @@ export function FilterOptions(props: FilterOptionsProps) {
 
       <form>
         <Accordion variant="default" chevronPosition="left">
-          {/* Saída */}
-          <Accordion.Item value="out-status">
+          {/* Entrada */}
+          <Accordion.Item value="in-date">
             <Accordion.Control>
               <Group>
-                <TouchedBadge active={isOutFilterActive} text="Por saída" />
+                <TouchedBadge active={isInDateFilterActive} text="Por entrada" />
+              </Group>
+            </Accordion.Control>
+            <Accordion.Panel>
+              <Grid mt="md">
+                <Grid.Col span={{ base: 6 }}>
+                  <DatePickerInput
+                    clearable
+                    valueFormat="DD/MM/YYYY"
+                    label="A partir de"
+                    placeholder="Selecione"
+                    disabled={dateFieldsDisabled}
+                    {...form.getInputProps('minInDate')}
+                  />
+                </Grid.Col>
+
+                <Grid.Col span={{ base: 6 }}>
+                  <DatePickerInput
+                    clearable
+                    valueFormat="DD/MM/YYYY"
+                    label="Até"
+                    placeholder="Selecione"
+                    disabled={dateFieldsDisabled}
+                    {...form.getInputProps('maxInDate')}
+                  />
+                </Grid.Col>
+              </Grid>
+            </Accordion.Panel>
+          </Accordion.Item>
+
+          {/* Saída */}
+          <Accordion.Item value="out-date">
+            <Accordion.Control>
+              <Group>
+                <TouchedBadge active={isOutDateFilterActive} text="Por saída" />
               </Group>
             </Accordion.Control>
             <Accordion.Panel>
@@ -64,6 +99,29 @@ export function FilterOptions(props: FilterOptionsProps) {
                 <Radio disabled={expiredDisabled} label="Apenas com saída" value="is-out" />
                 <Radio disabled={expiredDisabled} label="Apenas sem saída" value="not-out" />
               </Radio.Group>
+              <Grid mt="md">
+                <Grid.Col span={{ base: 6 }}>
+                  <DatePickerInput
+                    clearable
+                    valueFormat="DD/MM/YYYY"
+                    label="A partir de"
+                    placeholder="Selecione"
+                    disabled={dateFieldsDisabled}
+                    {...form.getInputProps('minOutDate')}
+                  />
+                </Grid.Col>
+
+                <Grid.Col span={{ base: 6 }}>
+                  <DatePickerInput
+                    clearable
+                    valueFormat="DD/MM/YYYY"
+                    label="Até"
+                    placeholder="Selecione"
+                    disabled={dateFieldsDisabled}
+                    {...form.getInputProps('maxOutDate')}
+                  />
+                </Grid.Col>
+              </Grid>
             </Accordion.Panel>
           </Accordion.Item>
 
