@@ -12,11 +12,11 @@ export default function DefinitionsPage() {
       <Paper radius="md" withBorder shadow="sm" my="md" px="md">
         <Tabs defaultValue="reagents" my="lg">
           <Tabs.List defaultValue="reagents">
-            <Tabs.Tab value="reagents">Reagentes</Tabs.Tab>
-            <Tabs.Tab value="control-agencies">Orgãos de Controle</Tabs.Tab>
+            <Tabs.Tab value="reagents">Reagente</Tabs.Tab>
+            <Tabs.Tab value="control-agencies">Orgão de Controle</Tabs.Tab>
             <Tabs.Tab value="brands">Marcas</Tabs.Tab>
-            <Tabs.Tab value="laboratories">Laboratórios</Tabs.Tab>
-            <Tabs.Tab value="suppliers">Fornecedores</Tabs.Tab>
+            <Tabs.Tab value="laboratories">Laboratório</Tabs.Tab>
+            <Tabs.Tab value="suppliers">Fornecedore</Tabs.Tab>
           </Tabs.List>
 
           <Tabs.Panel value="reagents">

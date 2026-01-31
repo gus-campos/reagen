@@ -5,7 +5,7 @@ import { Package } from '@/features/package/package.type';
 import { ReagentService } from '@/features/reagent/reagent.service';
 import { Reagent } from '@/features/reagent/reagent.type';
 import { Size } from '@/features/size/size.type';
-import { formattedSize } from '@/features/size/size.util';
+import { formattedSize, normalizedAmount } from '@/features/size/size.util';
 import Unit from '@/features/size/unit.type';
 import { VialService } from '@/features/vial/vial.service';
 import { useData } from '@/providers/data.provider';
@@ -192,29 +192,39 @@ export function usePackageEdit(props: UsePackageEditProps) {
     laboratoryName: getLaboratoryById(group.laboratoryId).name,
   }));
 
-  const reagentSelectData =
-    reagents?.map((opt) => ({
+  // TODO: Ordenar esses 4
+  const reagentSelectData = reagents!
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .map((opt) => ({
       value: opt.id,
       label: opt.name,
-    })) ?? [];
+    }));
 
+  // Ordenar menor -> maior
   const sizeSelectData = selectedReagent
-    ? selectedReagent.sizes.map((s) => formattedSize(s))
+    ? selectedReagent.sizes
+        .sort((a, b) => normalizedAmount(a) - normalizedAmount(b))
+        .map((s) => formattedSize(s))
     : undefined;
 
-  const brandSelectData = brands!.map((b) => ({
-    value: b.id,
-    label: b.name,
-  }));
+  const brandSelectData = brands!
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .map((b) => ({
+      value: b.id,
+      label: b.name,
+    }));
 
-  const supplierSelectData = suppliers!.map((s) => ({
-    value: s.id,
-    label: s.name,
-  }));
+  const supplierSelectData = suppliers!
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .map((s) => ({
+      value: s.id,
+      label: s.name,
+    }));
 
   const availableLaboratories =
-    laboratories
-      ?.filter((lab) => !labGroups.map((g) => g.laboratoryId).includes(lab.id))
+    laboratories!
+      .filter((lab) => !labGroups.map((g) => g.laboratoryId).includes(lab.id))
+      .sort((a, b) => a.name.localeCompare(b.name))
       .map((lab) => ({
         value: lab.id,
         label: lab.name,

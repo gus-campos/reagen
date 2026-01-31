@@ -90,7 +90,7 @@ export function PackageLayout(props: PackageLayoutProps) {
         }}
         onClick={handleBeginPackageAddition}
       >
-        <IoMdAdd size="20px" /> Cadastrar no estoque
+        <IoMdAdd size="20px" /> Dar entrada no estoque
       </Button>
     </>
   );

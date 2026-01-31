@@ -266,6 +266,8 @@ export function PackageEdit(props: PackageEditProps) {
                 {/* Adição frasco ao novo laboratório */}
                 <Group justify="space-between" align="end">
                   <Select
+                    searchable
+                    filter={portugueseSearchFilter}
                     style={{ flex: 1 }}
                     label="Adicionar frascos a a um laboratório"
                     data={availableLaboratories}

@@ -41,22 +41,33 @@ export function useFilterOptions(props: FilterOptionsProps) {
   const isLaboratoryFilterActive = form.values.laboratoryId !== null;
   const isSupplierFilterActive = form.values.supplierId !== null;
 
-  const controlAgencyOptions = controlAgencies!.map((c) => ({
-    value: c.id,
-    label: c.name,
-  }));
-  const brandOptions = brands!.map((b) => ({
-    value: b.id,
-    label: b.name,
-  }));
-  const laboratoryOptions = laboratories!.map((l) => ({
-    value: l.id,
-    label: l.name,
-  }));
-  const supplierOptions = suppliers!.map((s) => ({
-    value: s.id,
-    label: s.name,
-  }));
+  const controlAgencyOptions = controlAgencies!
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .map((c) => ({
+      value: c.id,
+      label: c.name,
+    }));
+
+  const brandOptions = brands!
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .map((b) => ({
+      value: b.id,
+      label: b.name,
+    }));
+
+  const laboratoryOptions = laboratories!
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .map((l) => ({
+      value: l.id,
+      label: l.name,
+    }));
+
+  const supplierOptions = suppliers!
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .map((s) => ({
+      value: s.id,
+      label: s.name,
+    }));
 
   const handleControlAgencyChange = (value: string | null) => {
     form.setValues({ controlAgencyId: value ? value : null });

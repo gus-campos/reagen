@@ -186,6 +186,7 @@ export function FilterOptions(props: FilterOptionsProps) {
               </Radio.Group>
 
               <Select
+                searchable
                 clearable
                 mt="md"
                 label="Orgão de controle"
@@ -203,6 +204,7 @@ export function FilterOptions(props: FilterOptionsProps) {
             </Accordion.Control>
             <Accordion.Panel>
               <Select
+                searchable
                 clearable
                 mt="md"
                 label="Marca"
@@ -220,6 +222,7 @@ export function FilterOptions(props: FilterOptionsProps) {
             </Accordion.Control>
             <Accordion.Panel>
               <Select
+                searchable
                 clearable
                 mt="md"
                 label="Laboratório"
@@ -237,6 +240,7 @@ export function FilterOptions(props: FilterOptionsProps) {
             </Accordion.Control>
             <Accordion.Panel>
               <Select
+                searchable
                 clearable
                 mt="md"
                 label="Fornecedor"

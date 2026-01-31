@@ -17,6 +17,8 @@ type NameDataViewProps<T extends NamedOption> = {
   loadingData: boolean;
 };
 
+// Deveria ter um componente "ancestral" em comum com named-option.view
+// Para evitar duplicação. Cuidado ao editar qualquer um dos dois
 export function NamedOptionView<T extends NamedOption>(props: NameDataViewProps<T>) {
   const {
     selectedData,
@@ -54,6 +56,7 @@ export function NamedOptionView<T extends NamedOption>(props: NameDataViewProps<
               />
             </Box>
 
+            {/* Duplicado em reagent.view */}
             <Button
               style={{
                 position: 'fixed',
@@ -64,7 +67,7 @@ export function NamedOptionView<T extends NamedOption>(props: NameDataViewProps<
               }}
               onClick={handleBeginDataAdd}
             >
-              + Adicionar {props.dataName}
+              + Cadastrar {props.dataName}
             </Button>
 
             <Modal

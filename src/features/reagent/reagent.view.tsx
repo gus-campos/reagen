@@ -10,6 +10,8 @@ import { SearchReagent } from '@/features/stock-filter/components/search-reagent
 import { useDependencyInjection } from '@/providers/dependency-injection.provider';
 import { ConfirmModal } from '@/shared/components/confirm-modal.view';
 
+// Deveria ter um componente "ancestral" em comum com named-option.view
+// Para evitar duplicação. Cuidado ao editar qualquer um dos dois
 export function ReagentsView() {
   const { reagentService } = useDependencyInjection();
   const {
@@ -37,7 +39,7 @@ export function ReagentsView() {
   return (
     <>
       <span style={{ position: 'relative' }}>
-        <h1>Reagentes</h1>
+        <h1>Reagente</h1>
 
         <SearchReagent
           search={search}
@@ -59,17 +61,18 @@ export function ReagentsView() {
           )}
         </Box>
 
+        {/* Duplicado em named-option.view */}
         <Button
           style={{
             position: 'fixed',
-            bottom: '5px',
+            bottom: '20px',
             right: '30px',
             height: '40px',
             borderRadius: '50px',
           }}
           onClick={handleBeginReagentAddition}
         >
-          + Adicionar reagente
+          + Cadastrar Reagente
         </Button>
 
         <Modal
