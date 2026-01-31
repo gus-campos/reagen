@@ -17,7 +17,6 @@ import { VialService } from '@/features/vial/vial.service';
 import { Vial } from '@/features/vial/vial.type';
 import { useDependencyInjection } from '@/providers/dependency-injection.provider';
 import { useCollectionData } from '@/providers/useCollectionData';
-import { sortKeys } from '@/shared/utils/sort-keys';
 
 export function useData() {
   const context = useContext(DataContext);
@@ -105,7 +104,6 @@ export const DataProvider = (props: DataProviderProps) => {
     SupplierService
   >(supplierService);
 
-  // if (process.env.NEXT_PUBLIC_MODE === 'test') {
   //   console.log('useData', {
   //     packages: packages?.map((r) => sortKeys(r)),
   //     vials: vials?.map((r) => sortKeys(r)),
@@ -115,7 +113,6 @@ export const DataProvider = (props: DataProviderProps) => {
   //     laboratories: laboratories?.map((l) => sortKeys(l)),
   //   });
   //   console.log('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<');
-  // }
 
   return (
     <DataContext.Provider

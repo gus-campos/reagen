@@ -12,13 +12,14 @@ export function filteredPackage(
   // o package além de retornar true desta função, deve também
   // conter pelo menos um vial que retorna true em filteredVial
 
+  const isPkgExpired = isPackageExpired(pkg);
   const matchesExpiredFilter =
     // Filtro não ativado
     filter.expired === 'all' ||
     // Deve estar vencido e está vencido
-    (filter.expired === 'expired' && isExpired(pkg)) ||
+    (filter.expired === 'expired' && isPkgExpired) ||
     // Não deve estar vencido e não está vencido
-    (filter.expired === 'not-expired' && !isExpired(pkg));
+    (filter.expired === 'not-expired' && !isPkgExpired);
 
   const macthesExpireRangeFilter = isInsideDateRange(
     pkg.expireDate,
@@ -65,7 +66,7 @@ export function isInsideDateRange(
   return true;
 }
 
-function isExpired(pkg: Package): boolean {
+function isPackageExpired(pkg: Package): boolean {
   return pkg.expireDate < new Date();
 }
 

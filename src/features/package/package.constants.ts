@@ -91,14 +91,14 @@ export function getPackageInitialCollumns(getters: PackageCollumGetters): TableC
     },
     {
       name: 'Entrada',
-      accessor: (pkg: Package) => getExpireDate(pkg),
+      accessor: (pkg: Package) => getInDate(pkg),
       sorter: (a: Package, b: Package) =>
         (a.expireDate?.getTime() ?? Infinity) - (b.expireDate?.getTime() ?? Infinity),
       fixed: false,
     },
     {
       name: 'Vencimento',
-      accessor: (pkg: Package) => getInDate(pkg),
+      accessor: (pkg: Package) => getExpireDate(pkg),
       sorter: (a: Package, b: Package) =>
         (a.inDate?.getTime() ?? Infinity) - (b.inDate?.getTime() ?? Infinity),
       fixed: false,
