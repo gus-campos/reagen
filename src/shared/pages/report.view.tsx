@@ -80,7 +80,9 @@ export function ReportPage() {
       // Obs: para verificar pertencimento ao intervalo, é preciso considerar até o início do prox mês
       const minDate = firstDayOfMonth(reportOptions.startDate);
       const maxDate = firstDayOffsettedMonth(reportOptions.endDate, 1);
-      return [pkg.inDate, vial.outDate].some((date) => isInsideDateRange(date, minDate, maxDate));
+      return [pkg.inDate, vial.outDate].some(
+        (date) => date && isInsideDateRange(date, minDate, maxDate)
+      );
     });
 
     // Complete package vials

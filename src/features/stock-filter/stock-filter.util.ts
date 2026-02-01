@@ -60,8 +60,33 @@ export function filteredPackage(
   return true;
 }
 
+export function filteredVial(vial: Vial, filter: StockFilter): boolean {
+  const matchesIsOutFilter =
+    // Filtro não ativado
+    filter.outStatus === 'all' ||
+    // Deve estar fora e está fora
+    (filter.outStatus === 'is-out' && vial.outDate) ||
+    // Não deve estar fora e não está fora
+    (filter.outStatus === 'not-out' && !vial.outDate);
+
+  if (!matchesIsOutFilter) return false;
+
+  const rangeFilterDisabled = filter.minOutDate === null && filter.maxOutDate === null;
+
+  const macthesOutDateRangeFilter =
+    rangeFilterDisabled ||
+    (vial.outDate && isInsideDateRange(vial.outDate, filter.minOutDate, filter.maxOutDate));
+  if (!macthesOutDateRangeFilter) return false;
+
+  const matchesLaboratoryFilter =
+    filter.laboratoryId === null || vial.laboratoryId === filter.laboratoryId;
+
+  if (!matchesLaboratoryFilter) return false;
+  return true;
+}
+
 export function isInsideDateRange(
-  date: Date | null,
+  date: Date,
   minExpire: Date | null,
   maxExpire: Date | null
 ): boolean {
@@ -74,27 +99,4 @@ export function isInsideDateRange(
 
 function isPackageExpired(pkg: Package): boolean {
   return pkg.expireDate < new Date();
-}
-
-export function filteredVial(vial: Vial, filter: StockFilter): boolean {
-  const matchesIsOutFilter =
-    // Filtro não ativado
-    filter.outStatus === 'all' ||
-    // Deve estar fora e está fora
-    (filter.outStatus === 'is-out' && vial.outDate) ||
-    // Não deve estar fora e não está fora
-    (filter.outStatus === 'not-out' && !vial.outDate);
-
-  if (!matchesIsOutFilter) return false;
-
-  const macthesOutDateRangeFilter =
-    !!vial.outDate && isInsideDateRange(vial.outDate, filter.minOutDate, filter.maxOutDate);
-  if (!macthesOutDateRangeFilter) return false;
-
-  const matchesLaboratoryFilter =
-    filter.laboratoryId === null || filter.laboratoryId === vial.laboratoryId;
-
-  if (!matchesLaboratoryFilter) return false;
-
-  return true;
 }

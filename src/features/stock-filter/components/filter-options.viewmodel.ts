@@ -25,10 +25,55 @@ export function useFilterOptions(props: FilterOptionsProps) {
     }),
   });
 
-  const dateFieldsDisabled = form.values.expired !== 'all';
-  const expiredDisabled = form.values.maxExpire !== null || form.values.minExpire !== null;
-  const controlledDisabled = form.values.controlAgencyId !== null;
-  const controlAgencyDisabled = form.values.controlled !== 'all';
+  // Ao mudar seleção, setar radio
+
+  useEffect(() => {
+    if (form.values.maxExpire || form.values.minExpire) {
+      if (form.values.expired !== 'expired') {
+        form.setValues({ expired: 'expired' });
+      }
+    }
+  }, [form.values.maxExpire, form.values.minExpire]);
+
+  useEffect(() => {
+    if (form.values.minOutDate || form.values.maxOutDate) {
+      if (form.values.outStatus !== 'is-out') {
+        form.setValues({ outStatus: 'is-out' });
+      }
+    }
+  }, [form.values.minOutDate, form.values.maxOutDate]);
+
+  useEffect(() => {
+    if (form.values.controlAgencyId) {
+      if (form.values.controlled !== 'controlled') {
+        form.setValues({ controlled: 'controlled' });
+      }
+    }
+  }, [form.values.controlAgencyId]);
+
+  // Ao mudar radio, setar seleção
+
+  useEffect(() => {
+    if (form.values.expired !== 'expired') {
+      if (form.values.minExpire !== null) form.setValues({ minExpire: null });
+      if (form.values.maxExpire !== null) form.setValues({ maxExpire: null });
+    }
+  }, [form.values.expired]);
+
+  useEffect(() => {
+    if (form.values.outStatus !== 'is-out') {
+      if (form.values.minOutDate !== null) form.setValues({ minOutDate: null });
+      if (form.values.maxOutDate !== null) form.setValues({ maxOutDate: null });
+    }
+  }, [form.values.outStatus]);
+
+  useEffect(() => {
+    if (form.values.controlled !== 'controlled') {
+      if (form.values.controlAgencyId !== null) {
+        form.setValues({ controlAgencyId: null });
+      }
+    }
+  }, [form.values.controlled]);
 
   const isInDateFilterActive = !!form.values.minInDate || !!form.values.maxInDate;
   const isOutDateFilterActive =
@@ -92,10 +137,6 @@ export function useFilterOptions(props: FilterOptionsProps) {
 
   return {
     form,
-    dateFieldsDisabled,
-    expiredDisabled,
-    controlledDisabled,
-    controlAgencyDisabled,
     isInDateFilterActive,
     isOutDateFilterActive,
     isExpireDateFilterActive,

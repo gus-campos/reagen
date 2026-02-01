@@ -269,7 +269,7 @@ export function PackageEdit(props: PackageEditProps) {
                     searchable
                     filter={portugueseSearchFilter}
                     style={{ flex: 1 }}
-                    label="Adicionar frascos a a um laboratório"
+                    label="Adicionar frascos a um laboratório"
                     data={availableLaboratories}
                     value={labIdToAdd}
                     onChange={(value) => setLabIdToAdd(value)}

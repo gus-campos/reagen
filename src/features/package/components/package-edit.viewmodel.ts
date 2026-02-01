@@ -6,7 +6,6 @@ import { ReagentService } from '@/features/reagent/reagent.service';
 import { Reagent } from '@/features/reagent/reagent.type';
 import { Size } from '@/features/size/size.type';
 import { formattedSize, normalizedAmount } from '@/features/size/size.util';
-import Unit from '@/features/size/unit.type';
 import { VialService } from '@/features/vial/vial.service';
 import { useData } from '@/providers/data.provider';
 import { toNullableLocalDate, validateDate } from '@/shared/utils/date';
@@ -15,8 +14,6 @@ type UsePackageEditProps = PackageEditProps & {
   reagentService: ReagentService;
   vialService: VialService;
 };
-
-const nullSize = { amount: 0, unit: Unit.Units };
 
 type LabGroup = { laboratoryId: string; amount: number };
 
@@ -48,8 +45,8 @@ export function usePackageEdit(props: UsePackageEditProps) {
   const packageForm = useForm<Package>({
     initialValues: props.selectedPackage ?? {
       inDate: new Date(),
-      expireDate: new Date(),
-      size: nullSize,
+      expireDate: undefined as any,
+      size: undefined as any,
       purity: 0,
       id: '',
       reagentId: '',
@@ -73,7 +70,7 @@ export function usePackageEdit(props: UsePackageEditProps) {
       if (values.purity === undefined || values.purity < 1 || values.purity > 100)
         errors.purity = 'Insira uma pureza entre 1 e 100 %';
 
-      const isSizeInvalid = !values.size || (values.size as any) === '' || values.size.amount === 0;
+      const isSizeInvalid = !values.size;
 
       if (values.reagentId && isSizeInvalid) errors.size = 'Selecione um tamanho válido';
 
@@ -82,6 +79,13 @@ export function usePackageEdit(props: UsePackageEditProps) {
 
       const inError = validateDate(values.inDate, false);
       if (inError) errors.inDate = inError;
+
+      if (!values.expireDate) {
+        errors.expireDate = 'Data de validade é obrigatória';
+      } else {
+        const expireError = validateDate(values.expireDate, false);
+        if (expireError) errors.expireDate = expireError;
+      }
 
       // Esse tem que ser o último
       const vialsSum = labGroups.reduce((sum, group) => sum + group.amount, 0);
@@ -192,7 +196,6 @@ export function usePackageEdit(props: UsePackageEditProps) {
     laboratoryName: getLaboratoryById(group.laboratoryId).name,
   }));
 
-  // TODO: Ordenar esses 4
   const reagentSelectData = reagents!
     .sort((a, b) => a.name.localeCompare(b.name))
     .map((opt) => ({

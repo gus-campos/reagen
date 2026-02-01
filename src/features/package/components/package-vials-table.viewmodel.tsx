@@ -1,5 +1,5 @@
-import { FaCalendar } from 'react-icons/fa6';
 import { MdCancel } from 'react-icons/md';
+import { RiInboxUnarchiveFill } from 'react-icons/ri';
 import { Badge, Group, Tooltip } from '@mantine/core';
 import { TableCollumn } from '@/features/data-table/data-table.type';
 import { CrudAction } from '@/features/data-table/data-table.view';
@@ -61,8 +61,6 @@ export function usePackageVialsTable(props: UsePackageVialsTableProps) {
     if (values.amount < 0 || values.amount > group.vials.length) return;
     const date = values.outDate ? stringToLocalDate(values.outDate) : null;
 
-    // TODO: Precisa mudar data pra bater com o início do dia? Ver no agrupamento
-
     for (let i = 0; i < values.amount; i++) {
       const vial = group.vials[i];
       props.vialService.update(vial.id, {
@@ -110,7 +108,7 @@ export function usePackageVialsTable(props: UsePackageVialsTableProps) {
   const extraActions: CrudAction<VialGroup>[] = [
     {
       icon: (
-        <Tooltip label="Cancelar saída">
+        <Tooltip label="Cancelar saída...">
           <MdCancel />
         </Tooltip>
       ),
@@ -118,8 +116,7 @@ export function usePackageVialsTable(props: UsePackageVialsTableProps) {
       popover: {
         render: ({ closePopover, data }) => (
           <OutVialFormView
-            // eslint-disable-next-line react/jsx-boolean-value
-            modalIncludeDate={true}
+            modalIncludeDate={false}
             onSubmit={(values) => {
               outVialsSubmit(values, 'cancel', data);
               closePopover && closePopover();
@@ -131,8 +128,8 @@ export function usePackageVialsTable(props: UsePackageVialsTableProps) {
     },
     {
       icon: (
-        <Tooltip label="Dar saída em...">
-          <FaCalendar />
+        <Tooltip label="Dar saída...">
+          <RiInboxUnarchiveFill />
         </Tooltip>
       ),
       show: (group) => !group.outDate,
