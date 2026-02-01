@@ -4,14 +4,15 @@ import { Reagent } from '@/features/reagent/reagent.type';
 import { Size } from '@/features/size/size.type';
 import { portugueseSearchFilter } from '@/shared/utils/portuguese-search-filter';
 
-type SizeAddForm = {
+export type SizeAddFormProps = {
   selectedReagent: Reagent;
+  unsavedSizes?: Size[];
   loadingAddSize: boolean;
   onAddSize: (size: Size) => void;
   onCancel: () => void;
 };
 
-export function SizeAddForm(props: SizeAddForm) {
+export function SizeAddForm(props: SizeAddFormProps) {
   const { sizeForm, shouldShowLoader, formTitle, unitSelectOptions, handleSubmit } =
     useSizeAddForm(props);
 

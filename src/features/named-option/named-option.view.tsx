@@ -64,6 +64,7 @@ export function NamedOptionView<T extends NamedOption>(props: NameDataViewProps<
                 right: '30px',
                 height: '40px',
                 borderRadius: '50px',
+                zIndex: '9999',
               }}
               onClick={handleBeginDataAdd}
             >

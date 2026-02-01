@@ -69,6 +69,7 @@ export function ReagentsView() {
             right: '30px',
             height: '40px',
             borderRadius: '50px',
+            zIndex: '9999',
           }}
           onClick={handleBeginReagentAddition}
         >

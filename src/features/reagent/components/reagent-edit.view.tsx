@@ -95,6 +95,7 @@ export function ReagentEdit(props: VialModalProps) {
             <Grid.Col span={{ base: 12 }}>
               <SizeAddForm
                 selectedReagent={props.selectedReagent ?? reagentForm.values}
+                unsavedSizes={unsavedSizes}
                 loadingAddSize={false}
                 onAddSize={handleAddSize}
                 onCancel={handleCloseSizeMode}

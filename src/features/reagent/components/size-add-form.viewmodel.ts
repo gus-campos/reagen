@@ -1,15 +1,8 @@
-import { useForm } from '@mantine/form';
 import { ComboboxItemGroup } from '@mantine/core';
-import { Reagent } from '@/features/reagent/reagent.type';
+import { useForm } from '@mantine/form';
+import { SizeAddFormProps } from '@/features/reagent/components/size-add-form.view';
 import { Size } from '@/features/size/size.type';
 import Unit, { Dimension, DimensionDefaultUnit, UnitDimension } from '@/features/size/unit.type';
-
-type SizeAddFormProps = {
-  selectedReagent: Reagent;
-  loadingAddSize: boolean;
-  onAddSize: (size: Size) => void;
-  onCancel: () => void;
-};
 
 export function useSizeAddForm(props: SizeAddFormProps) {
   const dimension = props.selectedReagent.dimension;
@@ -40,6 +33,8 @@ export function useSizeAddForm(props: SizeAddFormProps) {
     return null;
   };
 
+  const currentSizes = props.unsavedSizes ?? props.selectedReagent?.sizes ?? [];
+
   const sizeForm = useForm<Size>({
     initialValues: {
       amount: 0,
@@ -55,9 +50,7 @@ export function useSizeAddForm(props: SizeAddFormProps) {
         }
 
         const size: Size = { amount: value, unit: sizeForm.values.unit };
-        const found = props.selectedReagent?.sizes.find(
-          (s) => s.amount === size.amount && s.unit === size.unit
-        );
+        const found = currentSizes.find((s) => s.amount === size.amount && s.unit === size.unit);
         if (found) {
           return 'Combinação já existente.';
         }
@@ -66,9 +59,7 @@ export function useSizeAddForm(props: SizeAddFormProps) {
       },
       unit: (value) => {
         const size: Size = { amount: sizeForm.values.amount, unit: value };
-        const found = props.selectedReagent?.sizes.find(
-          (s) => s.amount === size.amount && s.unit === size.unit
-        );
+        const found = currentSizes.find((s) => s.amount === size.amount && s.unit === size.unit);
         if (found) {
           return 'Combinação já existente.';
         }

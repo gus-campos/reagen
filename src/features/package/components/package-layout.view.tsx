@@ -87,6 +87,7 @@ export function PackageLayout(props: PackageLayoutProps) {
           right: '30px',
           borderRadius: '30px',
           height: '50px',
+          zIndex: '9999',
         }}
         onClick={handleBeginPackageAddition}
       >
