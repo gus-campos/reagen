@@ -4,11 +4,6 @@ import { useFilterOptions } from '@/features/stock-filter/components/filter-opti
 import { StockFilter } from '@/features/stock-filter/stock-filter.type';
 import { portugueseSearchFilter } from '@/shared/utils/portuguese-search-filter';
 
-type FilterOptionsProps = {
-  filter: StockFilter;
-  onFilterChange: (filter: StockFilter) => void;
-};
-
 function TouchedBadge(props: { text: string; active: boolean }) {
   return (
     <Group gap="xs">
@@ -17,6 +12,11 @@ function TouchedBadge(props: { text: string; active: boolean }) {
     </Group>
   );
 }
+
+type FilterOptionsProps = {
+  filter: StockFilter;
+  onFilterChange: (filter: StockFilter) => void;
+};
 
 export function FilterOptions(props: FilterOptionsProps) {
   const {
@@ -184,6 +184,11 @@ export function FilterOptions(props: FilterOptionsProps) {
               <TouchedBadge active={isFundingSourceFilterActive} text="Por adquirente" />
             </Accordion.Control>
             <Accordion.Panel>
+              <Radio.Group label="Mostrar" {...form.getInputProps('fundingScope')}>
+                <Radio label="Todos" value="all" />
+                <Radio label="Apenas interno" value="internal" />
+                <Radio label="Apenas externo" value="external" />
+              </Radio.Group>
               <Select
                 searchable
                 clearable

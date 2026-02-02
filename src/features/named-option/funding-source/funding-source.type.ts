@@ -7,3 +7,5 @@ export type FundingSourceId = BrandedId<DatabaseTableName.FundingSource>;
 export type FundingSource = NamedOption & {
   id: FundingSourceId;
 };
+
+export const ID_FUNDING_SOURCE_EMBRAPA = 'ecmpcZt7qdWVZpXREI8D';

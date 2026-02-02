@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useForm } from '@mantine/form';
+import { ID_FUNDING_SOURCE_EMBRAPA } from '@/features/named-option/funding-source/funding-source.type';
 import { PackageEditProps } from '@/features/package/components/package-edit.view';
 import { Package } from '@/features/package/package.type';
 import { ReagentService } from '@/features/reagent/reagent.service';
@@ -50,7 +51,8 @@ export function usePackageEdit(props: UsePackageEditProps) {
       purity: 0,
       id: '',
       reagentId: '',
-      fundingSourceId: 'ecmpcZt7qdWVZpXREI8D', // ID EMBRPA
+      // FIXME: ID EMBRAPA: como colocar isso no env? E pra outros users?
+      fundingSourceId: ID_FUNDING_SOURCE_EMBRAPA,
       supplierId: '',
       ...props.preFilledPackageData,
     },

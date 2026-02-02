@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useForm } from '@mantine/form';
+import { ID_FUNDING_SOURCE_EMBRAPA } from '@/features/named-option/funding-source/funding-source.type';
 import { StockFilter } from '@/features/stock-filter/stock-filter.type';
 import { useData } from '@/providers/data.provider';
 import { toNullableLocalDate } from '@/shared/utils/date';
@@ -51,6 +52,31 @@ export function useFilterOptions(props: FilterOptionsProps) {
     }
   }, [form.values.controlAgencyId]);
 
+  useEffect(() => {
+    if (form.values.fundingSourceId !== null) {
+      if (
+        form.values.fundingSourceId === ID_FUNDING_SOURCE_EMBRAPA &&
+        form.values.fundingScope !== 'internal'
+      ) {
+        // Se mudou pra embrapa, mudar escopo pra interno
+        form.setValues({ fundingScope: 'internal' });
+      }
+
+      // Se mudou pra diferente da emprapa, setar escopo externo
+      else if (
+        form.values.fundingSourceId !== ID_FUNDING_SOURCE_EMBRAPA &&
+        form.values.fundingScope !== 'external'
+      ) {
+        form.setValues({ fundingScope: 'external' });
+      }
+    }
+
+    // Se limpou o campo, mudar pra all
+    else if (form.values.fundingScope !== 'all') {
+      form.setValues({ fundingScope: 'all' });
+    }
+  }, [form.values.fundingSourceId]);
+
   // Ao mudar radio, setar seleção
 
   useEffect(() => {
@@ -82,7 +108,8 @@ export function useFilterOptions(props: FilterOptionsProps) {
     form.values.expired !== 'all' || !!form.values.minExpire || !!form.values.maxExpire;
   const isControlledFilterActive =
     form.values.controlled !== 'all' || !!form.values.controlAgencyId;
-  const isFundingSourceFilterActive = form.values.fundingSourceId !== null;
+  const isFundingSourceFilterActive =
+    form.values.fundingScope !== 'all' || form.values.fundingSourceId !== null;
   const isLaboratoryFilterActive = form.values.laboratoryId !== null;
   const isSupplierFilterActive = form.values.supplierId !== null;
 

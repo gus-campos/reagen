@@ -28,7 +28,9 @@ export interface StockFilter {
   controlled: 'controlled' | 'not-controlled' | 'all';
   controlAgencyId: string | null;
 
+  fundingScope: 'internal' | 'external' | 'all';
   fundingSourceId: string | null;
+
   supplierId: string | null;
   laboratoryId: string | null;
 }

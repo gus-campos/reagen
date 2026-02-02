@@ -1,3 +1,4 @@
+import { ID_FUNDING_SOURCE_EMBRAPA } from '@/features/named-option/funding-source/funding-source.type';
 import { Package } from '@/features/package/package.type';
 import { Reagent } from '@/features/reagent/reagent.type';
 import { StockFilter } from '@/features/stock-filter/stock-filter.type';
@@ -50,6 +51,16 @@ export function filteredPackage(
   const matchesControlAgencyFilter =
     filter.controlAgencyId === null || filter.controlAgencyId === pkgControlAgencyId;
   if (!matchesControlAgencyFilter) return false;
+
+  const matchesFundingScopeFilter =
+    // Filtro não ativado
+    filter.fundingScope === 'all' ||
+    // Exige interno e vem da embrapa
+    (filter.fundingScope === 'internal' && pkg.fundingSourceId === ID_FUNDING_SOURCE_EMBRAPA) ||
+    // Exige não interno e não é da embrapa
+    (filter.fundingScope === 'external' && pkg.fundingSourceId !== ID_FUNDING_SOURCE_EMBRAPA);
+
+  if (!matchesFundingScopeFilter) return false;
 
   const matchesFundingSourceFilter =
     filter.fundingSourceId === null || filter.fundingSourceId === pkg.fundingSourceId;
