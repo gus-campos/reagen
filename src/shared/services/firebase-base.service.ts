@@ -11,7 +11,7 @@ import {
   updateDoc,
 } from 'firebase/firestore';
 import { db } from '@/core/config/firebase';
-import { Brand } from '@/features/named-option/brand/brand.type';
+import { FundingSource } from '@/features/named-option/brand/brand.type';
 import { ControlAgency } from '@/features/named-option/control-agency/control-agency.type';
 import { Laboratory } from '@/features/named-option/laboratory/laboratory.type';
 import { Supplier } from '@/features/named-option/supplier/supplier.type';
@@ -118,7 +118,8 @@ class FirestoreConverters {
     [DatabaseTableName.Vial]: FirestoreConverters.createFirestoreConverter<Vial>(),
     [DatabaseTableName.Package]: FirestoreConverters.createFirestoreConverter<Package>(),
     [DatabaseTableName.Reagent]: FirestoreConverters.createFirestoreConverter<Reagent>(),
-    [DatabaseTableName.Brand]: FirestoreConverters.createFirestoreConverter<Brand>(),
+    [DatabaseTableName.FundingSource]:
+      FirestoreConverters.createFirestoreConverter<FundingSource>(),
     [DatabaseTableName.ControlAgency]:
       FirestoreConverters.createFirestoreConverter<ControlAgency>(),
     [DatabaseTableName.Laboratory]: FirestoreConverters.createFirestoreConverter<Laboratory>(),

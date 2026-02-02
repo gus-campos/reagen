@@ -21,10 +21,10 @@ export function usePackageEdit(props: UsePackageEditProps) {
   const {
     reagents,
     suppliers,
-    brands,
+    fundingSources: brands,
     laboratories,
     getReagentById,
-    getBrandById,
+    getFundingSourcesById: getBrandById,
     getSupplierById,
     getLaboratoryById,
   } = useData();
@@ -50,7 +50,7 @@ export function usePackageEdit(props: UsePackageEditProps) {
       purity: 0,
       id: '',
       reagentId: '',
-      brandId: '',
+      fundingSourceId: '',
       supplierId: '',
       ...props.preFilledPackageData,
     },
@@ -59,7 +59,7 @@ export function usePackageEdit(props: UsePackageEditProps) {
       ...values,
       expireDate: toNullableLocalDate(values.expireDate)!,
       inDate: toNullableLocalDate(values.inDate)!,
-      brandId: values.brandId !== '' ? values.brandId : null,
+      fundingSourceId: values.fundingSourceId !== '' ? values.fundingSourceId : null,
     }),
 
     validate: (values) => {
@@ -254,7 +254,7 @@ export function usePackageEdit(props: UsePackageEditProps) {
 
   const handleBrandChange = (value: string | null) => {
     const brand = value ? getBrandById(value) : null;
-    packageForm.setValues({ brandId: brand?.id ?? '' });
+    packageForm.setValues({ fundingSourceId: brand?.id ?? '' });
   };
 
   const handleSupplierChange = (value: string | null) => {

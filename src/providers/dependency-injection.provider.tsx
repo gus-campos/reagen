@@ -2,7 +2,7 @@
 
 import { createContext, ReactNode, useContext } from 'react';
 import { auth } from '@/core/config/firebase';
-import { BrandService } from '@/features/named-option/brand/brand.service';
+import { FundingSourceService } from '@/features/named-option/brand/brand.service';
 import { ControlAgencyService } from '@/features/named-option/control-agency/control-agency.service';
 import { LaboratoryService } from '@/features/named-option/laboratory/laboratory.service';
 import { SupplierService } from '@/features/named-option/supplier/supplier.service';
@@ -27,7 +27,7 @@ type ServicesSet = {
   laboratoryService: LaboratoryService;
   controlAgencyService: ControlAgencyService;
   reagentService: ReagentService;
-  brandService: BrandService;
+  fundingSourceService: FundingSourceService;
   supplierService: SupplierService;
   packageService: PackageService;
 };
@@ -52,7 +52,7 @@ export function DependencyInjectionProvider(props: DependencyInjectionProviderPr
   const laboratoryService = new LaboratoryService(db);
   const controlAgencyService = new ControlAgencyService(db);
   const reagentService = new ReagentService(db);
-  const brandService = new BrandService(db);
+  const fundingSourceService = new FundingSourceService(db);
   const supplierService = new SupplierService(db);
   const packageService = new PackageService(db);
 
@@ -60,7 +60,7 @@ export function DependencyInjectionProvider(props: DependencyInjectionProviderPr
   laboratoryService.injectLate(vialService);
   controlAgencyService.injectLate(reagentService);
   reagentService.injectLate(packageService);
-  brandService.injectLate(packageService);
+  fundingSourceService.injectLate(packageService);
   supplierService.injectLate(packageService);
   packageService.injectLate(reagentService, vialService);
 
@@ -70,7 +70,7 @@ export function DependencyInjectionProvider(props: DependencyInjectionProviderPr
     laboratoryService,
     controlAgencyService,
     reagentService,
-    brandService,
+    fundingSourceService,
     supplierService,
     packageService,
   };

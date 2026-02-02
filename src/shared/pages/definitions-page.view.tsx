@@ -1,5 +1,5 @@
 import { Paper, Tabs, Title } from '@mantine/core';
-import { BrandsView } from '@/features/named-option/brand/brand.view';
+import { FundingSourceView } from '@/features/named-option/brand/brand.view';
 import { ControlAgenciesView } from '@/features/named-option/control-agency/control-agency.view';
 import { LaboratoryView } from '@/features/named-option/laboratory/laboratory.view';
 import { SupplierView } from '@/features/named-option/supplier/supplier.view';
@@ -28,7 +28,7 @@ export default function DefinitionsPage() {
           </Tabs.Panel>
 
           <Tabs.Panel value="brands">
-            <BrandsView />
+            <FundingSourceView />
           </Tabs.Panel>
 
           <Tabs.Panel value="laboratories">

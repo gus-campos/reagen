@@ -128,7 +128,7 @@ function TotalsDashboardCard(props: ExpireSoonDashboardCardProps) {
     loadingPackages,
     getPackageById,
     getReagentById,
-    getBrandById,
+    getFundingSourcesById: getBrandById,
     getControlAgencyById,
     getLaboratoryById,
     getSupplierById,

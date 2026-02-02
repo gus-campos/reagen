@@ -1,5 +1,5 @@
 import { TableCollumn } from '@/features/data-table/data-table.type';
-import { Brand } from '@/features/named-option/brand/brand.type';
+import { FundingSource } from '@/features/named-option/brand/brand.type';
 import { ControlAgency } from '@/features/named-option/control-agency/control-agency.type';
 import { Laboratory } from '@/features/named-option/laboratory/laboratory.type';
 import { Supplier } from '@/features/named-option/supplier/supplier.type';
@@ -11,7 +11,7 @@ import { formattedDate } from '@/shared/utils/formatted-date';
 export type PackageCollumGetters = {
   getPackageById: (id: string) => Package;
   getReagentById: (id: string) => Reagent;
-  getBrandById: (id: string) => Brand;
+  getBrandById: (id: string) => FundingSource;
   getControlAgencyById: (id: string) => ControlAgency;
   getLaboratoryById: (id: string) => Laboratory;
   getSupplierById: (id: string) => Supplier;
@@ -30,7 +30,7 @@ export function getPackageInitialCollumns(getters: PackageCollumGetters): TableC
   const getPurity = (pkg: Package) => `${pkg.purity} %`;
 
   const getBrandName = (pkg: Package) =>
-    pkg.brandId ? getters.getBrandById(pkg.brandId).name : '--';
+    pkg.fundingSourceId ? getters.getBrandById(pkg.fundingSourceId).name : '--';
 
   // const getLaboratoryName = (pkg: Package) =>
   //   pkg.laboratoryId ? getters.getLaboratoryById(pkg.laboratoryId).name : '--';

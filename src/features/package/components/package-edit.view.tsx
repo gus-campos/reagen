@@ -191,7 +191,7 @@ export function PackageEdit(props: PackageEditProps) {
               allowDeselect
               data={brandSelectData}
               onChange={handleBrandChange}
-              value={packageForm.values.brandId}
+              value={packageForm.values.fundingSourceId}
               error={packageForm.errors.brandId}
             />
           </Grid.Col>

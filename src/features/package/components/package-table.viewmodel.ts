@@ -25,7 +25,7 @@ export function usePackageTable(props: UsePackageTableProps) {
     packagesError,
     getPackageById,
     getReagentById,
-    getBrandById,
+    getFundingSourcesById: getBrandById,
     getControlAgencyById,
     getLaboratoryById,
     getSupplierById,

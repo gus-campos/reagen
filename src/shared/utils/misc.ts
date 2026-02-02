@@ -1,4 +1,4 @@
-import { Brand } from '@/features/named-option/brand/brand.type';
+import { FundingSource } from '@/features/named-option/brand/brand.type';
 import { ControlAgency } from '@/features/named-option/control-agency/control-agency.type';
 import { Laboratory } from '@/features/named-option/laboratory/laboratory.type';
 import { Supplier } from '@/features/named-option/supplier/supplier.type';
@@ -49,8 +49,8 @@ export function findReagentsOfControlAgency(controlAgency: ControlAgency, reagen
   return reagents.filter((reag) => reag.controlAgencyId === controlAgency.id);
 }
 
-export function findPackagesOfBrand(brand: Brand, pkgs: Package[]) {
-  return pkgs.filter((pkg) => pkg.brandId === brand.id);
+export function findPackagesOfBrand(brand: FundingSource, pkgs: Package[]) {
+  return pkgs.filter((pkg) => pkg.fundingSourceId === brand.id);
 }
 
 export function findPackagesOfSupplier(supplier: Supplier, pkgs: Package[]) {

@@ -1,17 +1,17 @@
+import { useFundingSourcesView } from '@/features/named-option/brand/brand.viewmodel';
 import { NamedOptionView } from '@/features/named-option/named-option.view';
-import { useBrandsView } from '@/features/named-option/brand/brand.viewmodel';
 import { useDependencyInjection } from '@/providers/dependency-injection.provider';
 
-export function BrandsView() {
-  const { brandService } = useDependencyInjection();
-  const { brands, loadingBrands, getWarning } = useBrandsView();
+export function FundingSourceView() {
+  const { fundingSourceService } = useDependencyInjection();
+  const { fundingSources, loadingBrands, getWarning } = useFundingSourcesView();
 
   return (
     <NamedOptionView
       loadingData={loadingBrands}
-      datas={brands}
+      datas={fundingSources}
       dataName="Marca"
-      repositoryService={brandService}
+      repositoryService={fundingSourceService}
       getDeleteWarning={getWarning}
     />
   );

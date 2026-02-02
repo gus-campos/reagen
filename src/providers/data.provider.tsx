@@ -1,8 +1,8 @@
 'use client';
 
 import React, { createContext, ReactNode, useContext } from 'react';
-import { BrandService } from '@/features/named-option/brand/brand.service';
-import { Brand } from '@/features/named-option/brand/brand.type';
+import { FundingSourceService } from '@/features/named-option/brand/brand.service';
+import { FundingSource } from '@/features/named-option/brand/brand.type';
 import { ControlAgencyService } from '@/features/named-option/control-agency/control-agency.service';
 import { ControlAgency } from '@/features/named-option/control-agency/control-agency.type';
 import { LaboratoryService } from '@/features/named-option/laboratory/laboratory.service';
@@ -30,7 +30,7 @@ const DataContext = createContext<{
   packages: Package[];
   vials?: Vial[];
   reagents?: Reagent[];
-  brands?: Brand[];
+  fundingSources?: FundingSource[];
   controlAgencies?: ControlAgency[];
   laboratories?: Laboratory[];
   suppliers?: Supplier[];
@@ -46,7 +46,7 @@ const DataContext = createContext<{
   packagesError: Error | null;
   vialsError?: Error | null;
   reagentsError?: Error | null;
-  brandsError?: Error | null;
+  fundingSourcesError?: Error | null;
   controlAgenciesError?: Error | null;
   laboratoriesError?: Error | null;
   suppliersError?: Error | null;
@@ -54,7 +54,7 @@ const DataContext = createContext<{
   getPackageById: (id: string) => Package;
   getReagentById: (id: string) => Reagent;
   getVialById: (id: string) => Vial;
-  getBrandById: (id: string) => Brand;
+  getFundingSourcesById: (id: string) => FundingSource;
   getControlAgencyById: (id: string) => ControlAgency;
   getLaboratoryById: (id: string) => Laboratory;
   getSupplierById: (id: string) => Supplier;
@@ -69,7 +69,7 @@ export const DataProvider = (props: DataProviderProps) => {
     packageService,
     vialService,
     reagentService,
-    brandService,
+    fundingSourceService,
     laboratoryService,
     controlAgencyService,
     supplierService,
@@ -89,9 +89,8 @@ export const DataProvider = (props: DataProviderProps) => {
     ReagentService
   >(reagentService);
 
-  const [brands, loadingBrands, brandsError, getBrandById] = useCollectionData<Brand, BrandService>(
-    brandService
-  );
+  const [fundingSources, loadingFundingSources, fundingSourcesError, getFundingSourcesById] =
+    useCollectionData<FundingSource, FundingSourceService>(fundingSourceService);
 
   const [laboratories, loadingLaboratories, laboratoriesError, getLaboratoryById] =
     useCollectionData<Laboratory, LaboratoryService>(laboratoryService);
@@ -120,7 +119,7 @@ export const DataProvider = (props: DataProviderProps) => {
         packages,
         vials,
         reagents,
-        brands,
+        fundingSources,
         controlAgencies,
         laboratories,
         suppliers,
@@ -128,7 +127,7 @@ export const DataProvider = (props: DataProviderProps) => {
         loadingPackages,
         loadingReagents,
         loadingVials,
-        loadingBrands,
+        loadingBrands: loadingFundingSources,
         loadingControlAgencies,
         loadingLaboratories,
         loadingSuppliers,
@@ -136,7 +135,7 @@ export const DataProvider = (props: DataProviderProps) => {
         packagesError,
         reagentsError,
         vialsError,
-        brandsError,
+        fundingSourcesError,
         controlAgenciesError,
         laboratoriesError,
         suppliersError,
@@ -144,7 +143,7 @@ export const DataProvider = (props: DataProviderProps) => {
         getPackageById,
         getReagentById,
         getVialById,
-        getBrandById,
+        getFundingSourcesById,
         getControlAgencyById,
         getLaboratoryById,
         getSupplierById,

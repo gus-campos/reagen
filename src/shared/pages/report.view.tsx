@@ -7,7 +7,7 @@ import { MonthPickerInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
 import { TableCollumn } from '@/features/data-table/data-table.type';
 import { DataTable } from '@/features/data-table/data-table.view';
-import { Brand } from '@/features/named-option/brand/brand.type';
+import { FundingSource } from '@/features/named-option/brand/brand.type';
 import { Laboratory } from '@/features/named-option/laboratory/laboratory.type';
 import { Supplier } from '@/features/named-option/supplier/supplier.type';
 import { Package } from '@/features/package/package.type';
@@ -25,12 +25,18 @@ type CompleteVial = Vial & {
   reagent: Reagent;
   supplier: Supplier | null;
   laboratory: Laboratory;
-  brand: Brand | null;
+  brand: FundingSource | null;
 };
 
 export function ReportPage() {
-  const { packages, vials, getReagentById, getSupplierById, getLaboratoryById, getBrandById } =
-    useData();
+  const {
+    packages,
+    vials,
+    getReagentById,
+    getSupplierById,
+    getLaboratoryById,
+    getFundingSourcesById: getBrandById,
+  } = useData();
 
   const { onSubmit, openModal, closeModal, modalOpened, reportOptions } = useConfigReportModal();
 
@@ -90,7 +96,7 @@ export function ReportPage() {
       const reagent = getReagentById(pkg.reagentId);
       const supplier = pkg.supplierId ? getSupplierById(pkg.supplierId) : null;
       const laboratory = getLaboratoryById(vial.laboratoryId);
-      const brand = pkg.brandId ? getBrandById(pkg.brandId) : null;
+      const brand = pkg.fundingSourceId ? getBrandById(pkg.fundingSourceId) : null;
       return { reagent, supplier, package: pkg, laboratory, brand, ...vial };
     });
   });

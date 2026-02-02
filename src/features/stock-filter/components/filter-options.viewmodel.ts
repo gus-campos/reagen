@@ -10,7 +10,7 @@ type FilterOptionsProps = {
 };
 
 export function useFilterOptions(props: FilterOptionsProps) {
-  const { controlAgencies, brands, suppliers, laboratories } = useData();
+  const { controlAgencies, fundingSources: brands, suppliers, laboratories } = useData();
 
   const form = useForm<StockFilter>({
     initialValues: props.filter,

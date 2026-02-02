@@ -1,7 +1,7 @@
 export enum DatabaseTableName {
   Vial = 'vial',
   Reagent = 'reagent',
-  Brand = 'brand',
+  FundingSource = 'funding-source',
   Package = 'package',
   ControlAgency = 'control-agency',
   Laboratory = 'laboratory',

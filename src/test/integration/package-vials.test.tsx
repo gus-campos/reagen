@@ -57,7 +57,7 @@ describe('usePackageVialsTable - Integration', () => {
       inDate: new Date(),
       expireDate: new Date(),
       reagentId: reagent.id,
-      brandId: 'brand1',
+      fundingSourceId: 'brand1',
       supplierId: 'supp1',
     });
 

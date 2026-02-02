@@ -18,7 +18,7 @@ export const TABLE_REVIVERS: Record<DatabaseTableName, Reviver<any>> = {
     };
   },
   [DatabaseTableName.Reagent]: (raw: any) => raw,
-  [DatabaseTableName.Brand]: (raw: any) => raw,
+  [DatabaseTableName.FundingSource]: (raw: any) => raw,
   [DatabaseTableName.ControlAgency]: (raw: any) => raw,
   [DatabaseTableName.Laboratory]: (raw: any) => raw,
   [DatabaseTableName.Supplier]: (raw: any) => raw,
