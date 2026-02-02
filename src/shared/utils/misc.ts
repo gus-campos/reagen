@@ -1,5 +1,5 @@
 import { ControlAgency } from '@/features/named-option/control-agency/control-agency.type';
-import { FundingSource } from '@/features/named-option/funding-source/brand.type';
+import { FundingSource } from '@/features/named-option/funding-source/funding-source.type';
 import { Laboratory } from '@/features/named-option/laboratory/laboratory.type';
 import { Supplier } from '@/features/named-option/supplier/supplier.type';
 import { Package } from '@/features/package/package.type';

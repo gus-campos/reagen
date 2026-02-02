@@ -3,8 +3,8 @@
 import React, { createContext, ReactNode, useContext } from 'react';
 import { ControlAgencyService } from '@/features/named-option/control-agency/control-agency.service';
 import { ControlAgency } from '@/features/named-option/control-agency/control-agency.type';
-import { FundingSourceService } from '@/features/named-option/funding-source/brand.service';
-import { FundingSource } from '@/features/named-option/funding-source/brand.type';
+import { FundingSourceService } from '@/features/named-option/funding-source/funding-source.service';
+import { FundingSource } from '@/features/named-option/funding-source/funding-source.type';
 import { LaboratoryService } from '@/features/named-option/laboratory/laboratory.service';
 import { Laboratory } from '@/features/named-option/laboratory/laboratory.type';
 import { SupplierService } from '@/features/named-option/supplier/supplier.service';

@@ -3,7 +3,7 @@
 import { createContext, ReactNode, useContext } from 'react';
 import { auth } from '@/core/config/firebase';
 import { ControlAgencyService } from '@/features/named-option/control-agency/control-agency.service';
-import { FundingSourceService } from '@/features/named-option/funding-source/brand.service';
+import { FundingSourceService } from '@/features/named-option/funding-source/funding-source.service';
 import { LaboratoryService } from '@/features/named-option/laboratory/laboratory.service';
 import { SupplierService } from '@/features/named-option/supplier/supplier.service';
 import { PackageService } from '@/features/package/package.service';

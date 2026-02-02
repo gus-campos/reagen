@@ -1,6 +1,6 @@
 import { Paper, Tabs, Title } from '@mantine/core';
 import { ControlAgenciesView } from '@/features/named-option/control-agency/control-agency.view';
-import { FundingSourceView } from '@/features/named-option/funding-source/brand.view';
+import { FundingSourceView } from '@/features/named-option/funding-source/funding-source.view';
 import { LaboratoryView } from '@/features/named-option/laboratory/laboratory.view';
 import { SupplierView } from '@/features/named-option/supplier/supplier.view';
 import { ReagentsView } from '@/features/reagent/reagent.view';
