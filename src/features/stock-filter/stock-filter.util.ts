@@ -51,8 +51,9 @@ export function filteredPackage(
     filter.controlAgencyId === null || filter.controlAgencyId === pkgControlAgencyId;
   if (!matchesControlAgencyFilter) return false;
 
-  const matchesBrandFilter = filter.brandId === null || filter.brandId === pkg.fundingSourceId;
-  if (!matchesBrandFilter) return false;
+  const matchesFundingSourceFilter =
+    filter.fundingSourceId === null || filter.fundingSourceId === pkg.fundingSourceId;
+  if (!matchesFundingSourceFilter) return false;
 
   const macthesSupplierFilter = filter.supplierId === null || filter.supplierId === pkg.supplierId;
   if (!macthesSupplierFilter) return false;

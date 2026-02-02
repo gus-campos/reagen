@@ -38,7 +38,7 @@ const DataContext = createContext<{
   loadingPackages: boolean;
   loadingReagents: boolean;
   loadingVials: boolean;
-  loadingBrands: boolean;
+  loadingFundingSources: boolean;
   loadingControlAgencies: boolean;
   loadingLaboratories: boolean;
   loadingSuppliers: boolean;
@@ -107,7 +107,7 @@ export const DataProvider = (props: DataProviderProps) => {
   //     packages: packages?.map((r) => sortKeys(r)),
   //     vials: vials?.map((r) => sortKeys(r)),
   //     reagents: reagents?.map((op) => sortKeys(op)),
-  //     brands: brands?.map((b) => sortKeys(b)),
+  //     fundingSources: fundingSources?.map((b) => sortKeys(b)),
   //     controlAgency: controlAgencies?.map((c) => sortKeys(c)),
   //     laboratories: laboratories?.map((l) => sortKeys(l)),
   //   });
@@ -127,7 +127,7 @@ export const DataProvider = (props: DataProviderProps) => {
         loadingPackages,
         loadingReagents,
         loadingVials,
-        loadingBrands: loadingFundingSources,
+        loadingFundingSources,
         loadingControlAgencies,
         loadingLaboratories,
         loadingSuppliers,

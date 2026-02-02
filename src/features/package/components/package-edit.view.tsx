@@ -54,14 +54,14 @@ export function PackageEdit(props: PackageEditProps) {
     handleChangeReagent,
     reagentSelectData,
     sizeSelectData,
-    brandSelectData,
+    fundingSourceSelectData,
     supplierSelectData,
     availableLaboratories,
     totalVials,
     vialError,
     handleLabGroupAmountChange,
     handleAddLabGroup,
-    handleBrandChange,
+    handleFundingSourceChange,
     handleSupplierChange,
   } = usePackageEdit({ ...props, reagentService, vialService });
 
@@ -183,16 +183,16 @@ export function PackageEdit(props: PackageEditProps) {
           </Grid.Col>
 
           <Grid.Col span={{ base: 6 }}>
-            {/* Marca */}
+            {/* Adquirente */}
             <Select
               filter={portugueseSearchFilter}
-              label="Marca"
-              placeholder="Nome da marca"
+              label="Adquirente"
+              placeholder="Nome do adquirente"
               allowDeselect
-              data={brandSelectData}
-              onChange={handleBrandChange}
+              data={fundingSourceSelectData}
+              onChange={handleFundingSourceChange}
               value={packageForm.values.fundingSourceId}
-              error={packageForm.errors.brandId}
+              error={packageForm.errors.fundingSourceId}
             />
           </Grid.Col>
 

@@ -25,15 +25,15 @@ export function FilterOptions(props: FilterOptionsProps) {
     isOutDateFilterActive,
     isExpireDateFilterActive,
     isControlledFilterActive,
-    isBrandFilterActive,
+    isFundingSourceFilterActive,
     isLaboratoryFilterActive,
     isSupplierFilterActive,
     controlAgencyOptions,
-    brandOptions,
+    fundingSourceOptions,
     laboratoryOptions,
     supplierOptions,
     handleControlAgencyChange,
-    handleBrandChange,
+    handleFundingSourceChange,
     handleLaboratoryChange,
     handleSupplierChange,
   } = useFilterOptions(props);
@@ -179,20 +179,20 @@ export function FilterOptions(props: FilterOptionsProps) {
               />
             </Accordion.Panel>
           </Accordion.Item>
-          <Accordion.Item value="byBrand">
+          <Accordion.Item value="byFundingSource">
             <Accordion.Control>
-              <TouchedBadge active={isBrandFilterActive} text="Por marca" />
+              <TouchedBadge active={isFundingSourceFilterActive} text="Por adquirente" />
             </Accordion.Control>
             <Accordion.Panel>
               <Select
                 searchable
                 clearable
                 mt="md"
-                label="Marca"
-                placeholder="Escolha a marca"
-                value={form.values.brandId}
-                data={brandOptions}
-                onChange={handleBrandChange}
+                label="Adquirente"
+                placeholder="Escolha o adquirente"
+                value={form.values.fundingSourceId}
+                data={fundingSourceOptions}
+                onChange={handleFundingSourceChange}
                 filter={portugueseSearchFilter}
               />
             </Accordion.Panel>

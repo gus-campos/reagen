@@ -25,7 +25,7 @@ export function usePackageTable(props: UsePackageTableProps) {
     packagesError,
     getPackageById,
     getReagentById,
-    getFundingSourcesById: getBrandById,
+    getFundingSourcesById: getFundingSourceById,
     getControlAgencyById,
     getLaboratoryById,
     getSupplierById,
@@ -34,7 +34,7 @@ export function usePackageTable(props: UsePackageTableProps) {
   const getters: PackageCollumGetters = {
     getPackageById,
     getReagentById,
-    getBrandById,
+    getFundingSourceById,
     getControlAgencyById,
     getLaboratoryById,
     getSupplierById,

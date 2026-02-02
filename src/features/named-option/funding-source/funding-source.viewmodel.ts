@@ -1,13 +1,13 @@
 import { FundingSource } from '@/features/named-option/funding-source/funding-source.type';
 import { Package } from '@/features/package/package.type';
 import { useData } from '@/providers/data.provider';
-import { findPackagesOfBrand } from '@/shared/utils/misc';
+import { findPackagesOfFundingSource } from '@/shared/utils/misc';
 
 export function useFundingSourcesView() {
-  const { fundingSources, packages, loadingBrands } = useData();
+  const { fundingSources, packages, loadingFundingSources } = useData();
 
-  const generateWarning = (brand: FundingSource, relatedPkgs: Package[]) => {
-    const message = `Excluir a marca: ${brand.name}
+  const generateWarning = (fundingSource: FundingSource, relatedPkgs: Package[]) => {
+    const message = `Excluir o adquirente: ${fundingSource.name}
           Causará a exclusão dos seguintes pacotes:
           ${relatedPkgs.map((pkg) => `* ${pkg.id}`).join('\n')}
           `;
@@ -15,15 +15,15 @@ export function useFundingSourcesView() {
     return message;
   };
 
-  const getWarning = (brand: FundingSource) => {
-    const relatedPkgs = findPackagesOfBrand(brand, packages!);
+  const getWarning = (fundingSource: FundingSource) => {
+    const relatedPkgs = findPackagesOfFundingSource(fundingSource, packages!);
     if (relatedPkgs.length === 0) return null;
-    return generateWarning(brand, relatedPkgs);
+    return generateWarning(fundingSource, relatedPkgs);
   };
 
   return {
     fundingSources,
-    loadingBrands,
+    loadingFundingSources,
     getWarning,
   };
 }

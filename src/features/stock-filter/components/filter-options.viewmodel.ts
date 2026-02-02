@@ -10,7 +10,7 @@ type FilterOptionsProps = {
 };
 
 export function useFilterOptions(props: FilterOptionsProps) {
-  const { controlAgencies, fundingSources: brands, suppliers, laboratories } = useData();
+  const { controlAgencies, fundingSources: fundingSources, suppliers, laboratories } = useData();
 
   const form = useForm<StockFilter>({
     initialValues: props.filter,
@@ -82,7 +82,7 @@ export function useFilterOptions(props: FilterOptionsProps) {
     form.values.expired !== 'all' || !!form.values.minExpire || !!form.values.maxExpire;
   const isControlledFilterActive =
     form.values.controlled !== 'all' || !!form.values.controlAgencyId;
-  const isBrandFilterActive = form.values.brandId !== null;
+  const isFundingSourceFilterActive = form.values.fundingSourceId !== null;
   const isLaboratoryFilterActive = form.values.laboratoryId !== null;
   const isSupplierFilterActive = form.values.supplierId !== null;
 
@@ -93,7 +93,7 @@ export function useFilterOptions(props: FilterOptionsProps) {
       label: c.name,
     }));
 
-  const brandOptions = brands!
+  const fundingSourceOptions = fundingSources!
     .sort((a, b) => a.name.localeCompare(b.name))
     .map((b) => ({
       value: b.id,
@@ -117,8 +117,8 @@ export function useFilterOptions(props: FilterOptionsProps) {
   const handleControlAgencyChange = (value: string | null) => {
     form.setValues({ controlAgencyId: value ? value : null });
   };
-  const handleBrandChange = (value: string | null) => {
-    form.setValues({ brandId: value ? value : null });
+  const handleFundingSourceChange = (value: string | null) => {
+    form.setValues({ fundingSourceId: value ? value : null });
   };
   const handleLaboratoryChange = (value: string | null) => {
     form.setValues({ laboratoryId: value ? value : null });
@@ -141,15 +141,15 @@ export function useFilterOptions(props: FilterOptionsProps) {
     isOutDateFilterActive,
     isExpireDateFilterActive,
     isControlledFilterActive,
-    isBrandFilterActive,
+    isFundingSourceFilterActive,
     isLaboratoryFilterActive,
     isSupplierFilterActive,
     controlAgencyOptions,
-    brandOptions,
+    fundingSourceOptions,
     laboratoryOptions,
     supplierOptions,
     handleControlAgencyChange,
-    handleBrandChange,
+    handleFundingSourceChange,
     handleLaboratoryChange,
     handleSupplierChange,
   };

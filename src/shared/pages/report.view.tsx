@@ -25,7 +25,7 @@ type CompleteVial = Vial & {
   reagent: Reagent;
   supplier: Supplier | null;
   laboratory: Laboratory;
-  brand: FundingSource | null;
+  fundingSource: FundingSource | null;
 };
 
 export function ReportPage() {
@@ -35,7 +35,7 @@ export function ReportPage() {
     getReagentById,
     getSupplierById,
     getLaboratoryById,
-    getFundingSourcesById: getBrandById,
+    getFundingSourcesById,
   } = useData();
 
   const { onSubmit, openModal, closeModal, modalOpened, reportOptions } = useConfigReportModal();
@@ -65,8 +65,8 @@ export function ReportPage() {
       accessor: (vial) => `${vial.package.purity} %`,
     },
     {
-      name: 'Marca',
-      accessor: (vial) => vial.brand?.name ?? '--',
+      name: 'Adquirente',
+      accessor: (vial) => vial.fundingSource?.name ?? '--',
     },
     {
       name: 'Laboratório',
@@ -96,8 +96,8 @@ export function ReportPage() {
       const reagent = getReagentById(pkg.reagentId);
       const supplier = pkg.supplierId ? getSupplierById(pkg.supplierId) : null;
       const laboratory = getLaboratoryById(vial.laboratoryId);
-      const brand = pkg.fundingSourceId ? getBrandById(pkg.fundingSourceId) : null;
-      return { reagent, supplier, package: pkg, laboratory, brand, ...vial };
+      const fundingSource = pkg.fundingSourceId ? getFundingSourcesById(pkg.fundingSourceId) : null;
+      return { reagent, supplier, package: pkg, laboratory, fundingSource, ...vial };
     });
   });
 

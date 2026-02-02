@@ -11,7 +11,7 @@ import { formattedDate } from '@/shared/utils/formatted-date';
 export type PackageCollumGetters = {
   getPackageById: (id: string) => Package;
   getReagentById: (id: string) => Reagent;
-  getBrandById: (id: string) => FundingSource;
+  getFundingSourceById: (id: string) => FundingSource;
   getControlAgencyById: (id: string) => ControlAgency;
   getLaboratoryById: (id: string) => Laboratory;
   getSupplierById: (id: string) => Supplier;
@@ -29,8 +29,8 @@ export function getPackageInitialCollumns(getters: PackageCollumGetters): TableC
 
   const getPurity = (pkg: Package) => `${pkg.purity} %`;
 
-  const getBrandName = (pkg: Package) =>
-    pkg.fundingSourceId ? getters.getBrandById(pkg.fundingSourceId).name : '--';
+  const getFundingSourceName = (pkg: Package) =>
+    pkg.fundingSourceId ? getters.getFundingSourceById(pkg.fundingSourceId).name : '--';
 
   // const getLaboratoryName = (pkg: Package) =>
   //   pkg.laboratoryId ? getters.getLaboratoryById(pkg.laboratoryId).name : '--';
@@ -69,10 +69,10 @@ export function getPackageInitialCollumns(getters: PackageCollumGetters): TableC
       fixed: false,
     },
     {
-      name: 'Marca',
-      accessor: (pkg: Package) => getBrandName(pkg),
+      name: 'Adquirente',
+      accessor: (pkg: Package) => getFundingSourceName(pkg),
       sorter: (a: Package, b: Package) =>
-        getBrandName(a).trim().localeCompare(getBrandName(b).trim()),
+        getFundingSourceName(a).trim().localeCompare(getFundingSourceName(b).trim()),
       fixed: false,
     },
     // {

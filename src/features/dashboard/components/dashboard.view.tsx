@@ -128,7 +128,7 @@ function TotalsDashboardCard(props: ExpireSoonDashboardCardProps) {
     loadingPackages,
     getPackageById,
     getReagentById,
-    getFundingSourcesById: getBrandById,
+    getFundingSourcesById: getFundingSourceById,
     getControlAgencyById,
     getLaboratoryById,
     getSupplierById,
@@ -148,7 +148,7 @@ function TotalsDashboardCard(props: ExpireSoonDashboardCardProps) {
   const getters: PackageCollumGetters = {
     getPackageById,
     getReagentById,
-    getBrandById,
+    getFundingSourceById,
     getControlAgencyById,
     getLaboratoryById,
     getSupplierById,
@@ -157,7 +157,7 @@ function TotalsDashboardCard(props: ExpireSoonDashboardCardProps) {
   const allCollumns: TableCollumn<Package>[] = getPackageInitialCollumns(getters);
 
   const usedCollumns = allCollumns.filter((col) =>
-    ['Vencimento', 'Reagente', 'Tamanho', 'Marca'].includes(col.name)
+    ['Vencimento', 'Reagente', 'Tamanho', 'Adquirente'].includes(col.name)
   );
 
   return (

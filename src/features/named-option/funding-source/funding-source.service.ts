@@ -23,10 +23,10 @@ export class FundingSourceService extends BaseRepository<FundingSource> {
     await super.delete(id);
   }
 
-  private async deleteRelatedPackages(brandId: string) {
+  private async deleteRelatedPackages(fundingSourceId: string) {
     this.checkLateInjection();
     const packages = await this.packageService!.getAll();
-    const relatedPkgs = packages.filter((p) => p.fundingSourceId === brandId);
+    const relatedPkgs = packages.filter((p) => p.fundingSourceId === fundingSourceId);
     return Promise.all(relatedPkgs.map((vial) => this.packageService!.delete(vial.id)));
   }
 }

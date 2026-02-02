@@ -7,7 +7,7 @@ import { DatabaseTableName } from '@/shared/types/table-name.type';
 class ReagenDb extends Dexie {
   vial!: Table;
   reagent!: Table;
-  brand!: Table;
+  fundingSource!: Table;
   package!: Table;
   ['control-agency']!: Table;
   laboratory!: Table;
@@ -17,8 +17,8 @@ class ReagenDb extends Dexie {
     super('ReagenDB');
     this.version(1).stores({
       vial: 'id, laboratoryId, packageId, outDate', // Adicione índices para queries rápidas
-      reagent: 'id, name, brandId',
-      brand: 'id, name',
+      reagent: 'id, name, fundingSourceId',
+      fundingSource: 'id, name',
       package: 'id, reagentId, createdAt',
       ['control-agency']: 'id, name',
       laboratory: 'id, name',

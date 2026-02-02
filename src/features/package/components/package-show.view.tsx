@@ -9,7 +9,11 @@ type PackageShowProps = {
 };
 
 export function PackageShow(props: PackageShowProps) {
-  const { getReagentById, getFundingSourcesById: getBrandById, getSupplierById } = useData();
+  const {
+    getReagentById,
+    getFundingSourcesById: getFundingSourceById,
+    getSupplierById,
+  } = useData();
 
   return (
     <Stack p="md">
@@ -56,10 +60,12 @@ export function PackageShow(props: PackageShowProps) {
         {/* ------------------------------------------------ */}
         <Grid.Col span={{ base: 12, md: 6 }}>
           <Text size="sm" c="dimmed">
-            Marca
+            Adquirente
           </Text>
           <Text fw={500}>
-            {props.pkg.fundingSourceId ? getBrandById(props.pkg.fundingSourceId).name : '--'}
+            {props.pkg.fundingSourceId
+              ? getFundingSourceById(props.pkg.fundingSourceId).name
+              : '--'}
           </Text>
         </Grid.Col>
         {/* ------------------------------------------------ */}

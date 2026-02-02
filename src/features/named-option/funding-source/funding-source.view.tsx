@@ -4,13 +4,13 @@ import { useDependencyInjection } from '@/providers/dependency-injection.provide
 
 export function FundingSourceView() {
   const { fundingSourceService } = useDependencyInjection();
-  const { fundingSources, loadingBrands, getWarning } = useFundingSourcesView();
+  const { fundingSources, loadingFundingSources, getWarning } = useFundingSourcesView();
 
   return (
     <NamedOptionView
-      loadingData={loadingBrands}
+      loadingData={loadingFundingSources}
       datas={fundingSources}
-      dataName="Marca"
+      dataName="Adquirente"
       repositoryService={fundingSourceService}
       getDeleteWarning={getWarning}
     />

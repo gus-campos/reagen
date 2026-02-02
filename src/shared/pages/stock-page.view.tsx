@@ -18,7 +18,7 @@ const initialFilter: StockFilter = {
   minOutDate: null,
   maxOutDate: null,
   controlAgencyId: null,
-  brandId: null,
+  fundingSourceId: null,
   supplierId: null,
   laboratoryId: null,
 };

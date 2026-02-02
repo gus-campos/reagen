@@ -49,8 +49,8 @@ export function findReagentsOfControlAgency(controlAgency: ControlAgency, reagen
   return reagents.filter((reag) => reag.controlAgencyId === controlAgency.id);
 }
 
-export function findPackagesOfBrand(brand: FundingSource, pkgs: Package[]) {
-  return pkgs.filter((pkg) => pkg.fundingSourceId === brand.id);
+export function findPackagesOfFundingSource(fundingSource: FundingSource, pkgs: Package[]) {
+  return pkgs.filter((pkg) => pkg.fundingSourceId === fundingSource.id);
 }
 
 export function findPackagesOfSupplier(supplier: Supplier, pkgs: Package[]) {

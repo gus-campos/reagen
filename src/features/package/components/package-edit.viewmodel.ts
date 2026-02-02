@@ -21,10 +21,10 @@ export function usePackageEdit(props: UsePackageEditProps) {
   const {
     reagents,
     suppliers,
-    fundingSources: brands,
+    fundingSources: fundingSources,
     laboratories,
     getReagentById,
-    getFundingSourcesById: getBrandById,
+    getFundingSourcesById: getFundingSourceById,
     getSupplierById,
     getLaboratoryById,
   } = useData();
@@ -210,7 +210,7 @@ export function usePackageEdit(props: UsePackageEditProps) {
         .map((s) => formattedSize(s))
     : undefined;
 
-  const brandSelectData = brands!
+  const fundingSourceSelectData = fundingSources!
     .sort((a, b) => a.name.localeCompare(b.name))
     .map((b) => ({
       value: b.id,
@@ -252,9 +252,9 @@ export function usePackageEdit(props: UsePackageEditProps) {
     }
   };
 
-  const handleBrandChange = (value: string | null) => {
-    const brand = value ? getBrandById(value) : null;
-    packageForm.setValues({ fundingSourceId: brand?.id ?? '' });
+  const handleFundingSourceChange = (value: string | null) => {
+    const fundingSource = value ? getFundingSourceById(value) : null;
+    packageForm.setValues({ fundingSourceId: fundingSource?.id ?? '' });
   };
 
   const handleSupplierChange = (value: string | null) => {
@@ -276,7 +276,7 @@ export function usePackageEdit(props: UsePackageEditProps) {
     selectedReagent,
     reagents,
     suppliers,
-    brands,
+    fundingSources,
     laboratories,
     setReagentAddMode,
     setCreatedReagentName,
@@ -289,18 +289,18 @@ export function usePackageEdit(props: UsePackageEditProps) {
     handleSubmitPackage,
     handleChangeSize,
     handleChangeReagent,
-    getBrandById,
+    getFundingSourceById,
     getSupplierById,
     reagentSelectData,
     sizeSelectData,
-    brandSelectData,
+    fundingSourceSelectData,
     supplierSelectData,
     availableLaboratories,
     totalVials,
     vialError,
     handleLabGroupAmountChange,
     handleAddLabGroup,
-    handleBrandChange,
+    handleFundingSourceChange,
     handleSupplierChange,
   };
 }

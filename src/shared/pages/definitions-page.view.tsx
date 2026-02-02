@@ -14,9 +14,9 @@ export default function DefinitionsPage() {
           <Tabs.List defaultValue="reagents">
             <Tabs.Tab value="reagents">Reagente</Tabs.Tab>
             <Tabs.Tab value="control-agencies">Orgão de Controle</Tabs.Tab>
-            <Tabs.Tab value="brands">Marcas</Tabs.Tab>
+            <Tabs.Tab value="fundingSources">Adquirente</Tabs.Tab>
             <Tabs.Tab value="laboratories">Laboratório</Tabs.Tab>
-            <Tabs.Tab value="suppliers">Fornecedore</Tabs.Tab>
+            <Tabs.Tab value="suppliers">Fornecedor</Tabs.Tab>
           </Tabs.List>
 
           <Tabs.Panel value="reagents">
@@ -27,7 +27,7 @@ export default function DefinitionsPage() {
             <ControlAgenciesView />
           </Tabs.Panel>
 
-          <Tabs.Panel value="brands">
+          <Tabs.Panel value="fundingSources">
             <FundingSourceView />
           </Tabs.Panel>
 
