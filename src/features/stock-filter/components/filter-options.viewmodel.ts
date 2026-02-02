@@ -53,27 +53,22 @@ export function useFilterOptions(props: FilterOptionsProps) {
   }, [form.values.controlAgencyId]);
 
   useEffect(() => {
-    if (form.values.fundingSourceId !== null) {
-      if (
-        form.values.fundingSourceId === ID_FUNDING_SOURCE_EMBRAPA &&
-        form.values.fundingScope !== 'internal'
-      ) {
-        // Se mudou pra embrapa, mudar escopo pra interno
-        form.setValues({ fundingScope: 'internal' });
-      }
+    if (form.values.fundingSourceId === null) return;
 
-      // Se mudou pra diferente da emprapa, setar escopo externo
-      else if (
-        form.values.fundingSourceId !== ID_FUNDING_SOURCE_EMBRAPA &&
-        form.values.fundingScope !== 'external'
-      ) {
-        form.setValues({ fundingScope: 'external' });
-      }
+    // Se mudou pra embrapa, mudar escopo pra interno
+    if (
+      form.values.fundingSourceId === ID_FUNDING_SOURCE_EMBRAPA &&
+      form.values.fundingScope !== 'internal'
+    ) {
+      form.setValues({ fundingScope: 'internal' });
     }
 
-    // Se limpou o campo, mudar pra all
-    else if (form.values.fundingScope !== 'all') {
-      form.setValues({ fundingScope: 'all' });
+    // Se mudou pra diferente da emprapa, setar escopo externo
+    else if (
+      form.values.fundingSourceId !== ID_FUNDING_SOURCE_EMBRAPA &&
+      form.values.fundingScope !== 'external'
+    ) {
+      form.setValues({ fundingScope: 'external' });
     }
   }, [form.values.fundingSourceId]);
 
@@ -100,6 +95,29 @@ export function useFilterOptions(props: FilterOptionsProps) {
       }
     }
   }, [form.values.controlled]);
+
+  useEffect(() => {
+    // Se mudou pra interno, mudar seleção pra embrapa
+    if (
+      form.values.fundingScope === 'internal' &&
+      form.values.fundingSourceId !== ID_FUNDING_SOURCE_EMBRAPA
+    ) {
+      form.setValues({ fundingSourceId: ID_FUNDING_SOURCE_EMBRAPA });
+    }
+
+    // Se mudou pra externo, e tá embrapa, limpar
+    else if (
+      form.values.fundingScope === 'external' &&
+      form.values.fundingSourceId === ID_FUNDING_SOURCE_EMBRAPA
+    ) {
+      form.setValues({ fundingSourceId: null });
+    }
+
+    // Se mudou pra all, limpar
+    else if (form.values.fundingScope === 'all' && form.values.fundingSourceId !== null) {
+      form.setValues({ fundingSourceId: null });
+    }
+  }, [form.values.fundingScope]);
 
   const isInDateFilterActive = !!form.values.minInDate || !!form.values.maxInDate;
   const isOutDateFilterActive =
