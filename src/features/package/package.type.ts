@@ -11,6 +11,6 @@ export type Package = {
 
   // Associações
   reagentId: string;
-  fundingSourceId: string | null;
+  fundingSourceId: string;
   supplierId: string | null;
 };

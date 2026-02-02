@@ -50,7 +50,7 @@ export function usePackageEdit(props: UsePackageEditProps) {
       purity: 0,
       id: '',
       reagentId: '',
-      fundingSourceId: '',
+      fundingSourceId: 'ecmpcZt7qdWVZpXREI8D', // ID EMBRPA
       supplierId: '',
       ...props.preFilledPackageData,
     },
@@ -59,7 +59,7 @@ export function usePackageEdit(props: UsePackageEditProps) {
       ...values,
       expireDate: toNullableLocalDate(values.expireDate)!,
       inDate: toNullableLocalDate(values.inDate)!,
-      fundingSourceId: values.fundingSourceId !== '' ? values.fundingSourceId : null,
+      fundingSourceId: values.fundingSourceId,
     }),
 
     validate: (values) => {
@@ -253,8 +253,8 @@ export function usePackageEdit(props: UsePackageEditProps) {
   };
 
   const handleFundingSourceChange = (value: string | null) => {
-    const fundingSource = value ? getFundingSourceById(value) : null;
-    packageForm.setValues({ fundingSourceId: fundingSource?.id ?? '' });
+    if (!value) return;
+    packageForm.setValues({ fundingSourceId: value });
   };
 
   const handleSupplierChange = (value: string | null) => {

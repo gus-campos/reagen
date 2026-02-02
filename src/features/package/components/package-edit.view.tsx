@@ -188,7 +188,6 @@ export function PackageEdit(props: PackageEditProps) {
               filter={portugueseSearchFilter}
               label="Adquirente"
               placeholder="Nome do adquirente"
-              allowDeselect
               data={fundingSourceSelectData}
               onChange={handleFundingSourceChange}
               value={packageForm.values.fundingSourceId}
