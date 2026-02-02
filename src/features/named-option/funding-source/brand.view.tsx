@@ -1,4 +1,4 @@
-import { useFundingSourcesView } from '@/features/named-option/brand/brand.viewmodel';
+import { useFundingSourcesView } from '@/features/named-option/funding-source/brand.viewmodel';
 import { NamedOptionView } from '@/features/named-option/named-option.view';
 import { useDependencyInjection } from '@/providers/dependency-injection.provider';
 

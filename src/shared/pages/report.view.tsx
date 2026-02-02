@@ -7,7 +7,7 @@ import { MonthPickerInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
 import { TableCollumn } from '@/features/data-table/data-table.type';
 import { DataTable } from '@/features/data-table/data-table.view';
-import { FundingSource } from '@/features/named-option/brand/brand.type';
+import { FundingSource } from '@/features/named-option/funding-source/brand.type';
 import { Laboratory } from '@/features/named-option/laboratory/laboratory.type';
 import { Supplier } from '@/features/named-option/supplier/supplier.type';
 import { Package } from '@/features/package/package.type';

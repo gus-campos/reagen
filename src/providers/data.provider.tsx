@@ -1,10 +1,10 @@
 'use client';
 
 import React, { createContext, ReactNode, useContext } from 'react';
-import { FundingSourceService } from '@/features/named-option/brand/brand.service';
-import { FundingSource } from '@/features/named-option/brand/brand.type';
 import { ControlAgencyService } from '@/features/named-option/control-agency/control-agency.service';
 import { ControlAgency } from '@/features/named-option/control-agency/control-agency.type';
+import { FundingSourceService } from '@/features/named-option/funding-source/brand.service';
+import { FundingSource } from '@/features/named-option/funding-source/brand.type';
 import { LaboratoryService } from '@/features/named-option/laboratory/laboratory.service';
 import { Laboratory } from '@/features/named-option/laboratory/laboratory.type';
 import { SupplierService } from '@/features/named-option/supplier/supplier.service';

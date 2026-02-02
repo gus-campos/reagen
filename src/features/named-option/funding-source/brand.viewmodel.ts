@@ -1,4 +1,4 @@
-import { FundingSource } from '@/features/named-option/brand/brand.type';
+import { FundingSource } from '@/features/named-option/funding-source/brand.type';
 import { Package } from '@/features/package/package.type';
 import { useData } from '@/providers/data.provider';
 import { findPackagesOfBrand } from '@/shared/utils/misc';

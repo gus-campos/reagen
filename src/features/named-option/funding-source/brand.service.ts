@@ -1,4 +1,4 @@
-import { FundingSource } from '@/features/named-option/brand/brand.type';
+import { FundingSource } from '@/features/named-option/funding-source/brand.type';
 import { PackageService } from '@/features/package/package.service';
 import { BaseRepository, IDatabase } from '@/shared/services/base-repository.service';
 import { DatabaseTableName } from '@/shared/types/table-name.type';
