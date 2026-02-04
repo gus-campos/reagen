@@ -2,7 +2,8 @@
 
 import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 import { User } from 'firebase/auth';
-import { useDependencyInjection } from '@/providers/dependency-injection.provider';
+import { auth } from '@/core/config/firebase';
+import { FirebaseAuthService } from '@/shared/services/auth.service';
 
 interface AuthContextData {
   user: User | null;
@@ -16,7 +17,8 @@ const AuthContext = createContext<AuthContextData | null>(null);
 export const AppAuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const { authService } = useDependencyInjection();
+
+  const authService = new FirebaseAuthService(auth);
 
   useEffect(() => {
     const unsubscribe = authService.listen((currentUser) => {

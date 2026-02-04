@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, ReactNode, useContext } from 'react';
-import { auth } from '@/core/config/firebase';
+import { redirect } from 'next/navigation';
 import { ControlAgencyService } from '@/features/named-option/control-agency/control-agency.service';
 import { FundingSourceService } from '@/features/named-option/funding-source/funding-source.service';
 import { LaboratoryService } from '@/features/named-option/laboratory/laboratory.service';
@@ -9,7 +9,7 @@ import { SupplierService } from '@/features/named-option/supplier/supplier.servi
 import { PackageService } from '@/features/package/package.service';
 import { ReagentService } from '@/features/reagent/reagent.service';
 import { VialService } from '@/features/vial/vial.service';
-import { FirebaseAuthService, IAuthService } from '@/shared/services/auth.service';
+import { useAuth } from '@/shared/hooks/useAuth';
 import { IDatabase } from '@/shared/services/base-repository.service';
 import { FirebaseBaseDatabase } from '@/shared/services/firebase-base.service';
 
@@ -22,7 +22,6 @@ export function useDependencyInjection() {
 }
 
 type ServicesSet = {
-  authService: IAuthService;
   vialService: VialService;
   laboratoryService: LaboratoryService;
   controlAgencyService: ControlAgencyService;
@@ -39,13 +38,18 @@ type DependencyInjectionProviderProps = {
 };
 
 export function DependencyInjectionProvider(props: DependencyInjectionProviderProps) {
+  const { user, loading } = useAuth();
+
+  if (loading) return null; // ou splash
+  if (!user) redirect('/autenticar');
+
   /// AUTH
+
   // Firebase
-  const authService = new FirebaseAuthService(auth);
+  // const db: IDatabase = new DexieDatabase();
+  const db: IDatabase = new FirebaseBaseDatabase(user.uid);
 
   // DATABASE
-  // const db: IDatabase = new DexieDatabase();
-  const db: IDatabase = new FirebaseBaseDatabase();
 
   // Repositories
   const vialService = new VialService(db);
@@ -65,7 +69,6 @@ export function DependencyInjectionProvider(props: DependencyInjectionProviderPr
   packageService.injectLate(reagentService, vialService);
 
   const servicesSet: ServicesSet = {
-    authService,
     vialService,
     laboratoryService,
     controlAgencyService,

@@ -7,6 +7,7 @@ import {
   FirestoreDataConverter,
   getDocs,
   onSnapshot,
+  QueryDocumentSnapshot,
   Timestamp,
   updateDoc,
 } from 'firebase/firestore';
@@ -23,43 +24,53 @@ import { OmitId, WithId } from '@/shared/types/id.type';
 import { DatabaseTableName } from '@/shared/types/table-name.type';
 
 export class FirebaseBaseDatabase implements IDatabase {
+  constructor(private readonly uid: string) {}
+
   async get<T extends WithId>(table: DatabaseTableName) {
-    const colRef = collection(db, table).withConverter(FirestoreConverters.get(table));
+    const colRef = this.userCollection(table);
     const snapshot = await getDocs(colRef);
     return snapshot.docs.map((doc) => doc.data() as T);
   }
 
   async create<T extends WithId>(table: DatabaseTableName, data: OmitId<T>) {
-    const colRef = collection(db, table).withConverter(FirestoreConverters.get(table));
+    const colRef = this.userCollection(table);
     const docRef = await addDoc(colRef, data as DocumentData);
     return { ...data, id: docRef.id } as T;
   }
 
   async update<T extends WithId>(table: DatabaseTableName, id: string, data: Partial<OmitId<T>>) {
-    const docRef = doc(db, table, id).withConverter(FirestoreConverters.get(table));
+    const docRef = this.userDocument(table, id);
     await updateDoc(docRef, data as DocumentData);
   }
 
   async delete(table: DatabaseTableName, id: string): Promise<void> {
-    const docRef = doc(db, table, id);
+    const docRef = this.userDocument(table, id);
     await deleteDoc(docRef);
   }
 
   listen<T extends WithId>(table: DatabaseTableName, callback: (data: T[]) => void) {
-    const colRef = collection(db, table).withConverter(
-      FirestoreConverters.get(table) as FirestoreDataConverter<T>
-    );
-
+    const colRef = this.userCollection(table);
     const unsubscribe = onSnapshot(colRef, (snapshot) => {
-      callback(snapshot.docs.map((doc) => doc.data()));
+      callback(snapshot.docs.map((doc) => doc.data() as T));
     });
-
     return unsubscribe;
   }
 
   async query<T extends WithId>(table: DatabaseTableName, fn: (item: T) => boolean): Promise<T[]> {
     const items = await this.get<T>(table);
     return items.filter(fn);
+  }
+
+  private userCollection<T>(table: DatabaseTableName) {
+    return collection(db, 'users', this.uid, table).withConverter(
+      FirestoreConverters.get(table) as FirestoreDataConverter<T>
+    );
+  }
+
+  private userDocument<T>(table: DatabaseTableName, id: string) {
+    return doc(db, 'users', this.uid, table, id).withConverter(
+      FirestoreConverters.get(table) as FirestoreDataConverter<T>
+    );
   }
 }
 
@@ -101,7 +112,7 @@ class FirestoreConverters {
         return rest as OmitId<T>;
       },
 
-      fromFirestore(snapshot: any): T {
+      fromFirestore(snapshot: QueryDocumentSnapshot): T {
         const data = snapshot.data();
         const converted = FirestoreConverters.convertTimestampsToDate<OmitId<T>>(data);
 

@@ -5,7 +5,6 @@ import React, { ReactNode } from 'react';
 import { theme } from 'theme';
 import { ColorSchemeScript, mantineHtmlProps, MantineProvider } from '@mantine/core';
 import { AppAuthProvider } from '@/providers/auth.provider';
-import { DependencyInjectionProvider } from '@/providers/dependency-injection.provider';
 
 export const metadata = {
   title: 'Reagen - Controle de Reagentes',
@@ -29,9 +28,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
       </head>
       <body>
         <MantineProvider theme={theme} defaultColorScheme="light">
-          <DependencyInjectionProvider>
-            <AppAuthProvider>{children}</AppAuthProvider>
-          </DependencyInjectionProvider>
+          <AppAuthProvider>{children}</AppAuthProvider>
         </MantineProvider>
       </body>
     </html>

@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useForm } from '@mantine/form';
-import { ID_FUNDING_SOURCE_EMBRAPA } from '@/features/named-option/funding-source/funding-source.type';
 import { PackageEditProps } from '@/features/package/components/package-edit.view';
 import { Package } from '@/features/package/package.type';
 import { ReagentService } from '@/features/reagent/reagent.service';
@@ -51,8 +50,7 @@ export function usePackageEdit(props: UsePackageEditProps) {
       purity: 0,
       id: '',
       reagentId: '',
-      // FIXME: ID EMBRAPA: como colocar isso no env? E pra outros users? Deixar anulável, e mostrar nulo como sendo embrapa?
-      fundingSourceId: ID_FUNDING_SOURCE_EMBRAPA,
+      fundingSourceId: null,
       supplierId: '',
       ...props.preFilledPackageData,
     },
@@ -61,7 +59,6 @@ export function usePackageEdit(props: UsePackageEditProps) {
       ...values,
       expireDate: toNullableLocalDate(values.expireDate)!,
       inDate: toNullableLocalDate(values.inDate)!,
-      fundingSourceId: values.fundingSourceId,
     }),
 
     validate: (values) => {
@@ -255,7 +252,6 @@ export function usePackageEdit(props: UsePackageEditProps) {
   };
 
   const handleFundingSourceChange = (value: string | null) => {
-    if (!value) return;
     packageForm.setValues({ fundingSourceId: value });
   };
 

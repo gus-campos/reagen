@@ -6,6 +6,7 @@ import { LoadingOverlay } from '@mantine/core';
 import { ReagenShell } from '@/features/app-shell/app-shell.view';
 import { useAppAuth } from '@/providers/auth.provider';
 import { DataProvider } from '@/providers/data.provider';
+import { DependencyInjectionProvider } from '@/providers/dependency-injection.provider';
 
 type RootLayoutProps = {
   children: ReactNode[];
@@ -19,8 +20,10 @@ export default function AuthenticatedLayout({ children }: RootLayoutProps) {
   if (!user) redirect('/autenticar');
 
   return (
-    <DataProvider>
-      <ReagenShell>{children}</ReagenShell>
-    </DataProvider>
+    <DependencyInjectionProvider>
+      <DataProvider>
+        <ReagenShell>{children}</ReagenShell>
+      </DataProvider>
+    </DependencyInjectionProvider>
   );
 }

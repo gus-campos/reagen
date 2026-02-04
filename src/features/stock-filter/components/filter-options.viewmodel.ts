@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { useForm } from '@mantine/form';
-import { ID_FUNDING_SOURCE_EMBRAPA } from '@/features/named-option/funding-source/funding-source.type';
 import { StockFilter } from '@/features/stock-filter/stock-filter.type';
 import { useData } from '@/providers/data.provider';
 import { toNullableLocalDate } from '@/shared/utils/date';
@@ -55,19 +54,13 @@ export function useFilterOptions(props: FilterOptionsProps) {
   useEffect(() => {
     if (form.values.fundingSourceId === null) return;
 
-    // Se mudou pra embrapa, mudar escopo pra interno
-    if (
-      form.values.fundingSourceId === ID_FUNDING_SOURCE_EMBRAPA &&
-      form.values.fundingScope !== 'internal'
-    ) {
+    // Se mudou pra null (interno, sem adquirinte), mudar escopo pra interno
+    if (form.values.fundingSourceId === null && form.values.fundingScope !== 'internal') {
       form.setValues({ fundingScope: 'internal' });
     }
 
     // Se mudou pra diferente da emprapa, setar escopo externo
-    else if (
-      form.values.fundingSourceId !== ID_FUNDING_SOURCE_EMBRAPA &&
-      form.values.fundingScope !== 'external'
-    ) {
+    else if (form.values.fundingSourceId !== null && form.values.fundingScope !== 'external') {
       form.setValues({ fundingScope: 'external' });
     }
   }, [form.values.fundingSourceId]);
@@ -97,19 +90,13 @@ export function useFilterOptions(props: FilterOptionsProps) {
   }, [form.values.controlled]);
 
   useEffect(() => {
-    // Se mudou pra interno, mudar seleção pra embrapa
-    if (
-      form.values.fundingScope === 'internal' &&
-      form.values.fundingSourceId !== ID_FUNDING_SOURCE_EMBRAPA
-    ) {
-      form.setValues({ fundingSourceId: ID_FUNDING_SOURCE_EMBRAPA });
+    // Se mudou pra interno, mudar seleção pra nulo
+    if (form.values.fundingScope === 'internal' && form.values.fundingSourceId !== null) {
+      form.setValues({ fundingSourceId: null });
     }
 
-    // Se mudou pra externo, e tá embrapa, limpar
-    else if (
-      form.values.fundingScope === 'external' &&
-      form.values.fundingSourceId === ID_FUNDING_SOURCE_EMBRAPA
-    ) {
+    // Se mudou pra externo, e tá nulo, limpar
+    else if (form.values.fundingScope === 'external' && form.values.fundingSourceId === null) {
       form.setValues({ fundingSourceId: null });
     }
 
