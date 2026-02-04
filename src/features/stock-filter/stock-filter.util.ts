@@ -10,8 +10,14 @@ export function filteredPackage(
   getPackageVials: (pkg: Package) => Vial[],
   getReagentById: (reagentId: string) => Reagent
 ): boolean {
-  const hasAnyVialMatchingFilter = getPackageVials(pkg).some((vial) => filteredVial(vial, filter!));
+  // Possuir filtros
+
+  const packageVials = getPackageVials(pkg);
+  const hasAnyVialMatchingFilter =
+    packageVials.length === 0 || packageVials.some((vial) => filteredVial(vial, filter!));
   if (!hasAnyVialMatchingFilter) return false;
+
+  // Expiration
 
   const isPkgExpired = isPackageExpired(pkg);
   const matchesExpiredFilter =
@@ -30,12 +36,16 @@ export function filteredPackage(
   );
   if (!macthesExpireRangeFilter) return false;
 
+  // In Date
+
   const macthesInDateRangeFilter = isInsideDateRange(
     pkg.inDate,
     filter.minInDate,
     filter.maxInDate
   );
   if (!macthesInDateRangeFilter) return false;
+
+  // Control
 
   const pkgControlAgencyId = getReagentById(pkg.reagentId).controlAgencyId;
   const pkgIsControlled = pkgControlAgencyId !== null;
@@ -52,6 +62,8 @@ export function filteredPackage(
     filter.controlAgencyId === null || filter.controlAgencyId === pkgControlAgencyId;
   if (!matchesControlAgencyFilter) return false;
 
+  // Funding
+
   const matchesFundingScopeFilter =
     // Filtro não ativado
     filter.fundingScope === 'all' ||
@@ -66,6 +78,8 @@ export function filteredPackage(
     filter.fundingSourceId === null || filter.fundingSourceId === pkg.fundingSourceId;
   if (!matchesFundingSourceFilter) return false;
 
+  // Supplier
+
   const macthesSupplierFilter = filter.supplierId === null || filter.supplierId === pkg.supplierId;
   if (!macthesSupplierFilter) return false;
 
@@ -73,6 +87,8 @@ export function filteredPackage(
 }
 
 export function filteredVial(vial: Vial, filter: StockFilter): boolean {
+  // out Date
+
   const matchesIsOutFilter =
     // Filtro não ativado
     filter.outStatus === 'all' ||
@@ -80,15 +96,15 @@ export function filteredVial(vial: Vial, filter: StockFilter): boolean {
     (filter.outStatus === 'is-out' && vial.outDate) ||
     // Não deve estar fora e não está fora
     (filter.outStatus === 'not-out' && !vial.outDate);
-
   if (!matchesIsOutFilter) return false;
 
   const rangeFilterDisabled = filter.minOutDate === null && filter.maxOutDate === null;
-
   const macthesOutDateRangeFilter =
     rangeFilterDisabled ||
     (vial.outDate && isInsideDateRange(vial.outDate, filter.minOutDate, filter.maxOutDate));
   if (!macthesOutDateRangeFilter) return false;
+
+  // Laboratory
 
   const matchesLaboratoryFilter =
     filter.laboratoryId === null || vial.laboratoryId === filter.laboratoryId;

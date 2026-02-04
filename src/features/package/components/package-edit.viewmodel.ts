@@ -51,7 +51,7 @@ export function usePackageEdit(props: UsePackageEditProps) {
       purity: 0,
       id: '',
       reagentId: '',
-      // FIXME: ID EMBRAPA: como colocar isso no env? E pra outros users?
+      // FIXME: ID EMBRAPA: como colocar isso no env? E pra outros users? Deixar anulável, e mostrar nulo como sendo embrapa?
       fundingSourceId: ID_FUNDING_SOURCE_EMBRAPA,
       supplierId: '',
       ...props.preFilledPackageData,
@@ -93,7 +93,7 @@ export function usePackageEdit(props: UsePackageEditProps) {
       const vialsSum = labGroups.reduce((sum, group) => sum + group.amount, 0);
 
       // Só avaliar se estiver no modo adição (sem reagente selecionado)
-      if (!selectedReagent && vialsSum === 0) {
+      if (selectedReagent && vialsSum === 0) {
         const labGroupsError = 'É necessário adicionar pelo menos um frasco.';
         errors.labGroups = labGroupsError;
         setVialsError(labGroupsError);
