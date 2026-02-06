@@ -2,13 +2,14 @@
 
 import { CiViewList } from 'react-icons/ci';
 import { IoMdAdd } from 'react-icons/io';
-import { Button, Drawer, Modal, Tabs } from '@mantine/core';
+import { Button, Drawer, Group, Modal, Tabs } from '@mantine/core';
 import { PackageEdit } from '@/features/package/components/package-edit.view';
 import { usePackageLayout } from '@/features/package/components/package-layout.viewmodel';
 import { PackageShow } from '@/features/package/components/package-show.view';
 import { Package } from '@/features/package/package.type';
 import { ViewMode } from '@/features/package/package.view';
 import { ReagentShow } from '@/features/reagent/components/reagent-show.view';
+import { StockFilter } from '@/features/stock-filter/stock-filter.type';
 import { useDependencyInjection } from '@/providers/dependency-injection.provider';
 
 export type PackageLayoutProps = {
@@ -17,6 +18,7 @@ export type PackageLayoutProps = {
   selectedPackage: Package | null;
   onSelectPackage: (pkg: Package | null) => void;
   preFilledPackageData?: Partial<Package>;
+  filter?: StockFilter;
 };
 
 export function PackageLayout(props: PackageLayoutProps) {
@@ -34,6 +36,7 @@ export function PackageLayout(props: PackageLayoutProps) {
     handleCloseEditModal,
     handleCloseShowModal,
     handleBeginShownPackageEdit,
+    handleReportWithCurrentFilter,
   } = usePackageLayout({ ...props, reagentService, packageService });
 
   return (
@@ -80,19 +83,35 @@ export function PackageLayout(props: PackageLayoutProps) {
         </Tabs>
       </Drawer>
 
-      <Button
+      <Group
         style={{
           position: 'fixed',
           bottom: '30px',
           right: '30px',
-          borderRadius: '30px',
-          height: '50px',
-          zIndex: '9999',
         }}
-        onClick={handleBeginPackageAddition}
       >
-        <IoMdAdd size="20px" /> Dar entrada no estoque
-      </Button>
+        <Button
+          variant="outline"
+          style={{
+            borderRadius: '30px',
+            height: '50px',
+            zIndex: '9999',
+          }}
+          onClick={handleReportWithCurrentFilter}
+        >
+          <IoMdAdd size="20px" /> Relatar
+        </Button>
+        <Button
+          style={{
+            borderRadius: '30px',
+            height: '50px',
+            zIndex: '9999',
+          }}
+          onClick={handleBeginPackageAddition}
+        >
+          <IoMdAdd size="20px" /> Dar entrada no estoque
+        </Button>
+      </Group>
     </>
   );
 }

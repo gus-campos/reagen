@@ -1,17 +1,29 @@
+import { useRouter } from 'next/navigation';
 import { PackageLayoutProps } from '@/features/package/components/package-layout.view';
 import { PackageService } from '@/features/package/package.service';
 import { Package } from '@/features/package/package.type';
 import { ReagentService } from '@/features/reagent/reagent.service';
 import { Reagent } from '@/features/reagent/reagent.type';
+import { StockFilter } from '@/features/stock-filter/stock-filter.type';
 import { useData } from '@/providers/data.provider';
+import { useNavigationData } from '@/providers/navigation-data.provider';
 
 type UsePackageLayoutProps = PackageLayoutProps & {
   reagentService: ReagentService;
   packageService: PackageService;
+  filter?: StockFilter;
 };
 
 export function usePackageLayout(props: UsePackageLayoutProps) {
   const { getReagentById } = useData();
+
+  // REDIRECT WITH NAVIGATION DATA
+  const router = useRouter();
+  const { handleSetFilter } = useNavigationData();
+  const handleReportWithCurrentFilter = () => {
+    handleSetFilter(props.filter ?? null);
+    router.push('/relatorio');
+  };
 
   const selectedPackageReagent = props.selectedPackage
     ? getReagentById(props.selectedPackage.reagentId)
@@ -64,5 +76,6 @@ export function usePackageLayout(props: UsePackageLayoutProps) {
     handleCloseEditModal,
     handleCloseShowModal,
     handleBeginShownPackageEdit,
+    handleReportWithCurrentFilter,
   };
 }

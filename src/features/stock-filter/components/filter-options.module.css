@@ -11,7 +11,7 @@
   transition: transform 150ms ease;
 
   &[data-active] {
-    transform: scale(1.03);
+    /* transform: scale(1.03); */
     z-index: 1;
     background-color: var(--mantine-color-body);
     border-color: light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-4));

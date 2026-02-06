@@ -21,6 +21,7 @@ export function PackageView(props: PackageViewProps) {
         selectedPackage={selectedPackage}
         onModeChange={handleChangeMode}
         onSelectPackage={handleSelectPackage}
+        filter={props.filter}
       />
       <PackageTable filter={props.filter} search={props.search} crudOperations={crudOperations} />
     </>

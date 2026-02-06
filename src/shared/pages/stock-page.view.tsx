@@ -3,32 +3,11 @@ import { Box, Grid, LoadingOverlay } from '@mantine/core';
 import { PackageView } from '@/features/package/package.view';
 import { FilterOptions } from '@/features/stock-filter/components/filter-options.view';
 import { SearchReagent } from '@/features/stock-filter/components/search-reagent.view';
+import { CLEAN_STOCK_FILTER } from '@/features/stock-filter/stock-filter.constants';
 import { StockFilter } from '@/features/stock-filter/stock-filter.type';
 import { useData } from '@/providers/data.provider';
 
 // Precisa ser inicializado aqui
-const initialFilter: StockFilter = {
-  expired: 'all',
-  maxExpire: null,
-  minExpire: null,
-
-  minInDate: null,
-  maxInDate: null,
-
-  outStatus: 'all',
-  minOutDate: null,
-  maxOutDate: null,
-
-  controlled: 'all',
-  controlAgencyId: null,
-
-  fundingScope: 'all',
-  fundingSourceId: null,
-
-  supplierId: null,
-
-  laboratoryId: null,
-};
 
 export default function StockPage() {
   const { loadingVials, vialsError, controlAgenciesError, loadingControlAgencies } = useData();
@@ -36,7 +15,7 @@ export default function StockPage() {
   // STATES
 
   const [search, setSearch] = useState('');
-  const [filter, setFilter] = useState<StockFilter>(initialFilter);
+  const [filter, setFilter] = useState<StockFilter>(CLEAN_STOCK_FILTER);
 
   // HANDLERS
 

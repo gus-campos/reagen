@@ -7,6 +7,7 @@ import { ReagenShell } from '@/features/app-shell/app-shell.view';
 import { useAppAuth } from '@/providers/auth.provider';
 import { DataProvider } from '@/providers/data.provider';
 import { DependencyInjectionProvider } from '@/providers/dependency-injection.provider';
+import { NavigationDataProvider } from '@/providers/navigation-data.provider';
 
 type RootLayoutProps = {
   children: ReactNode[];
@@ -22,7 +23,9 @@ export default function AuthenticatedLayout({ children }: RootLayoutProps) {
   return (
     <DependencyInjectionProvider>
       <DataProvider>
-        <ReagenShell>{children}</ReagenShell>
+        <NavigationDataProvider>
+          <ReagenShell>{children}</ReagenShell>
+        </NavigationDataProvider>
       </DataProvider>
     </DependencyInjectionProvider>
   );

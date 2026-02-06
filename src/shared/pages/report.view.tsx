@@ -1,44 +1,41 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import { useReactToPrint } from 'react-to-print';
-import { Button, Grid, Group, Modal, Paper, Stack, Title } from '@mantine/core';
-import { MonthPickerInput } from '@mantine/dates';
-import { useForm } from '@mantine/form';
+import { Button, Group, Paper, Stack, Title } from '@mantine/core';
 import { TableCollumn } from '@/features/data-table/data-table.type';
 import { DataTable } from '@/features/data-table/data-table.view';
-import { FundingSource } from '@/features/named-option/funding-source/funding-source.type';
-import { Laboratory } from '@/features/named-option/laboratory/laboratory.type';
-import { Supplier } from '@/features/named-option/supplier/supplier.type';
-import { Package } from '@/features/package/package.type';
-import { Reagent } from '@/features/reagent/reagent.type';
+import {
+  ConfigReportModal,
+  useConfigReportModal,
+} from '@/features/report/components/report-options.view';
+import { CompleteVial } from '@/features/report/report.type';
+import { getCompleteVial } from '@/features/report/report.util';
 import { formattedSize } from '@/features/size/size.util';
-import { isInsideDateRange } from '@/features/stock-filter/stock-filter.util';
-import { Vial } from '@/features/vial/vial.type';
+import { filteredVial } from '@/features/stock-filter/stock-filter.util';
 import { useData } from '@/providers/data.provider';
-import { firstDayOffsettedMonth, firstDayOfMonth, formatDate } from '@/shared/utils/date';
+import { useNavigationData } from '@/providers/navigation-data.provider';
 import { formattedDate } from '@/shared/utils/formatted-date';
-import { findVialsOfPackage } from '@/shared/utils/misc';
-
-type CompleteVial = Vial & {
-  package: Package;
-  reagent: Reagent;
-  supplier: Supplier | null;
-  laboratory: Laboratory;
-  fundingSource: FundingSource | null;
-};
 
 export function ReportPage() {
   const {
-    packages,
     vials,
     getReagentById,
     getSupplierById,
     getLaboratoryById,
     getFundingSourcesById,
+    getPackageById,
   } = useData();
 
-  const { onSubmit, openModal, closeModal, modalOpened, reportOptions } = useConfigReportModal();
+  // Só usar na primeira renderização
+  const { filter, handleSetFilter } = useNavigationData();
+  if (filter) handleSetFilter(null);
+
+  const { reportFilter, modalOpened, closeModal, openModal, onSubmit } = useConfigReportModal(
+    filter ?? undefined
+  );
+
+  // Sobrescrever o reportFilter se algo for passado na página
 
   const contentRef = useRef<HTMLDivElement>(null);
   const reactToPrintFn = useReactToPrint({ contentRef });
@@ -46,7 +43,7 @@ export function ReportPage() {
   const collumns: TableCollumn<CompleteVial>[] = [
     {
       name: 'Data de Entrada',
-      accessor: (vial) => formattedDate(vial.package.inDate),
+      accessor: (vial) => formattedDate(vial.pkg.inDate),
     },
     {
       name: 'Data de Saída',
@@ -58,11 +55,11 @@ export function ReportPage() {
     },
     {
       name: 'Tamanho',
-      accessor: (vial) => formattedSize(vial.package.size),
+      accessor: (vial) => formattedSize(vial.pkg.size),
     },
     {
       name: 'Pureza',
-      accessor: (vial) => `${vial.package.purity} %`,
+      accessor: (vial) => `${vial.pkg.purity} %`,
     },
     {
       name: 'Adquirente',
@@ -78,35 +75,24 @@ export function ReportPage() {
     },
   ];
 
-  const data: CompleteVial[] = packages.flatMap((pkg) => {
-    const packageVials = packages.flatMap((pkg) => findVialsOfPackage(pkg, vials!));
+  const getters = {
+    getReagentById,
+    getSupplierById,
+    getLaboratoryById,
+    getFundingSourcesById,
+    getPackageById,
+  };
 
-    const inRangePackageVials = packageVials.filter((vial) => {
-      // Se entrada ou saída estiver fora do range, desconsiderar
-      // Obs: para verificar pertencimento ao intervalo, é preciso considerar até o início do prox mês
-      const minDate = firstDayOfMonth(reportOptions.startDate);
-      const maxDate = firstDayOffsettedMonth(reportOptions.endDate, 1);
-      return [pkg.inDate, vial.outDate].some(
-        (date) => date && isInsideDateRange(date, minDate, maxDate)
-      );
-    });
+  const completeVials: CompleteVial[] = vials!.map((vial) => getCompleteVial(vial, getters));
 
-    // Complete package vials
-    return inRangePackageVials.map((vial) => {
-      const reagent = getReagentById(pkg.reagentId);
-      const supplier = pkg.supplierId ? getSupplierById(pkg.supplierId) : null;
-      const laboratory = getLaboratoryById(vial.laboratoryId);
-      const fundingSource = pkg.fundingSourceId ? getFundingSourcesById(pkg.fundingSourceId) : null;
-      return { reagent, supplier, package: pkg, laboratory, fundingSource, ...vial };
-    });
-  });
+  const filteredVials = completeVials.filter((vial) => filteredVial(vial, reportFilter));
 
   return (
     <>
       {/* Janela para impressão */}
       <Paper
         ref={contentRef}
-        px="xl"
+        p="xl"
         m="lg"
         style={{
           boxShadow: '0 0 20px rgba(0,0,0,0.40)',
@@ -114,12 +100,12 @@ export function ReportPage() {
       >
         <Group justify="center" my="lg  ">
           <Title order={1} my="lg">
-            Relatório de Reagentes - {formatDate(reportOptions.startDate, 'MM/YY')} a{' '}
-            {formatDate(reportOptions.endDate, 'MM/YY')}
+            {/* Relatório de Reagentes - {formatDate(reportOptions.startDate, 'MM/YY')} a{' '}
+            {formatDate(reportOptions.endDate, 'MM/YY')} */}
           </Title>
         </Group>
         <Stack my="lg">
-          <DataTable datas={data} collumns={collumns} smallHeading />
+          <DataTable datas={filteredVials} collumns={collumns} smallHeading />
         </Stack>
       </Paper>
 
@@ -128,7 +114,7 @@ export function ReportPage() {
         onClose={closeModal}
         opened={modalOpened}
         onSubmit={onSubmit}
-        initialValues={reportOptions}
+        initialValues={reportFilter}
       />
 
       {/* Botões de acesso */}
@@ -148,73 +134,5 @@ export function ReportPage() {
         </Button>
       </Group>
     </>
-  );
-}
-
-export type ReportOptions = {
-  startDate: Date;
-  endDate: Date;
-};
-
-export function useConfigReportModal() {
-  const [modalOpened, setModalOpened] = useState(false);
-  const today = new Date();
-  // Obs: O mês é guardado como o primeiro dia daquele mês
-  const [reportOptions, setReportOptions] = useState<ReportOptions>({
-    startDate: firstDayOfMonth(today),
-    endDate: firstDayOffsettedMonth(today, 1),
-  });
-
-  const closeModal = () => setModalOpened(false);
-  const openModal = () => setModalOpened(true);
-  const onSubmit = (reportOptions: ReportOptions) => setReportOptions(reportOptions);
-
-  return { reportOptions, modalOpened, closeModal, openModal, onSubmit };
-}
-
-type ConfigReportProps = {
-  onSubmit: (values: ReportOptions) => void;
-  onClose: () => void;
-  opened: boolean;
-  initialValues: ReportOptions;
-};
-
-export function ConfigReportModal(props: ConfigReportProps) {
-  const form = useForm<ReportOptions>({
-    initialValues: props.initialValues,
-  });
-
-  return (
-    <Modal title="Opções do relatório" opened={props.opened} onClose={props.onClose}>
-      <form
-        onSubmit={form.onSubmit((values) => {
-          props.onSubmit({
-            startDate: new Date(values.startDate),
-            endDate: new Date(values.endDate),
-          });
-          props.onClose();
-        })}
-      >
-        <Grid>
-          <Grid.Col span={{ base: 6 }}>
-            <MonthPickerInput
-              label="Primeiro mês"
-              valueFormat="MM/YY"
-              {...form.getInputProps('startDate')}
-            />
-          </Grid.Col>
-          <Grid.Col span={{ base: 6 }}>
-            <MonthPickerInput
-              label="Último mês"
-              valueFormat="MM/YY"
-              {...form.getInputProps('endDate')}
-            />
-          </Grid.Col>
-        </Grid>
-        <Button type="submit" fullWidth mt="sm">
-          Confirmar
-        </Button>
-      </form>
-    </Modal>
   );
 }

@@ -48,7 +48,7 @@ export function FilterOptions(props: FilterOptionsProps) {
       </Title>
 
       <form>
-        <Accordion variant="contained" maw={400} classNames={classes}>
+        <Accordion variant="contained" classNames={classes}>
           {/* Entrada */}
           <Accordion.Item value="in-date">
             <Accordion.Control>
