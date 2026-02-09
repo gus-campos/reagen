@@ -67,7 +67,7 @@ export function ReagentsView() {
             position: 'fixed',
             bottom: '20px',
             right: '30px',
-            height: '40px',
+            height: '45px',
             borderRadius: '50px',
             zIndex: '9999',
           }}

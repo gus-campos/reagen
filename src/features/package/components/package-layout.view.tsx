@@ -87,14 +87,14 @@ export function PackageLayout(props: PackageLayoutProps) {
         style={{
           position: 'fixed',
           bottom: '30px',
-          right: '30px',
+          right: '40px',
         }}
       >
         <Button
           variant="outline"
           style={{
-            borderRadius: '30px',
-            height: '50px',
+            borderRadius: '50px',
+            height: '45px',
             zIndex: '9999',
           }}
           onClick={handleReportWithCurrentFilter}
@@ -103,8 +103,8 @@ export function PackageLayout(props: PackageLayoutProps) {
         </Button>
         <Button
           style={{
-            borderRadius: '30px',
             height: '50px',
+            borderRadius: '45px',
             zIndex: '9999',
           }}
           onClick={handleBeginPackageAddition}

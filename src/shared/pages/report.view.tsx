@@ -118,8 +118,7 @@ export function ReportPage() {
       >
         <Group justify="center" my="lg  ">
           <Title order={1} my="lg">
-            {/* Relatório de Reagentes - {formatDate(reportOptions.startDate, 'MM/YY')} a{' '}
-            {formatDate(reportOptions.endDate, 'MM/YY')} */}
+            Relatório de Reagentes
           </Title>
         </Group>
         <Stack my="lg">
@@ -139,17 +138,22 @@ export function ReportPage() {
       <Group
         style={{
           position: 'fixed',
-          bottom: '30px',
+          bottom: '20px',
           right: '30px',
-          height: '40px',
         }}
       >
-        <Button variant="light" radius="50px" onClick={openModal}>
+        <Button
+          style={{ height: '45px', borderRadius: '50px', zIndex: '9999' }}
+          variant="light"
+          onClick={openModal}
+        >
           Editar filtros
         </Button>
         <Menu>
           <Menu.Target>
-            <Button radius="50px">Exportar</Button>
+            <Button style={{ height: '45px', borderRadius: '50px', zIndex: '9999' }}>
+              Exportar
+            </Button>
           </Menu.Target>
 
           <Menu.Dropdown>
@@ -161,9 +165,6 @@ export function ReportPage() {
             </Menu.Item>
           </Menu.Dropdown>
         </Menu>
-        {/* <Button radius="50px" onClick={handleDowloadSheet}>
-          Exportar Planilha
-        </Button> */}
       </Group>
     </>
   );
