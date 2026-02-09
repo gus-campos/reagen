@@ -10,7 +10,7 @@ export type CompleteVialGetters = {
   getReagentById: (id: string) => Reagent;
   getSupplierById: (id: string) => Supplier;
   getLaboratoryById: (id: string) => Laboratory;
-  getFundingSourcesById: (id: string) => FundingSource;
+  getFundingSourceById: (id: string) => FundingSource;
   getPackageById: (id: string) => Package;
 };
 
@@ -20,7 +20,7 @@ export function getCompleteVial(vial: Vial, getters: CompleteVialGetters): Compl
   const supplier = pkg.supplierId ? getters.getSupplierById(pkg.supplierId) : null;
   const laboratory = getters.getLaboratoryById(vial.laboratoryId);
   const fundingSource = pkg.fundingSourceId
-    ? getters.getFundingSourcesById(pkg.fundingSourceId)
+    ? getters.getFundingSourceById(pkg.fundingSourceId)
     : null;
   return { reagent, supplier, pkg, laboratory, fundingSource, ...vial };
 }

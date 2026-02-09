@@ -23,7 +23,7 @@ export function ReportPage() {
     getReagentById,
     getSupplierById,
     getLaboratoryById,
-    getFundingSourcesById,
+    getFundingSourceById,
     getPackageById,
   } = useData();
 
@@ -82,7 +82,7 @@ export function ReportPage() {
     getReagentById,
     getSupplierById,
     getLaboratoryById,
-    getFundingSourcesById,
+    getFundingSourceById,
     getPackageById,
   };
 

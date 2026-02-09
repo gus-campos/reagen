@@ -9,11 +9,7 @@ type PackageShowProps = {
 };
 
 export function PackageShow(props: PackageShowProps) {
-  const {
-    getReagentById,
-    getFundingSourcesById: getFundingSourceById,
-    getSupplierById,
-  } = useData();
+  const { getReagentById, getFundingSourceById, getSupplierById } = useData();
 
   return (
     <Stack p="md">

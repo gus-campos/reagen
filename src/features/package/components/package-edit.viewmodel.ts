@@ -24,7 +24,7 @@ export function usePackageEdit(props: UsePackageEditProps) {
     fundingSources: fundingSources,
     laboratories,
     getReagentById,
-    getFundingSourcesById: getFundingSourceById,
+    getFundingSourceById,
     getSupplierById,
     getLaboratoryById,
   } = useData();

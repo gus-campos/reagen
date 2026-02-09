@@ -18,14 +18,17 @@ import {
 } from '@/features/package/package.constants';
 import { Package } from '@/features/package/package.type';
 import { Reagent } from '@/features/reagent/reagent.type';
+import {
+  ConfigReportModal,
+  useConfigReportModal,
+} from '@/features/report/components/report-options.view';
 import { isInsideDateRange } from '@/features/stock-filter/stock-filter.util';
 import { Vial } from '@/features/vial/vial.type';
 import { useData } from '@/providers/data.provider';
-import { ConfigReportModal, ReportOptions, useConfigReportModal } from '@/shared/pages/report.view';
-import { firstDayOffsettedMonth, firstDayOfMonth } from '@/shared/utils/date';
+import { firstDayOffsettedMonth } from '@/shared/utils/date';
 
 export function DashboardView() {
-  const { onSubmit, openModal, closeModal, modalOpened, reportOptions } = useConfigReportModal();
+  const { onSubmit, openModal, closeModal, modalOpened, reportFilter } = useConfigReportModal();
   const { vials, loadingVials } = useData();
 
   return (
@@ -36,7 +39,7 @@ export function DashboardView() {
         </Grid.Col>
 
         <Grid.Col span={{ base: 4 }}>
-          <TotalsDashboardCard reportOptions={reportOptions} />
+          <ExpireSoonDashboardCard />
         </Grid.Col>
         <Grid.Col span={{ base: 4 }}>
           <TopReagentsDashboardCard />
@@ -44,7 +47,7 @@ export function DashboardView() {
       </Grid>
       <ConfigReportModal
         onSubmit={onSubmit}
-        initialValues={reportOptions}
+        initialValues={reportFilter}
         onClose={closeModal}
         opened={modalOpened}
       />
@@ -118,31 +121,22 @@ function TopReagentsDashboardCard() {
 // EXPIRE SOON
 // =====================
 
-type ExpireSoonDashboardCardProps = {
-  reportOptions: ReportOptions;
-};
-
-function TotalsDashboardCard(props: ExpireSoonDashboardCardProps) {
+function ExpireSoonDashboardCard() {
   const {
     packages,
     loadingPackages,
     getPackageById,
     getReagentById,
-    getFundingSourcesById: getFundingSourceById,
+    getFundingSourceById,
     getControlAgencyById,
     getLaboratoryById,
     getSupplierById,
   } = useData();
 
   const soonToBeExpiredPackages = (packages ?? []).filter((pkg) => {
-    // Se entrada ou saída estiver fora do range, desconsiderar
-    // Obs: para verificar pertencimento ao intervalo, é preciso considerar até o início do prox mês
-    const minDate = firstDayOfMonth(props.reportOptions.startDate);
-    const maxRangeDate = firstDayOffsettedMonth(props.reportOptions.endDate, 1);
-
-    // Vencimentos do mês, mais 1 semana
-    const realMaxDate = new Date(maxRangeDate.getTime() + 7 * 24 * 60 * 60 * 1000);
-    return isInsideDateRange(pkg.expireDate, minDate, realMaxDate);
+    const now = new Date();
+    const oneMonthFromNow = firstDayOffsettedMonth(now, 1);
+    return isInsideDateRange(pkg.expireDate, now, oneMonthFromNow);
   });
 
   const getters: PackageCollumGetters = {

@@ -54,7 +54,7 @@ const DataContext = createContext<{
   getPackageById: (id: string) => Package;
   getReagentById: (id: string) => Reagent;
   getVialById: (id: string) => Vial;
-  getFundingSourcesById: (id: string) => FundingSource;
+  getFundingSourceById: (id: string) => FundingSource;
   getControlAgencyById: (id: string) => ControlAgency;
   getLaboratoryById: (id: string) => Laboratory;
   getSupplierById: (id: string) => Supplier;
@@ -89,7 +89,7 @@ export const DataProvider = (props: DataProviderProps) => {
     ReagentService
   >(reagentService);
 
-  const [fundingSources, loadingFundingSources, fundingSourcesError, getFundingSourcesById] =
+  const [fundingSources, loadingFundingSources, fundingSourcesError, getFundingSourceById] =
     useCollectionData<FundingSource, FundingSourceService>(fundingSourceService);
 
   const [laboratories, loadingLaboratories, laboratoriesError, getLaboratoryById] =
@@ -143,7 +143,7 @@ export const DataProvider = (props: DataProviderProps) => {
         getPackageById,
         getReagentById,
         getVialById,
-        getFundingSourcesById,
+        getFundingSourceById,
         getControlAgencyById,
         getLaboratoryById,
         getSupplierById,
