@@ -138,8 +138,8 @@ export function FilterOptions(props: FilterOptionsProps) {
                 {/* Range de data */}
                 <Radio.Group label="Mostrar" {...form.getInputProps('expired')}>
                   <Radio label="Todos" value="all" />
-                  <Radio label="vencidos" value="expired" />
-                  <Radio label="não vencidos" value="not-expired" />
+                  <Radio label="Vencidos" value="expired" />
+                  <Radio label="Não vencidos" value="not-expired" />
                 </Radio.Group>
                 <Grid mt="md">
                   <Grid.Col span={{ base: 6 }}>

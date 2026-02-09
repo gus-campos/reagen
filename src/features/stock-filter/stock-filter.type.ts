@@ -1,5 +1,5 @@
 // Vencimento
-//  (x) Todos
+//  (x) todos
 //  ( ) Apenas vencidos
 //  ( ) Apenas não vencidos
 //

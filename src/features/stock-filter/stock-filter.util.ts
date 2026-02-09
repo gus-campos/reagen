@@ -1,17 +1,18 @@
 import { Package } from '@/features/package/package.type';
 import { Reagent } from '@/features/reagent/reagent.type';
+import { CompleteVial } from '@/features/report/report.type';
 import { StockFilter } from '@/features/stock-filter/stock-filter.type';
 import { Vial } from '@/features/vial/vial.type';
 
 export function filteredPackage(
   pkg: Package,
   filter: StockFilter,
-  getPackageVials: (pkg: Package) => Vial[],
+  vials: Vial[],
   getReagentById: (reagentId: string) => Reagent
 ): boolean {
   // Possuir filtros
 
-  const packageVials = getPackageVials(pkg);
+  const packageVials = vials?.filter((vial) => vial.packageId === pkg.id) ?? [];
   const hasAnyVialMatchingFilter =
     packageVials.length === 0 || packageVials.some((vial) => filteredVial(vial, filter!));
   if (!hasAnyVialMatchingFilter) return false;
@@ -37,12 +38,12 @@ export function filteredPackage(
 
   // In Date
 
-  const macthesInDateRangeFilter = isInsideDateRange(
+  const matchesInDateRangeFilter = isInsideDateRange(
     pkg.inDate,
     filter.minInDate,
     filter.maxInDate
   );
-  if (!macthesInDateRangeFilter) return false;
+  if (!matchesInDateRangeFilter) return false;
 
   // Control
 
@@ -112,14 +113,31 @@ export function filteredVial(vial: Vial, filter: StockFilter): boolean {
   return true;
 }
 
-export function isInsideDateRange(
-  date: Date,
-  minExpire: Date | null,
-  maxExpire: Date | null
+export function filteredCompleteVial(
+  completeVial: CompleteVial,
+  filter: StockFilter,
+  vials: Vial[]
 ): boolean {
+  const getReagentById = () => completeVial.reagent;
+
+  return (
+    filteredVial(completeVial, filter) &&
+    filteredPackage(completeVial.pkg, filter, vials, getReagentById)
+  );
+}
+
+export function isInsideDateRange(date: Date, minDate: Date | null, maxDate: Date | null): boolean {
+  const startOfDay = (d: Date): Date => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+
+  const addDays = (d: Date, days: number): Date =>
+    new Date(d.getFullYear(), d.getMonth(), d.getDate() + days);
+
+  const flooredMinDate = minDate ? startOfDay(minDate) : null;
+  const inclusiveMaxDate = maxDate ? addDays(startOfDay(maxDate), 1) : null;
+
   if (!date) return false;
-  if (minExpire && date < minExpire) return false;
-  if (maxExpire && date > maxExpire) return false;
+  if (flooredMinDate && date < flooredMinDate) return false;
+  if (inclusiveMaxDate && date > inclusiveMaxDate) return false;
 
   return true;
 }

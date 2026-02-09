@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useReactToPrint } from 'react-to-print';
 import { Button, Group, Paper, Stack, Title } from '@mantine/core';
 import { TableCollumn } from '@/features/data-table/data-table.type';
@@ -12,7 +12,7 @@ import {
 import { CompleteVial } from '@/features/report/report.type';
 import { getCompleteVial } from '@/features/report/report.util';
 import { formattedSize } from '@/features/size/size.util';
-import { filteredVial } from '@/features/stock-filter/stock-filter.util';
+import { filteredCompleteVial } from '@/features/stock-filter/stock-filter.util';
 import { useData } from '@/providers/data.provider';
 import { useNavigationData } from '@/providers/navigation-data.provider';
 import { formattedDate } from '@/shared/utils/formatted-date';
@@ -29,7 +29,10 @@ export function ReportPage() {
 
   // Só usar na primeira renderização
   const { filter, handleSetFilter } = useNavigationData();
-  if (filter) handleSetFilter(null);
+
+  useEffect(() => {
+    if (filter) handleSetFilter(null);
+  }, [filter]);
 
   const { reportFilter, modalOpened, closeModal, openModal, onSubmit } = useConfigReportModal(
     filter ?? undefined
@@ -85,7 +88,9 @@ export function ReportPage() {
 
   const completeVials: CompleteVial[] = vials!.map((vial) => getCompleteVial(vial, getters));
 
-  const filteredVials = completeVials.filter((vial) => filteredVial(vial, reportFilter));
+  const filteredVials = completeVials.filter((vial) =>
+    filteredCompleteVial(vial, reportFilter, completeVials)
+  );
 
   return (
     <>

@@ -62,11 +62,8 @@ export function usePackageTable(props: UsePackageTableProps) {
 
   const allowedPkgs = packages ?? [];
 
-  const getPackageVials = (pkg: Package) =>
-    vials?.filter((vial) => vial.packageId === pkg.id) ?? [];
-
   const dataFilter = props.filter
-    ? (pkg: Package) => filteredPackage(pkg, props.filter!, getPackageVials, getReagentById)
+    ? (pkg: Package) => filteredPackage(pkg, props.filter!, vials!, getReagentById)
     : undefined;
 
   const generateWarning = (pkg: Package, relatedVials: Vial[]) => {
