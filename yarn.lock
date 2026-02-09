@@ -6949,6 +6949,39 @@ __metadata:
   languageName: node
   linkType: hard
 
+"csv-generate@npm:^4.5.0":
+  version: 4.5.0
+  resolution: "csv-generate@npm:4.5.0"
+  checksum: 10c0/81ccb33ff055e163e70694fb67f7bba0ac5431285f5b0a9cff1df2730982c901611f003192ede54dfbd6f50b4a747c94de852d120135a472e532d13014b7d141
+  languageName: node
+  linkType: hard
+
+"csv-parse@npm:^6.1.0":
+  version: 6.1.0
+  resolution: "csv-parse@npm:6.1.0"
+  checksum: 10c0/098c69e5b3b50d4bf65401dc3b2f1bd66f272fe985be99d7cb9f14ad33a7218f0f5695a03a82720cf47141d242bf44b4836ff32900751bef087057bc6e6715a2
+  languageName: node
+  linkType: hard
+
+"csv-stringify@npm:^6.6.0":
+  version: 6.6.0
+  resolution: "csv-stringify@npm:6.6.0"
+  checksum: 10c0/2e5b14ff1e434aba7b8cae74faa0329c1d967654820f2ae3f358a660b5887ab623224ed8eb7f3ab6d0f7342663c965ca079ca420b6046210709f72e8aec87d94
+  languageName: node
+  linkType: hard
+
+"csv@npm:^6.4.1":
+  version: 6.4.1
+  resolution: "csv@npm:6.4.1"
+  dependencies:
+    csv-generate: "npm:^4.5.0"
+    csv-parse: "npm:^6.1.0"
+    csv-stringify: "npm:^6.6.0"
+    stream-transform: "npm:^3.4.0"
+  checksum: 10c0/d447df1edcfe9cfe8e7ac42d8934cadcd1c78bac1e754fac9905c194c40436f24a5e82897f8c52a8293db7724a843ab5025e53d165b785953118aedd5935757b
+  languageName: node
+  linkType: hard
+
 "damerau-levenshtein@npm:^1.0.8":
   version: 1.0.8
   resolution: "damerau-levenshtein@npm:1.0.8"
@@ -10748,6 +10781,8 @@ __metadata:
     "@vitejs/plugin-react": "npm:^5.1.2"
     autoprefixer: "npm:^10.4.21"
     babel-loader: "npm:^10.0.0"
+    csv: "npm:^6.4.1"
+    csv-parse: "npm:^6.1.0"
     dayjs: "npm:^1.11.13"
     dexie: "npm:^4.2.1"
     eslint: "npm:^9.23.0"
@@ -13448,6 +13483,13 @@ __metadata:
     readable-stream: "npm:^3.6.0"
     xtend: "npm:^4.0.2"
   checksum: 10c0/f128fb8076d60cd548f229554b6a1a70c08a04b7b2afd4dbe7811d20f27f7d4112562eb8bce86d72a8691df3b50573228afcf1271e55e81f981536c67498bc41
+  languageName: node
+  linkType: hard
+
+"stream-transform@npm:^3.4.0":
+  version: 3.4.0
+  resolution: "stream-transform@npm:3.4.0"
+  checksum: 10c0/7fbcc76d8c59c03b30720e216fa558cf3b0120e3abd9cfbe7c4679eb9f024f043fa808ce179d398a8aaa21a68740c73a32d20b5ad11abb5b98d84a63c844d44d
   languageName: node
   linkType: hard
 

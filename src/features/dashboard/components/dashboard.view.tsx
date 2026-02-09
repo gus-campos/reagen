@@ -62,7 +62,7 @@ export function DashboardView() {
           height: '40px',
         }}
       >
-        Editar opções
+        Editar filtros
       </Button>
     </>
   );

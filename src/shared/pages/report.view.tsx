@@ -1,8 +1,10 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { IoDocumentTextOutline } from 'react-icons/io5';
+import { LuSheet } from 'react-icons/lu';
 import { useReactToPrint } from 'react-to-print';
-import { Button, Group, Paper, Stack, Title } from '@mantine/core';
+import { Button, Group, Menu, Paper, Stack, Title } from '@mantine/core';
 import { TableCollumn } from '@/features/data-table/data-table.type';
 import { DataTable } from '@/features/data-table/data-table.view';
 import {
@@ -10,7 +12,11 @@ import {
   useConfigReportModal,
 } from '@/features/report/components/report-options.view';
 import { CompleteVial } from '@/features/report/report.type';
-import { getCompleteVial } from '@/features/report/report.util';
+import {
+  convertVialsToCsvData,
+  downloadDataAsCsv,
+  getCompleteVial,
+} from '@/features/report/report.util';
 import { formattedSize } from '@/features/size/size.util';
 import { filteredCompleteVial } from '@/features/stock-filter/stock-filter.util';
 import { useData } from '@/providers/data.provider';
@@ -25,6 +31,7 @@ export function ReportPage() {
     getLaboratoryById,
     getFundingSourceById,
     getPackageById,
+    getControlAgencyById,
   } = useData();
 
   // Só usar na primeira renderização
@@ -84,6 +91,7 @@ export function ReportPage() {
     getLaboratoryById,
     getFundingSourceById,
     getPackageById,
+    getControlAgencyById,
   };
 
   const completeVials: CompleteVial[] = vials!.map((vial) => getCompleteVial(vial, getters));
@@ -91,6 +99,11 @@ export function ReportPage() {
   const filteredVials = completeVials.filter((vial) =>
     filteredCompleteVial(vial, reportFilter, completeVials)
   );
+
+  const handleDowloadSheet = () => {
+    const csvData = convertVialsToCsvData(filteredVials);
+    downloadDataAsCsv(csvData, 'relatorio.csv');
+  };
 
   return (
     <>
@@ -132,11 +145,25 @@ export function ReportPage() {
         }}
       >
         <Button variant="light" radius="50px" onClick={openModal}>
-          Editar opções
+          Editar filtros
         </Button>
-        <Button radius="50px" onClick={reactToPrintFn}>
-          Imprimir
-        </Button>
+        <Menu>
+          <Menu.Target>
+            <Button radius="50px">Exportar</Button>
+          </Menu.Target>
+
+          <Menu.Dropdown>
+            <Menu.Item leftSection={<IoDocumentTextOutline />} onClick={reactToPrintFn}>
+              PDF
+            </Menu.Item>
+            <Menu.Item leftSection={<LuSheet />} onClick={handleDowloadSheet}>
+              Planilha
+            </Menu.Item>
+          </Menu.Dropdown>
+        </Menu>
+        {/* <Button radius="50px" onClick={handleDowloadSheet}>
+          Exportar Planilha
+        </Button> */}
       </Group>
     </>
   );
