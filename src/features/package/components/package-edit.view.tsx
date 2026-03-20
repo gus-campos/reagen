@@ -90,13 +90,13 @@ export function PackageEdit(props: PackageEditProps) {
             <Grid.Col span={{ base: 12 }}>
               <Group justify="space-between" align="end">
                 <Select
+                  searchable
                   filter={portugueseSearchFilter}
                   placeholder="Selecione ou adicione o reagente"
                   disabled={sizeAddMode || !!props.selectedPackage}
                   style={{ flex: 1 }}
                   label="Reagente"
                   data={reagentSelectData}
-                  searchable
                   allowDeselect={false}
                   onChange={handleChangeReagent}
                   value={packageForm.values.reagentId}
@@ -141,6 +141,7 @@ export function PackageEdit(props: PackageEditProps) {
             <Grid.Col span={{ base: 12 }}>
               <Group justify="space-between" align="end">
                 <Select
+                  searchable
                   filter={portugueseSearchFilter}
                   placeholder="Selecione ou adicione o tamanho"
                   style={{ flex: 1 }}
@@ -185,6 +186,7 @@ export function PackageEdit(props: PackageEditProps) {
           <Grid.Col span={{ base: 6 }}>
             {/* Adquirente */}
             <Select
+              searchable
               filter={portugueseSearchFilter}
               label="Adquirente"
               placeholder="Nome do adquirente"
@@ -198,6 +200,7 @@ export function PackageEdit(props: PackageEditProps) {
           <Grid.Col span={{ base: 12 }}>
             {/* Fornecedor */}
             <Select
+              searchable
               filter={portugueseSearchFilter}
               label="Fornecedor"
               placeholder="Nome do fornecedor"
