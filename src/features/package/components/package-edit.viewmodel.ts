@@ -21,7 +21,7 @@ export function usePackageEdit(props: UsePackageEditProps) {
   const {
     reagents,
     suppliers,
-    fundingSources: fundingSources,
+    fundingSources,
     laboratories,
     getReagentById,
     getFundingSourceById,
@@ -90,7 +90,7 @@ export function usePackageEdit(props: UsePackageEditProps) {
       const vialsSum = labGroups.reduce((sum, group) => sum + group.amount, 0);
 
       // Só avaliar se estiver no modo adição (sem reagente selecionado)
-      if (selectedReagent && vialsSum === 0) {
+      if (!selectedReagent && vialsSum === 0) {
         const labGroupsError = 'É necessário adicionar pelo menos um frasco.';
         errors.labGroups = labGroupsError;
         setVialsError(labGroupsError);
