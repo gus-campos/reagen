@@ -20,9 +20,9 @@ Execute os seguintes comandos:
 ```bash
 git clone https://github.com/gus-campos/reagen
 cd reagen
-npm install
+yarn install
 cp .env.example .env
-npm run dev
+yarn run dev
 ```
 
 Credenciais de teste:
