@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useForm } from '@mantine/form';
+import { LabGroup } from '@/features/package/components/package-edit-vials-add.viewmodel';
 import { PackageEditProps } from '@/features/package/components/package-edit.view';
 import { Package } from '@/features/package/package.type';
 import { ReagentService } from '@/features/reagent/reagent.service';
@@ -15,32 +16,27 @@ type UsePackageEditProps = PackageEditProps & {
   vialService: VialService;
 };
 
-type LabGroup = { laboratoryId: string; amount: number };
-
 export function usePackageEdit(props: UsePackageEditProps) {
   const {
     reagents,
     suppliers,
-    fundingSources: fundingSources,
+    fundingSources,
     laboratories,
     getReagentById,
     getFundingSourceById,
     getSupplierById,
-    getLaboratoryById,
   } = useData();
 
   const [reagentAddMode, setReagentAddMode] = useState(false);
   const [createdReagentName, setCreatedReagentName] = useState('');
   const [loadingAddReagent, setLoadingAddReagent] = useState(false);
 
+  const [labGroups, setLabGroups] = useState<LabGroup[]>([]);
+  const [labGroupsError, setLabGroupsError] = useState<string | null>(null);
+
   const [sizeAddMode, setSizeAddMode] = useState(false);
   const [addedSize, setAddedSize] = useState<Size | null>(null);
   const [loadingAddSize, setLoadingAddedSize] = useState(false);
-
-  const [labGroups, setLabGroups] = useState<LabGroup[]>([]);
-  const [labIdToAdd, setLabIdToAdd] = useState<string | null>(null);
-
-  const [vialError, setVialsError] = useState<string | null>(null);
 
   const packageForm = useForm<Package>({
     initialValues: props.selectedPackage ?? {
@@ -87,13 +83,14 @@ export function usePackageEdit(props: UsePackageEditProps) {
       }
 
       // Esse tem que ser o último
-      const vialsSum = labGroups.reduce((sum, group) => sum + group.amount, 0);
-
       // Só avaliar se estiver no modo adição (sem reagente selecionado)
-      if (selectedReagent && vialsSum === 0) {
-        const labGroupsError = 'É necessário adicionar pelo menos um frasco.';
-        errors.labGroups = labGroupsError;
-        setVialsError(labGroupsError);
+      const vialsSum = labGroups.reduce((sum, group) => sum + group.amount, 0);
+      if (vialsSum === 0) {
+        const error = 'É necessário adicionar pelo menos um frasco.';
+        errors.labGroups = error;
+        setLabGroupsError(error);
+      } else {
+        setLabGroupsError(null);
       }
 
       return errors;
@@ -150,12 +147,15 @@ export function usePackageEdit(props: UsePackageEditProps) {
     setLoadingAddedSize(true);
   };
 
+  const handleChangeLabGroups = (labGroups: LabGroup[]) => {
+    setLabGroups(labGroups);
+  };
+
   const handleSubmitPackage = async (pkg: Package) => {
     if (props.selectedPackage) {
       props.onEditPackage(pkg);
     } else {
       const pkgCreated = await props.onAddPackage(pkg);
-
       Promise.all(
         labGroups.flatMap((group) =>
           Array.from({ length: group.amount }).map(() =>
@@ -168,6 +168,7 @@ export function usePackageEdit(props: UsePackageEditProps) {
         )
       );
     }
+
     props.onClosePackageModal();
   };
 
@@ -189,11 +190,6 @@ export function usePackageEdit(props: UsePackageEditProps) {
 
     packageForm.setFieldValue('size', validReagent?.sizes[0] ?? ('' as any));
   };
-
-  const labGroupsWithNames = labGroups.map((group) => ({
-    ...group,
-    laboratoryName: getLaboratoryById(group.laboratoryId).name,
-  }));
 
   const reagentSelectData = reagents!
     .sort((a, b) => a.name.localeCompare(b.name))
@@ -223,34 +219,6 @@ export function usePackageEdit(props: UsePackageEditProps) {
       label: s.name,
     }));
 
-  const availableLaboratories =
-    laboratories!
-      .filter((lab) => !labGroups.map((g) => g.laboratoryId).includes(lab.id))
-      .sort((a, b) => a.name.localeCompare(b.name))
-      .map((lab) => ({
-        value: lab.id,
-        label: lab.name,
-      })) ?? [];
-
-  const totalVials = labGroups.reduce((acc, g) => acc + g.amount, 0);
-
-  const handleLabGroupAmountChange = (laboratoryId: string, value: number) => {
-    if (value === 0) {
-      setLabGroups(labGroups.filter((g) => g.laboratoryId !== laboratoryId));
-    } else {
-      setLabGroups(
-        labGroups.map((g) => (g.laboratoryId === laboratoryId ? { ...g, amount: value } : g))
-      );
-    }
-  };
-
-  const handleAddLabGroup = () => {
-    if (labIdToAdd) {
-      setLabGroups([...labGroups, { laboratoryId: labIdToAdd, amount: 1 }]);
-      setLabIdToAdd(null);
-    }
-  };
-
   const handleFundingSourceChange = (value: string | null) => {
     packageForm.setValues({ fundingSourceId: value });
   };
@@ -267,9 +235,6 @@ export function usePackageEdit(props: UsePackageEditProps) {
     sizeAddMode,
     addedSize,
     loadingAddSize,
-    labGroups,
-    labGroupsWithNames,
-    labIdToAdd,
     packageForm,
     selectedReagent,
     reagents,
@@ -281,8 +246,6 @@ export function usePackageEdit(props: UsePackageEditProps) {
     setLoadingAddReagent,
     setSizeAddMode,
     setLoadingAddedSize,
-    setLabIdToAdd,
-    setLabGroups,
     handleAddSize,
     handleSubmitPackage,
     handleChangeSize,
@@ -293,12 +256,12 @@ export function usePackageEdit(props: UsePackageEditProps) {
     sizeSelectData,
     fundingSourceSelectData,
     supplierSelectData,
-    availableLaboratories,
-    totalVials,
-    vialError,
-    handleLabGroupAmountChange,
-    handleAddLabGroup,
     handleFundingSourceChange,
     handleSupplierChange,
+
+    // Vials
+    labGroups,
+    labGroupsError,
+    handleChangeLabGroups,
   };
 }

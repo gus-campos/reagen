@@ -1,17 +1,7 @@
 import React from 'react';
-import {
-  Box,
-  Button,
-  Grid,
-  Group,
-  InputWrapper,
-  NumberInput,
-  Paper,
-  Select,
-  Stack,
-  Text,
-} from '@mantine/core';
+import { Box, Button, Grid, Group, NumberInput, Select } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
+import { PackageEditVialsAdd } from '@/features/package/components/package-edit-vials-add.view';
 import { usePackageEdit } from '@/features/package/components/package-edit.viewmodel';
 import { PackageSubReagentAddForm } from '@/features/package/components/package-sub-reagent-add-form.view';
 import { Package } from '@/features/package/package.type';
@@ -39,15 +29,12 @@ export function PackageEdit(props: PackageEditProps) {
     loadingAddReagent,
     sizeAddMode,
     loadingAddSize,
-    labGroupsWithNames,
-    labIdToAdd,
     packageForm,
     selectedReagent,
     setReagentAddMode,
     setCreatedReagentName,
     setLoadingAddReagent,
     setSizeAddMode,
-    setLabIdToAdd,
     handleAddSize,
     handleSubmitPackage,
     handleChangeSize,
@@ -56,13 +43,13 @@ export function PackageEdit(props: PackageEditProps) {
     sizeSelectData,
     fundingSourceSelectData,
     supplierSelectData,
-    availableLaboratories,
-    totalVials,
-    vialError,
-    handleLabGroupAmountChange,
-    handleAddLabGroup,
     handleFundingSourceChange,
     handleSupplierChange,
+
+    //
+    labGroups,
+    labGroupsError,
+    handleChangeLabGroups,
   } = usePackageEdit({ ...props, reagentService, vialService });
 
   return (
@@ -185,6 +172,7 @@ export function PackageEdit(props: PackageEditProps) {
           <Grid.Col span={{ base: 6 }}>
             {/* Adquirente */}
             <Select
+              disabled={reagentAddMode || sizeAddMode}
               filter={portugueseSearchFilter}
               label="Adquirente"
               placeholder="Nome do adquirente"
@@ -198,6 +186,7 @@ export function PackageEdit(props: PackageEditProps) {
           <Grid.Col span={{ base: 12 }}>
             {/* Fornecedor */}
             <Select
+              disabled={reagentAddMode || sizeAddMode}
               filter={portugueseSearchFilter}
               label="Fornecedor"
               placeholder="Nome do fornecedor"
@@ -233,59 +222,15 @@ export function PackageEdit(props: PackageEditProps) {
           </Grid.Col>
         </Grid>
 
+        {props.selectedPackage && <>AAAAAAA</>}
+
         {!props.selectedPackage && (
-          <InputWrapper label="Frascos por laboratório" mt="md" error={vialError}>
-            <Paper py="md" px="md" withBorder>
-              <Stack gap="xl" justify="space-between">
-                <Grid>
-                  {labGroupsWithNames.map((group, index) => (
-                    <React.Fragment key={index}>
-                      <Grid.Col
-                        span={{ base: 6 }}
-                        style={{ display: 'flex', alignItems: 'center' }}
-                      >
-                        {group.laboratoryName}
-                      </Grid.Col>
-                      <Grid.Col span={{ base: 6 }}>
-                        <NumberInput
-                          allowDecimal={false}
-                          allowLeadingZeros={false}
-                          allowNegative={false}
-                          value={group.amount}
-                          prefix="x "
-                          onChange={(value) =>
-                            handleLabGroupAmountChange(group.laboratoryId, Number(value))
-                          }
-                        />
-                      </Grid.Col>
-                    </React.Fragment>
-                  ))}
-                </Grid>
-
-                {/* Adição frasco ao novo laboratório */}
-                <Group justify="space-between" align="end">
-                  <Select
-                    searchable
-                    filter={portugueseSearchFilter}
-                    style={{ flex: 1 }}
-                    label="Adicionar frascos a um laboratório"
-                    data={availableLaboratories}
-                    value={labIdToAdd}
-                    onChange={(value) => setLabIdToAdd(value)}
-                    placeholder="Selecione um laboratório de destino"
-                  />
-                  <Button disabled={sizeAddMode} variant="filled" onClick={handleAddLabGroup}>
-                    +
-                  </Button>
-                </Group>
-
-                {/* Soma total de frascos a todos os laboratórios */}
-                <Group justify="center" align="center" w="100%" my="xs">
-                  <Text>Total de frascos: {totalVials}</Text>
-                </Group>
-              </Stack>
-            </Paper>
-          </InputWrapper>
+          <PackageEditVialsAdd
+            labGroups={labGroups}
+            disabled={reagentAddMode || sizeAddMode}
+            labGroupsError={labGroupsError}
+            onChangeLabGroups={handleChangeLabGroups}
+          />
         )}
 
         <Box>
