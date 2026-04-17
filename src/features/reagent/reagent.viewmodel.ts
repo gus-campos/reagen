@@ -5,7 +5,7 @@ import { getReagentTableInitialColumns } from '@/features/reagent/reagent.consta
 import { ReagentService } from '@/features/reagent/reagent.service';
 import { Reagent } from '@/features/reagent/reagent.type';
 import { useData } from '@/providers/data.provider';
-import { findPackagesOfReagent } from '@/shared/utils/misc';
+import { findPackagesOfReagent } from '@/shared/utils/findEntities';
 
 type UseReagentsViewProps = {
   reagentService: ReagentService;

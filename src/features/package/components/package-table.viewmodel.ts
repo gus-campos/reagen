@@ -11,7 +11,7 @@ import { formattedSize } from '@/features/size/size.util';
 import { filteredPackage } from '@/features/stock-filter/stock-filter.util';
 import { Vial } from '@/features/vial/vial.type';
 import { useData } from '@/providers/data.provider';
-import { findVialsOfPackage } from '@/shared/utils/misc';
+import { findVialsOfPackage } from '@/shared/utils/findEntities';
 
 type UsePackageTableProps = PackageTableProps & {
   packageService: PackageService;

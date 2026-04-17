@@ -10,12 +10,17 @@ type NameDataEditProps<T extends NameData> = {
 };
 
 export function NameDataEdit<T extends NameData>(props: NameDataEditProps<T>) {
-  const { dataForm, submitButtonText, handleSubmit } = useNameDataEdit(props);
+  const { submitButtonText, handleSubmit, register, formErrors } = useNameDataEdit(props);
 
   return (
-    <form onSubmit={dataForm.onSubmit(handleSubmit)}>
+    <form onSubmit={handleSubmit}>
       <Box>
-        <TextInput label="Nome" placeholder="Insira o nome" {...dataForm.getInputProps('name')} />
+        <TextInput
+          label="Nome"
+          placeholder="Insira o nome"
+          error={formErrors.name?.message}
+          {...register('name')}
+        />
 
         <Group my="lg" justify="right">
           <Button variant="outline" onClick={props.onCancel}>

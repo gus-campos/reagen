@@ -56,3 +56,4 @@ export function findPackagesOfFundingSource(fundingSource: FundingSource, pkgs: 
 export function findPackagesOfSupplier(supplier: Supplier, pkgs: Package[]) {
   return pkgs.filter((pkg) => pkg.supplierId === supplier.id);
 }
+

@@ -1,9 +1,11 @@
+import { Controller } from 'react-hook-form';
 import { Accordion, Badge, Grid, Group, Paper, Radio, Select, Text, Title } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { useFilterOptions } from '@/features/stock-filter/components/filter-options.viewmodel';
 import { StockFilter } from '@/features/stock-filter/stock-filter.type';
 import { portugueseSearchFilter } from '@/shared/utils/portuguese-search-filter';
 import classes from './filter-options.module.css';
+import { coerceDatePickerDate } from '@/shared/utils/date';
 
 function TouchedBadge(props: { text: string; active: boolean }) {
   return (
@@ -23,7 +25,9 @@ type FilterOptionsProps = {
 
 export function FilterOptions(props: FilterOptionsProps) {
   const {
-    form,
+    formValues,
+    // formRegister,
+    formControl,
     isInDateFilterActive,
     isOutDateFilterActive,
     isExpireDateFilterActive,
@@ -57,26 +61,39 @@ export function FilterOptions(props: FilterOptionsProps) {
               </Group>
             </Accordion.Control>
             <Accordion.Panel>
-              {/* <InputWrapper label="Filtre por"> */}
               <Paper p="md" withBorder>
                 <Grid>
                   <Grid.Col span={{ base: 6 }}>
-                    <DatePickerInput
-                      clearable
-                      valueFormat="DD/MM/YYYY"
-                      label="A partir de"
-                      placeholder="Selecione"
-                      {...form.getInputProps('minInDate')}
+                    <Controller
+                      control={formControl}
+                      name="minInDate"
+                      render={({ field }) => (
+                        <DatePickerInput
+                          clearable
+                          valueFormat="DD/MM/YYYY"
+                          label="A partir de"
+                          placeholder="Selecione"
+                          {...field}
+                          onChange={(value) => field.onChange(coerceDatePickerDate(value))}
+                        />
+                      )}
                     />
                   </Grid.Col>
 
                   <Grid.Col span={{ base: 6 }}>
-                    <DatePickerInput
-                      clearable
-                      valueFormat="DD/MM/YYYY"
-                      label="Até"
-                      placeholder="Selecione"
-                      {...form.getInputProps('maxInDate')}
+                    <Controller
+                      control={formControl}
+                      name="maxInDate"
+                      render={({ field }) => (
+                        <DatePickerInput
+                          clearable
+                          valueFormat="DD/MM/YYYY"
+                          label="Até"
+                          placeholder="Selecione"
+                          {...field}
+                          onChange={(value) => field.onChange(coerceDatePickerDate(value))}
+                        />
+                      )}
                     />
                   </Grid.Col>
                 </Grid>
@@ -95,30 +112,49 @@ export function FilterOptions(props: FilterOptionsProps) {
             <Accordion.Panel>
               <Paper p="md" withBorder>
                 {/* Range de data */}
-                {/* FIXME: Apagar o outro campo quando mudar */}
-                <Radio.Group label="Mostrar" {...form.getInputProps('outStatus')}>
-                  <Radio label="Todos" value="all" />
-                  <Radio label="Com saída" value="is-out" />
-                  <Radio label="Sem saída" value="not-out" />
-                </Radio.Group>
+                <Controller
+                  control={formControl}
+                  name="outStatus"
+                  render={({ field }) => (
+                    <Radio.Group label="Mostrar" {...field}>
+                      <Radio label="Todos" value="all" />
+                      <Radio label="Com saída" value="is-out" />
+                      <Radio label="Sem saída" value="not-out" />
+                    </Radio.Group>
+                  )}
+                />
                 <Grid mt="md">
                   <Grid.Col span={{ base: 6 }}>
-                    <DatePickerInput
-                      clearable
-                      valueFormat="DD/MM/YYYY"
-                      label="A partir de"
-                      placeholder="Selecione"
-                      {...form.getInputProps('minOutDate')}
+                    <Controller
+                      control={formControl}
+                      name="minOutDate"
+                      render={({ field }) => (
+                        <DatePickerInput
+                          clearable
+                          valueFormat="DD/MM/YYYY"
+                          label="A partir de"
+                          placeholder="Selecione"
+                          {...field}
+                          onChange={(value) => field.onChange(coerceDatePickerDate(value))}
+                        />
+                      )}
                     />
                   </Grid.Col>
 
                   <Grid.Col span={{ base: 6 }}>
-                    <DatePickerInput
-                      clearable
-                      valueFormat="DD/MM/YYYY"
-                      label="Até"
-                      placeholder="Selecione"
-                      {...form.getInputProps('maxOutDate')}
+                    <Controller
+                      control={formControl}
+                      name="maxOutDate"
+                      render={({ field }) => (
+                        <DatePickerInput
+                          clearable
+                          valueFormat="DD/MM/YYYY"
+                          label="Até"
+                          placeholder="Selecione"
+                          {...field}
+                          onChange={(value) => field.onChange(coerceDatePickerDate(value))}
+                        />
+                      )}
                     />
                   </Grid.Col>
                 </Grid>
@@ -136,29 +172,49 @@ export function FilterOptions(props: FilterOptionsProps) {
             <Accordion.Panel>
               <Paper p="md" withBorder>
                 {/* Range de data */}
-                <Radio.Group label="Mostrar" {...form.getInputProps('expired')}>
-                  <Radio label="Todos" value="all" />
-                  <Radio label="Vencidos" value="expired" />
-                  <Radio label="Não vencidos" value="not-expired" />
-                </Radio.Group>
+                <Controller
+                  control={formControl}
+                  name="expired"
+                  render={({ field }) => (
+                    <Radio.Group label="Mostrar" {...field}>
+                      <Radio label="Todos" value="all" />
+                      <Radio label="Vencidos" value="expired" />
+                      <Radio label="Não vencidos" value="not-expired" />
+                    </Radio.Group>
+                  )}
+                />
                 <Grid mt="md">
                   <Grid.Col span={{ base: 6 }}>
-                    <DatePickerInput
-                      clearable
-                      valueFormat="DD/MM/YYYY"
-                      label="A partir de"
-                      placeholder="Selecione"
-                      {...form.getInputProps('minExpire')}
+                    <Controller
+                      control={formControl}
+                      name="minExpire"
+                      render={({ field }) => (
+                        <DatePickerInput
+                          clearable
+                          valueFormat="DD/MM/YYYY"
+                          label="A partir de"
+                          placeholder="Selecione"
+                          {...field}
+                          onChange={(value) => field.onChange(coerceDatePickerDate(value))}
+                        />
+                      )}
                     />
                   </Grid.Col>
 
                   <Grid.Col span={{ base: 6 }}>
-                    <DatePickerInput
-                      clearable
-                      valueFormat="DD/MM/YYYY"
-                      label="Até"
-                      placeholder="Selecione"
-                      {...form.getInputProps('maxExpire')}
+                    <Controller
+                      control={formControl}
+                      name="maxExpire"
+                      render={({ field }) => (
+                        <DatePickerInput
+                          clearable
+                          valueFormat="DD/MM/YYYY"
+                          label="Até"
+                          placeholder="Selecione"
+                          {...field}
+                          onChange={(value) => field.onChange(coerceDatePickerDate(value))}
+                        />
+                      )}
                     />
                   </Grid.Col>
                 </Grid>
@@ -172,11 +228,17 @@ export function FilterOptions(props: FilterOptionsProps) {
             </Accordion.Control>
             <Accordion.Panel>
               <Paper p="md" withBorder>
-                <Radio.Group label="Mostrar" {...form.getInputProps('controlled')}>
-                  <Radio label="Todos" value="all" />
-                  <Radio label="Controlados" value="controlled" />
-                  <Radio label="Não controlados" value="not-controlled" />
-                </Radio.Group>
+                <Controller
+                  control={formControl}
+                  name="controlled"
+                  render={({ field }) => (
+                    <Radio.Group label="Mostrar" {...field}>
+                      <Radio label="Todos" value="all" />
+                      <Radio label="Controlados" value="controlled" />
+                      <Radio label="Não controlados" value="not-controlled" />
+                    </Radio.Group>
+                  )}
+                />
 
                 <Select
                   searchable
@@ -184,10 +246,10 @@ export function FilterOptions(props: FilterOptionsProps) {
                   mt="md"
                   label="Orgão de controle"
                   placeholder="Escolha o orgão de controle"
-                  value={form.values.controlAgencyId}
                   data={controlAgencyOptions}
-                  onChange={handleControlAgencyChange}
                   filter={portugueseSearchFilter}
+                  value={formValues.controlAgencyId}
+                  onChange={handleControlAgencyChange}
                 />
               </Paper>
             </Accordion.Panel>
@@ -199,21 +261,27 @@ export function FilterOptions(props: FilterOptionsProps) {
             </Accordion.Control>
             <Accordion.Panel>
               <Paper p="md" withBorder>
-                <Radio.Group label="Mostrar" {...form.getInputProps('fundingScope')}>
-                  <Radio label="Todos" value="all" />
-                  <Radio label="Interno" value="internal" />
-                  <Radio label="Externo" value="external" />
-                </Radio.Group>
+                <Controller
+                  control={formControl}
+                  name="fundingScope"
+                  render={({ field }) => (
+                    <Radio.Group label="Mostrar" {...field}>
+                      <Radio label="Todos" value="all" />
+                      <Radio label="Interno" value="internal" />
+                      <Radio label="Externo" value="external" />
+                    </Radio.Group>
+                  )}
+                />
                 <Select
                   searchable
                   clearable
                   mt="md"
                   label="Adquirente"
                   placeholder="Escolha o adquirente"
-                  value={form.values.fundingSourceId}
-                  data={fundingSourceOptions}
-                  onChange={handleFundingSourceChange}
                   filter={portugueseSearchFilter}
+                  data={fundingSourceOptions}
+                  value={formValues.fundingSourceId}
+                  onChange={handleFundingSourceChange}
                 />
               </Paper>
             </Accordion.Panel>
@@ -230,10 +298,10 @@ export function FilterOptions(props: FilterOptionsProps) {
                   clearable
                   label="Laboratório"
                   placeholder="Escolha o laboratório"
-                  value={form.values.laboratoryId}
                   data={laboratoryOptions}
-                  onChange={handleLaboratoryChange}
                   filter={portugueseSearchFilter}
+                  value={formValues.laboratoryId}
+                  onChange={handleLaboratoryChange}
                 />
               </Paper>
             </Accordion.Panel>
@@ -250,10 +318,10 @@ export function FilterOptions(props: FilterOptionsProps) {
                   clearable
                   label="Fornecedor"
                   placeholder="Escolha o fornecedor"
-                  value={form.values.supplierId}
                   data={supplierOptions}
-                  onChange={handleSupplierChange}
                   filter={portugueseSearchFilter}
+                  value={formValues.supplierId}
+                  onChange={handleSupplierChange}
                 />
               </Paper>
             </Accordion.Panel>

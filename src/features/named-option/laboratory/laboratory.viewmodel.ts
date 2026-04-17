@@ -1,7 +1,7 @@
 import { Laboratory } from '@/features/named-option/laboratory/laboratory.type';
 import { Vial } from '@/features/vial/vial.type';
 import { useData } from '@/providers/data.provider';
-import { findVialsOfLaboratory } from '@/shared/utils/misc';
+import { findVialsOfLaboratory } from '@/shared/utils/findEntities';
 
 export function useLaboratoryView() {
   const { laboratories, loadingLaboratories, vials } = useData();

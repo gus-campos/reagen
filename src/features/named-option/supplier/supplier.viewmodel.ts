@@ -1,7 +1,7 @@
 import { Supplier } from '@/features/named-option/supplier/supplier.type';
 import { Package } from '@/features/package/package.type';
 import { useData } from '@/providers/data.provider';
-import { findPackagesOfSupplier } from '@/shared/utils/misc';
+import { findPackagesOfSupplier } from '@/shared/utils/findEntities';
 
 export function useSupplierView() {
   const { suppliers, loadingSuppliers, packages } = useData();

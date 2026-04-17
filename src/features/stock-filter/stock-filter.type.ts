@@ -11,26 +11,29 @@
 // (x)Massa ()Volume ()Mols
 // De 10g até 2Kg
 
-export interface StockFilter {
-  /* Filtra de forma geral pacotes e frascos */
+import { z } from 'zod';
 
-  outStatus: 'is-out' | 'not-out' | 'all';
-  minOutDate: Date | null;
-  maxOutDate: Date | null;
+export const stockFilterSchema = z.object({
+  outStatus: z.enum(['is-out', 'not-out', 'all']),
+  minOutDate: z.date().nullable(),
+  maxOutDate: z.date().nullable(),
 
-  expired: 'expired' | 'not-expired' | 'all';
-  minExpire: Date | null;
-  maxExpire: Date | null;
+  expired: z.enum(['expired', 'not-expired', 'all']),
+  minExpire: z.date().nullable(),
+  maxExpire: z.date().nullable(),
 
-  minInDate: Date | null;
-  maxInDate: Date | null;
+  minInDate: z.date().nullable(),
+  maxInDate: z.date().nullable(),
 
-  controlled: 'controlled' | 'not-controlled' | 'all';
-  controlAgencyId: string | null;
+  controlled: z.enum(['controlled', 'not-controlled', 'all']),
+  controlAgencyId: z.string().nullable(),
 
-  fundingScope: 'internal' | 'external' | 'all';
-  fundingSourceId: string | null;
+  fundingScope: z.enum(["internal", "external", "all"]),
+  fundingSourceId: z.string().nullable(),
 
-  supplierId: string | null;
-  laboratoryId: string | null;
-}
+  supplierId: z.string().nullable(),
+  laboratoryId: z.string().nullable(),
+});
+
+/* Filtra de forma geral pacotes e frascos */
+export type StockFilter = z.infer<typeof stockFilterSchema>;

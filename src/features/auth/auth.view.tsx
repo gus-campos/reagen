@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import z from 'zod';
 import { Button, Stack, Text, TextInput } from '@mantine/core';
-import { useForm } from '@mantine/form';
 import { useAppAuth } from '@/providers/auth.provider';
 
 type AccountInfo = {
@@ -9,38 +11,54 @@ type AccountInfo = {
   password: string;
 };
 
+const loginFormSchema = z.object({
+  email: z.email('Email inválido.'),
+  password: z.string().nonempty('Insira sua senha.'),
+});
+
+type LoginFormData = z.infer<typeof loginFormSchema>;
+
 export function AccountInfoForm() {
   const { login } = useAppAuth();
-  const [error, setError] = useState<string | null>(null);
+  const [mainError, setMainError] = useState<string | null>(null);
   const router = useRouter();
 
-  const form = useForm<AccountInfo>({
-    initialValues: {
-      email: '',
-      password: '',
-    },
+  const {
+    handleSubmit,
+    formState: { errors },
+    clearErrors,
+    register,
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginFormSchema),
   });
 
-  const handleSubmit = async (accountInfo: AccountInfo) => {
+  const handleLoginFormSubmit = async (accountInfo: AccountInfo) => {
     try {
       const user = await login(accountInfo.email, accountInfo.password);
       if (user) router.push('/estoque');
     } catch (error) {
-      setError('Usuário ou senha inválido. Tente novamente.');
+      setMainError('Usuário ou senha inválido. Tente novamente.');
+      clearErrors();
     }
   };
 
   return (
-    <form onSubmit={form.onSubmit(handleSubmit)}>
+    <form onSubmit={handleSubmit(handleLoginFormSubmit)}>
       <Stack>
-        <TextInput label="Email" placeholder="Insira o email" {...form.getInputProps('email')} />
+        <TextInput
+          label="Email"
+          placeholder="Insira o email"
+          error={errors.email?.message}
+          {...register('email')}
+        />
         <TextInput
           label="Senha"
           placeholder="Insira a senha"
           type="password"
-          {...form.getInputProps('password')}
+          error={errors.password?.message}
+          {...register('password')}
         />
-        {error && <Text c="red">{error}</Text>}
+        {mainError && <Text c="red">{mainError}</Text>}
         <Button type="submit">Entrar</Button>
       </Stack>
     </form>

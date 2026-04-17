@@ -2,7 +2,7 @@ import { ControlAgency } from '@/features/named-option/control-agency/control-ag
 import { Package } from '@/features/package/package.type';
 import { Reagent } from '@/features/reagent/reagent.type';
 import { useData } from '@/providers/data.provider';
-import { findPackagesOfControlAgency, findReagentsOfControlAgency } from '@/shared/utils/misc';
+import { findPackagesOfControlAgency, findReagentsOfControlAgency } from '@/shared/utils/findEntities';
 
 export function useControlAgenciesView() {
   const { controlAgencies, loadingControlAgencies, reagents, packages } = useData();

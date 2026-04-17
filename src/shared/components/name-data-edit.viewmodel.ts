@@ -1,4 +1,6 @@
-import { useForm } from '@mantine/form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 import { NameData } from '@/shared/types/name-data';
 
 type NameDataEditProps<T extends NameData> = {
@@ -8,22 +10,28 @@ type NameDataEditProps<T extends NameData> = {
   onCancel: () => void;
 };
 
+const namedDataFormDataSchema = z.object({
+  name: z.string().nonempty('Nome não deve ser vazio'),
+});
+
+type NamedDataFormData = z.infer<typeof namedDataFormDataSchema>;
+
 export function useNameDataEdit<T extends NameData>(props: NameDataEditProps<T>) {
-  const dataForm = useForm<NameData>({
-    initialValues: {
-      name: props.selectedData?.name ?? '',
-      id: props.selectedData?.id ?? '',
-    },
-    validate: {
-      name: (value: string) => (value.trim() === '' ? 'Nome não deve ser vazio' : null),
-    },
+  const { register, handleSubmit, formState } = useForm<NamedDataFormData>({
+    resolver: zodResolver(namedDataFormDataSchema),
+    defaultValues: { name: props.selectedData?.name ?? '' },
   });
 
   const isEditing = !!props.selectedData;
   const submitButtonText = isEditing ? 'Editar' : 'Adicionar';
 
-  const handleSubmit = (values: NameData) => {
-    const formData = values as unknown as T;
+  const onSubmit = (values: NamedDataFormData) => {
+    
+    const formData: T = {
+      ...props.selectedData,
+      ...values,
+    };
+
     if (isEditing) {
       props.onEditData(formData);
     } else {
@@ -32,9 +40,10 @@ export function useNameDataEdit<T extends NameData>(props: NameDataEditProps<T>)
   };
 
   return {
-    dataForm,
     isEditing,
     submitButtonText,
-    handleSubmit,
+    formErrors: formState.errors,
+    handleSubmit: handleSubmit(onSubmit),
+    register,
   };
 }

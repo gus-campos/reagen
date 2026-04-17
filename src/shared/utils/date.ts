@@ -41,3 +41,14 @@ export function firstDayOffsettedMonth(date: Date, monthOffset: number): Date {
 export function formatDate(date: Date, format = 'DD/MM/YY') {
   return dayjs(date).format(format);
 }
+
+export function coerceDatePickerDate(value: string | Date | null) {
+    
+    let date: Date | null;
+    
+    if (value === null) date = null;
+    else if (value instanceof Date) date = value;
+    else date = new Date(value);
+
+    return toNullableLocalDate(date);
+}

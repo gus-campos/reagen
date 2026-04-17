@@ -1,7 +1,7 @@
 import { FundingSource } from '@/features/named-option/funding-source/funding-source.type';
 import { Package } from '@/features/package/package.type';
 import { useData } from '@/providers/data.provider';
-import { findPackagesOfFundingSource } from '@/shared/utils/misc';
+import { findPackagesOfFundingSource } from '@/shared/utils/findEntities';
 
 export function useFundingSourcesView() {
   const { fundingSources, packages, loadingFundingSources } = useData();
