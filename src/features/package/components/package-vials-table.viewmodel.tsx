@@ -7,17 +7,13 @@ import {
   OutVialFormView,
   OutVialsFormType,
   PackageVialsTableProps,
+  VialUpdateDto,
 } from '@/features/package/components/package-vials-table.view';
 import { filteredVial } from '@/features/stock-filter/stock-filter.util';
-import { VialService } from '@/features/vial/vial.service';
 import { Vial } from '@/features/vial/vial.type';
 import { useData } from '@/providers/data.provider';
 import { stringToLocalDate } from '@/shared/utils/date';
 import { formattedDate } from '@/shared/utils/formatted-date';
-
-type UsePackageVialsTableProps = PackageVialsTableProps & {
-  vialService: VialService;
-};
 
 type VialGroup = {
   index: number;
@@ -28,12 +24,10 @@ type VialGroup = {
 
 type OutMode = 'out' | 'cancel';
 
-export function usePackageVialsTable(props: UsePackageVialsTableProps) {
-  const { vials, getLaboratoryById } = useData();
+export function usePackageVialsTable(props: PackageVialsTableProps) {
+  const { getLaboratoryById } = useData();
 
-  const packageVials = vials?.filter((v) => v.packageId === props.pkg.id) ?? [];
-
-  const packageVialGroups = packageVials.reduce((groups, vial) => {
+  const packageVialGroups = props.vials.reduce((groups, vial) => {
     for (const group of groups) {
       if (
         group.laboratoryId === vial.laboratoryId &&
@@ -56,27 +50,30 @@ export function usePackageVialsTable(props: UsePackageVialsTableProps) {
     // Criar o grupo
   }, [] as VialGroup[]);
 
-  const outVialsSubmit = (values: OutVialsFormType, mode: OutMode, group: VialGroup) => {
-    // Quantidade inválida: não deveria acontecer
+  const outMoveVialsSubmit = (values: OutVialsFormType, mode: OutMode, group: VialGroup) => {
     if (values.amount < 0 || values.amount > group.vials.length) return;
     const date = values.outDate ? stringToLocalDate(values.outDate) : null;
 
-    for (let i = 0; i < values.amount; i++) {
-      const vial = group.vials[i];
-      props.vialService.update(vial.id, {
+    const vialsUpdateDtos: VialUpdateDto[] = Array.from({ length: values.amount }, (_, index) => {
+      const vial = group.vials[index];
+      
+      return {
+        id: vial.id,
         outDate: mode === 'cancel' ? null : date,
-      });
-    }
+      };
+    });
+
+    props.onToMoveVialsSubmit(vialsUpdateDtos);
   };
 
-  // Obs: Não é necessário separar frascos que estão agrupados, já que não divergem em nada
+  // Observação: Não é necessário separar frascos que estão agrupados, já que não divergem em nada
   const dataFilter = props.filter
     ? (group: VialGroup) => group.vials.some((vial) => filteredVial(vial, props.filter!))
     : undefined;
 
-  const outSortValue = (vial: VialGroup) => (vial.outDate ? 1 : -1);
+  const outDateSortDiff = (vial: VialGroup) => (vial.outDate ? 1 : -1);
 
-  const collumns: TableCollumn<VialGroup>[] = [
+  const columns: TableCollumn<VialGroup>[] = [
     {
       name: 'Laboratório',
       accessor: (group: VialGroup) => (
@@ -88,7 +85,7 @@ export function usePackageVialsTable(props: UsePackageVialsTableProps) {
         </Group>
       ),
       sorter: (a: VialGroup, b: VialGroup) => {
-        const outDiff = outSortValue(a) - outSortValue(b);
+        const outDiff = outDateSortDiff(a) - outDateSortDiff(b);
         const labDiff = getLaboratoryById(a.laboratoryId).name.localeCompare(
           getLaboratoryById(b.laboratoryId).name
         );
@@ -104,8 +101,9 @@ export function usePackageVialsTable(props: UsePackageVialsTableProps) {
     },
   ];
 
-  // Duplicação de código necessária a baixo, cuidado ao modificar
-  const extraActions: CrudAction<VialGroup>[] = [
+  // TODO: Mudar ações condicionalmente de acordo com o modo
+
+  const showExtraActions: CrudAction<VialGroup>[] = [
     {
       icon: (
         <Tooltip label="Cancelar saída...">
@@ -114,11 +112,12 @@ export function usePackageVialsTable(props: UsePackageVialsTableProps) {
       ),
       show: (group) => !!group.outDate,
       popover: {
+        // Duplicação de código necessária a baixo, cuidado ao modificar
         render: ({ closePopover, data }) => (
           <OutVialFormView
             modalIncludeDate={false}
             onSubmit={(values) => {
-              outVialsSubmit(values, 'cancel', data);
+              outMoveVialsSubmit(values, 'cancel', data);
               closePopover && closePopover();
             }}
             maxAmount={data.vials.length}
@@ -134,12 +133,13 @@ export function usePackageVialsTable(props: UsePackageVialsTableProps) {
       ),
       show: (group) => !group.outDate,
       popover: {
+        // Duplicação de código necessária a baixo, cuidado ao modificar
         render: ({ closePopover, data }) => (
           <OutVialFormView
             // eslint-disable-next-line react/jsx-boolean-value
             modalIncludeDate={true}
             onSubmit={(values) => {
-              outVialsSubmit(values, 'out', data);
+              outMoveVialsSubmit(values, 'out', data);
               closePopover && closePopover();
             }}
             maxAmount={data.vials.length}
@@ -149,12 +149,14 @@ export function usePackageVialsTable(props: UsePackageVialsTableProps) {
     },
   ];
 
+  const extraActions = showExtraActions;
+
   return {
     packageVialGroups,
-    collumns,
+    columns,
     extraActions,
     dataFilter,
     // Para testes
-    test_outVialsSubmit: outVialsSubmit,
+    test_outVialsSubmit: outMoveVialsSubmit,
   };
 }

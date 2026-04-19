@@ -30,6 +30,7 @@ export function PackageTable(props: PackageTableProps) {
     confirmModalOpen,
     exitConfirmModal,
     warning,
+    packageVials
   } = usePackageTable({ ...props, packageService });
 
   return (
@@ -46,7 +47,7 @@ export function PackageTable(props: PackageTableProps) {
           searched={(pkg: Package) => getReagentById(pkg.reagentId).name}
           dataFilter={dataFilter}
           crudOperations={mergedCrudOperations}
-          getExpandedComponent={(data) => <PackageVialsTable pkg={data} filter={props.filter} />}
+          getExpandedComponent={(data) => <PackageVialsTable vials={packageVials(data)} filter={props.filter} />}
         />
       )}
 

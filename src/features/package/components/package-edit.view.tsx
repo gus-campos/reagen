@@ -2,6 +2,7 @@ import React from 'react';
 import { Box, Button, Grid, Group, NumberInput, Select } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { PackageEditVialsAdd } from '@/features/package/components/package-edit-vials-add.view';
+import { PackageEditVialsEdit } from '@/features/package/components/package-edit-vials-edit.view';
 import { usePackageEdit } from '@/features/package/components/package-edit.viewmodel';
 import { PackageSubReagentAddForm } from '@/features/package/components/package-sub-reagent-add-form.view';
 import { Package } from '@/features/package/package.type';
@@ -46,7 +47,7 @@ export function PackageEdit(props: PackageEditProps) {
     handleFundingSourceChange,
     handleSupplierChange,
 
-    //
+    // Vials
     labGroups,
     labGroupsError,
     handleChangeLabGroups,
@@ -222,7 +223,14 @@ export function PackageEdit(props: PackageEditProps) {
           </Grid.Col>
         </Grid>
 
-        {props.selectedPackage && <>AAAAAAA</>}
+        {props.selectedPackage && (
+          <PackageEditVialsEdit
+            labGroups={labGroups}
+            disabled={reagentAddMode || sizeAddMode}
+            labGroupsError={labGroupsError}
+            onChangeVials={handleChangeLabGroups}
+          />
+        )}
 
         {!props.selectedPackage && (
           <PackageEditVialsAdd

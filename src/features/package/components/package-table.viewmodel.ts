@@ -83,6 +83,9 @@ export function usePackageTable(props: UsePackageTableProps) {
 
   const initialCollumns = getPackageInitialCollumns(getters);
 
+
+  const packageVials = (pkg: Package) =>  vials?.filter((v) => v.packageId === pkg.id) ?? [];
+
   return {
     packagesError,
     loadingPackages,
@@ -95,5 +98,6 @@ export function usePackageTable(props: UsePackageTableProps) {
     confirmModalOpen,
     exitConfirmModal,
     warning,
+    packageVials
   };
 }

@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { useData } from '@/providers/data.provider';
 import { PackageEditVialsAddProps } from '@/features/package/components/package-edit-vials-add.view';
+import { useData } from '@/providers/data.provider';
 
 export type LabGroup = { laboratoryId: string; amount: number };
 
@@ -31,10 +31,14 @@ export function usePackageEditVialsAdd(props: PackageEditVialsAddProps) {
 
   const handleLabGroupAmountChange = (laboratoryId: string, value: number) => {
     if (value === 0) {
-      props.onChangeLabGroups(props.labGroups.filter((g) => g.laboratoryId !== laboratoryId));
+      props.onChangeLabGroups(
+        props.labGroups.filter((labGroup) => labGroup.laboratoryId !== laboratoryId)
+      );
     } else {
       props.onChangeLabGroups(
-        props.labGroups.map((g) => (g.laboratoryId === laboratoryId ? { ...g, amount: value } : g))
+        props.labGroups.map((labGroup) =>
+          labGroup.laboratoryId === laboratoryId ? { ...labGroup, amount: value } : labGroup
+        )
       );
     }
   };

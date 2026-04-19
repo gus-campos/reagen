@@ -3,27 +3,38 @@ import { DatePickerInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
 import { DataTable } from '@/features/data-table/data-table.view';
 import { usePackageVialsTable } from '@/features/package/components/package-vials-table.viewmodel';
-import { Package } from '@/features/package/package.type';
 import { StockFilter } from '@/features/stock-filter/stock-filter.type';
-import { useDependencyInjection } from '@/providers/dependency-injection.provider';
+import { Vial } from '@/features/vial/vial.type';
+import { WithId } from '@/shared/types/id.type';
+
+export type VialUpdateDto = Partial<Vial> & WithId;
+
+type PackageVialsTableModes = 'edit-vials' | 'add-vials' | 'out-mode';
 
 export type PackageVialsTableProps = {
-  pkg: Package;
+  vials: Vial[];
   filter?: StockFilter;
+
+  // FIXME: Externamento dar update!!!
+  onToMoveVialsSubmit: (vialUpdateDtos: VialUpdateDto[]) => void;
+
+  // TODO: Mudar ações condicionalmente de acordo com o modo
+  // mode: PackageVialsTableModes
+  // onIncrementVialGroup
+  // onDecrementVialGroup
+  // onDeleteVialGroup
 };
 
 export function PackageVialsTable(props: PackageVialsTableProps) {
-  const { vialService } = useDependencyInjection();
-  const { packageVialGroups, collumns, extraActions, dataFilter } = usePackageVialsTable({
+  const { packageVialGroups, columns, extraActions, dataFilter } = usePackageVialsTable({
     ...props,
-    vialService,
   });
 
   return (
     <Paper p="lg">
       <DataTable
         datas={packageVialGroups}
-        collumns={collumns}
+        collumns={columns}
         smallHeading
         extraActions={extraActions}
         dataFilter={dataFilter}

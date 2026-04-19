@@ -8,8 +8,10 @@ import { Reagent } from '@/features/reagent/reagent.type';
 import { Size } from '@/features/size/size.type';
 import { formattedSize, normalizedAmount } from '@/features/size/size.util';
 import { VialService } from '@/features/vial/vial.service';
+import { Vial } from '@/features/vial/vial.type';
 import { useData } from '@/providers/data.provider';
 import { toNullableLocalDate, validateDate } from '@/shared/utils/date';
+import { findVialsOfPackage } from '@/shared/utils/misc';
 
 type UsePackageEditProps = PackageEditProps & {
   reagentService: ReagentService;
@@ -22,21 +24,29 @@ export function usePackageEdit(props: UsePackageEditProps) {
     suppliers,
     fundingSources,
     laboratories,
+    vials,
     getReagentById,
     getFundingSourceById,
     getSupplierById,
   } = useData();
 
+  // STATES
+
   const [reagentAddMode, setReagentAddMode] = useState(false);
   const [createdReagentName, setCreatedReagentName] = useState('');
   const [loadingAddReagent, setLoadingAddReagent] = useState(false);
 
-  const [labGroups, setLabGroups] = useState<LabGroup[]>([]);
+  const [vialsEdited, setVialsEdited] = useState<Vial[]>(
+    props.selectedPackage ? findVialsOfPackage(props.selectedPackage, vials!) : []
+  );
+
   const [labGroupsError, setLabGroupsError] = useState<string | null>(null);
 
   const [sizeAddMode, setSizeAddMode] = useState(false);
   const [addedSize, setAddedSize] = useState<Size | null>(null);
   const [loadingAddSize, setLoadingAddedSize] = useState(false);
+
+  // FORM
 
   const packageForm = useForm<Package>({
     initialValues: props.selectedPackage ?? {
@@ -82,13 +92,11 @@ export function usePackageEdit(props: UsePackageEditProps) {
         if (expireError) errors.expireDate = expireError;
       }
 
-      // Esse tem que ser o último
-      // Só avaliar se estiver no modo adição (sem reagente selecionado)
-      const vialsSum = labGroups.reduce((sum, group) => sum + group.amount, 0);
-      if (vialsSum === 0) {
-        const error = 'É necessário adicionar pelo menos um frasco.';
-        errors.labGroups = error;
-        setLabGroupsError(error);
+      // Registrar erro do lab groups como erro do form
+      if (vialsEdited.length <= 0) {
+        const errorMessage = 'É necessário adicionar pelo menos um frasco.';
+        setLabGroupsError(errorMessage);
+        errors.labGroups = errorMessage;
       } else {
         setLabGroupsError(null);
       }
@@ -99,6 +107,8 @@ export function usePackageEdit(props: UsePackageEditProps) {
 
   const selectedReagent: Reagent | null =
     packageForm.values.reagentId !== '' ? getReagentById(packageForm.values.reagentId) : null;
+
+  // EFFECTS
 
   useEffect(() => {
     if (reagentAddMode && loadingAddReagent) {
@@ -140,6 +150,8 @@ export function usePackageEdit(props: UsePackageEditProps) {
     }
   }, [loadingAddSize]);
 
+  // HANDLES
+
   const handleAddSize = (size: Size) => {
     const newReagent = { ...selectedReagent!, sizes: [...selectedReagent!.sizes, size] };
     props.reagentService.update(selectedReagent!.id, newReagent);
@@ -148,25 +160,35 @@ export function usePackageEdit(props: UsePackageEditProps) {
   };
 
   const handleChangeLabGroups = (labGroups: LabGroup[]) => {
-    setLabGroups(labGroups);
+
+    const vialsFromGroup: Vial[] = labGroups.flatMap((group) =>
+      Array.from({ length: group.amount }).map(() => ({
+        id: 'ID_NULO',
+        packageId: 'ID_NULO',
+        laboratoryId: group.laboratoryId,
+        outDate: null,
+      }))
+    );
+
+    setVialsEdited(vialsFromGroup);
   };
 
   const handleSubmitPackage = async (pkg: Package) => {
     if (props.selectedPackage) {
+      // Editar pacote
       props.onEditPackage(pkg);
+      // Editar vials
+      // ...
     } else {
-      const pkgCreated = await props.onAddPackage(pkg);
-      Promise.all(
-        labGroups.flatMap((group) =>
-          Array.from({ length: group.amount }).map(() =>
-            props.vialService.create({
-              laboratoryId: group.laboratoryId,
-              packageId: pkgCreated.id,
-              outDate: null,
-            })
-          )
-        )
-      );
+      // Criar pacote e vials
+      const packageCreated = await props.onAddPackage(pkg);
+
+      // FIXME: Essa lógica devia estar do lado de fora
+      const vialsWithPackageId = vialsEdited.map((vial) => ({
+        ...vial,
+        packageId: packageCreated.id,
+      }));
+      await Promise.all(vialsWithPackageId.map((vial) => props.vialService.create(vial)));
     }
 
     props.onClosePackageModal();
@@ -191,6 +213,17 @@ export function usePackageEdit(props: UsePackageEditProps) {
     packageForm.setFieldValue('size', validReagent?.sizes[0] ?? ('' as any));
   };
 
+  const handleFundingSourceChange = (value: string | null) => {
+    packageForm.setValues({ fundingSourceId: value });
+  };
+
+  const handleSupplierChange = (value: string | null) => {
+    const supplier = value ? getSupplierById(value) : null;
+    packageForm.setValues({ supplierId: supplier?.id ?? '' });
+  };
+
+  // CONSTANTS
+
   const reagentSelectData = reagents!
     .sort((a, b) => a.name.localeCompare(b.name))
     .map((opt) => ({
@@ -198,7 +231,7 @@ export function usePackageEdit(props: UsePackageEditProps) {
       label: opt.name,
     }));
 
-  // Ordenar menor -> maior
+  // Ordenar do menor pro maior
   const sizeSelectData = selectedReagent
     ? selectedReagent.sizes
         .sort((a, b) => normalizedAmount(a) - normalizedAmount(b))
@@ -219,14 +252,21 @@ export function usePackageEdit(props: UsePackageEditProps) {
       label: s.name,
     }));
 
-  const handleFundingSourceChange = (value: string | null) => {
-    packageForm.setValues({ fundingSourceId: value });
-  };
+  const labGroups = Object.values(
+    vialsEdited.reduce(
+      (labIdGroups, vial) => {
+        const labId = vial.laboratoryId;
 
-  const handleSupplierChange = (value: string | null) => {
-    const supplier = value ? getSupplierById(value) : null;
-    packageForm.setValues({ supplierId: supplier?.id ?? '' });
-  };
+        labIdGroups[labId] = {
+          laboratoryId: labId,
+          amount: (labIdGroups[labId]?.amount ?? 0) + 1,
+        };
+
+        return labIdGroups;
+      },
+      {} as Record<string, LabGroup>
+    )
+  );
 
   return {
     reagentAddMode,

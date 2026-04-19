@@ -42,7 +42,6 @@ export function getPackageInitialCollumns(getters: PackageCollumGetters): TableC
 
   const getInDate = (pkg: Package) => formattedDate(pkg.inDate);
 
-  // FIXME: defaultSortedCollum: true
   const allCollumns = [
     {
       name: 'Reagente',
